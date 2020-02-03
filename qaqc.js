@@ -187,7 +187,7 @@ qaqc.getParms=function(){
     }
     if(qaqc.parms.script){
         setTimeout(_=>{
-            document.querySelectorAll('.runScript')[qaqc.parms.script].click()
+            document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
         },100)
     }
 

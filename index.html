@@ -11,18 +11,19 @@
     <div class="container">
         &nbsp;
         <h2>
-            QAQC <i class="fa fa-power-off" style="color:green;font-size:x-large;cursor:pointer" onclick="this.style.color='red';location.hash='';location.search='';location.reload()" data-toggle="tooltip" data-placement="left" title="restart"></i>  
+            QAQC <i class="fa fa-power-off" style="color:green;font-size:x-large;cursor:pointer" onclick="this.style.color='red';location.hash='';location.search='';location.reload()" data-toggle="tooltip" data-placement="left" title="restart"></i>
             <a href="https://github.com/episphere/qaqc" target="_blank" data-toggle="tooltip" data-placement="right" title="source code"><i class="fa fa-github-alt"></i></a>
             <a href="#url=iris.csv&script=2" target="_blank" data-toggle="tooltip" data-placement="right" title="demo"><i class="fa fa-rocket" style="color:orange"></i></a>
             <a href="https://www.youtube.com/watch?v=HXA15uuDUuI" target="_blank" data-toggle="tooltip" data-placement="right" title="introduction video"><i class="fa fa-youtube" style="color:red"></i></a>
             <a href="https://github.com/episphere/qaqc/issues" target="_blank" data-toggle="tooltip" data-placement="right" title="submit issue"><i class="fa fa-exclamation" style="color:maroon"></i></a>
         </h2>
         <p class="info">Quality Control / Quality Analyis</p>
-        <h3>Script list</h3> 
+        <h3>Script list</h3>
         <ol id="scriptList">
         <li><input type="radio" name="run" class="runScript" checked> none</li>
         <li><input type="radio" name="run" class="runScript"> jonas.js - Jonas' QAQC experiments</li>
-        <li><input type="radio" name="run" class="runScript"> https://lorenasandoval88.github.io/qaqcLorena/lorena.js - the real thing by Lorena</li>
+        <li><input type="radio" name="run" class="runScript"> lorena.js - QAQC</li>
+        <li><input type="radio" name="run" class="runScript"> lorena2.js - Summary statistics</li>
         <script>
             document.querySelectorAll('.runScript').forEach(el=>{
                 el.value=el.parentElement.textContent.match(/^\s*\S+\s*/g)[0].replace(/\s/g,'')
@@ -54,4 +55,4 @@
         <p class="info"> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures, particulalry data wrangling, can migrate to where the data is without exposing the source data. </p>
     </div>
 </body>
-</html>    
+</html>

@@ -1,8 +1,7 @@
-console.log(`lorena.js ran at ${Date()}`)
+console.log(`lorena2.js ran at ${Date()}`)
 
-runQAQC=function(data){
-    console.log(`lorena.js runQAQC function ran at ${Date()}`)
-
+runQAQC = function(data) {
+  console.log(`lorena2.js Summary statistics function ran at ${Date()}`)
 
 let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
       h += `<p></p>`

@@ -34,6 +34,7 @@ let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with
         } else{
            var failed_str = ""
         }
+      
         //
         // Embedded spaces or special characters are not allowed.
         //

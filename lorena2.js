@@ -11,14 +11,28 @@ for (let [key,value] of Object.entries(qaqc.data)){
     for (var i = 0; i < qaqc.data.length; i++) {
       console.log(key);
       }
-
-function printprops(o){
-  for(var p in o)
-  //  console.log(p+ ": " +o[p] + "\n");
-    h +=`<p style= "color:red">${p+ ": " +o[p] + "\n"}</p>`
-    }
 }
+function printprops(obj){
+  for(var col in obj)
+    h +=`<p style= "color:red">${col+ ": " +obj[col] + "\n"}</p>`
+    }
+
 printprops(qaqc.data)
+
+
+function add(obj){
+  var eth = []
+  for(var col in obj){
+    if( col==="EthnicityClass")
+    //  eth=obj[col]
+      //eth= [...new Set(eth)]
+    //  h +=`<p style= "color:green">${col+ ": " +eth ": n "+ "\n"}</p>`
+    h +=`<p style= "color:green">${col+ ": " +obj[col] + "\n"}</p>`
+    //eth.append(column[row])
+    //console.log(obj[col])//append sort
+}
+}
+add(qaqc.data)
 
         h += '</p>'
         h += `<p>Save summary statistics below.<p/>`

@@ -34,7 +34,7 @@ let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with
         } else{
            var failed_str = ""
         }
-      
+
         //
         // Embedded spaces or special characters are not allowed.
         //
@@ -152,8 +152,8 @@ let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with
     //     alert("Check column BCAC_ID for missing entry")
 
         h += '</p>'
-
-        h += qaqc.saveFile(qaqc.dataTxt)
+        h += qaqc.saveFile(qaqc.csvJSON(qaqc.dataTxt))
+        //h += qaqc.saveFile(qaqc.dataTxt)
         //debugger
         // ...
         return h

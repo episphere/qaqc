@@ -69,7 +69,7 @@ qaqc.load=el=>{
                             x.text().then(txt=>{
                                 debugger
                             })
-                            
+
                         })
                         */
                     }
@@ -100,7 +100,7 @@ qaqc.tabulateTxt=(txt=qaqc.dataTxt)=>{
         labels= arr[0]
         labels.forEach((label)=>{
             qaqc.data[label]=[]
-        }) 
+        })
         arr.slice(1).forEach((row,i)=>{
             labels.forEach((label,j)=>{
                 qaqc.data[label][i]=row[j]
@@ -110,7 +110,7 @@ qaqc.tabulateTxt=(txt=qaqc.dataTxt)=>{
             qaqc.data[label]=qaqc.numberType(qaqc.data[label])
         })
     }
-        
+
 }
 
 qaqc.numberType=aa=>{ // try to fit numeric typing
@@ -140,12 +140,31 @@ qaqc.saveFile=(txt,fileName)=>{
         let a = document.createElement('a');
         a.href=url;
         a.download=fileName;
-        a.click(); 
+        a.click();
         //return a
     }else{
         let h=`filename:<input><button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">save data as JSON</button>`
         return h
-    }      
+    }
+}
+
+qaqc.csvJSON= (csv)=>{
+
+  var lines=csv.split("\n");
+  var result = [];
+  var headers=lines[0].split(",");
+
+  for(var i=1;i<lines.length;i++){
+	  var obj = {};
+	  var currentline=lines[i].split(",");
+
+	  for(var j=0;j<headers.length;j++){
+		  obj[headers[j]] = currentline[j];
+	  }
+	  result.push(obj);
+  }
+  //return result; //JavaScript object
+  return JSON.stringify(result); //JSON
 }
 
 qaqc.dataAnalysis=(div="dataAnalysisDiv")=>{
@@ -156,7 +175,7 @@ qaqc.dataAnalysis=(div="dataAnalysisDiv")=>{
             div.innerHTML=`<h2>Report</h2>
             <p style="font-size:small;color:green">[${Date()}]</p>
             <div id="qaqcReport">${runQAQC(qaqc.data)}</div>
-            <hr>`    
+            <hr>`
         }else{
             div.innerHTML='<h3 style="color:red">no runQAQC function found ...</h3><p style="color:red">... please chose one from the Script List above</p>'
         }
@@ -176,7 +195,7 @@ qaqc.getParms=function(){
         av=av.split('=')
         qaqc.parms[av[0]]=av[1]
     })
-    
+
     // actions
     if(qaqc.parms.url){
         setTimeout(_=>{

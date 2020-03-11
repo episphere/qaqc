@@ -36,7 +36,8 @@ add(qaqc.data)
 
         h += '</p>'
         h += `<p>Save summary statistics below.<p/>`
-        h += qaqc.saveFile(JSON.stringify(qaqc.data))
+        h += qaqc.saveFile(qaqc.csvJSON(qaqc.dataTxt))
+        //h += qaqc.saveFile(JSON.stringify(qaqc.data))
 
 
         //debugger

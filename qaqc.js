@@ -90,6 +90,7 @@ qaqc.tabulateTxt=(txt=qaqc.dataTxt)=>{
     if(txt.slice(0,1)=='['){txt='{'+txt+'}'}
     if(txt.slice(0,1)=='{'){
         qaqc.data=JSON.parse(txt)
+        qaqc.buildArray()
     }else{
         let arr =txt.split(/[\r\n]+/g).map(row=>{  // data array
             //if(row[0]=='    '){row='undefined   '+row}
@@ -97,6 +98,7 @@ qaqc.tabulateTxt=(txt=qaqc.dataTxt)=>{
         })
         if(arr.slice(-1).toLocaleString()==""){arr.pop()}
         qaqc.data={} // qaqc.data is defined here, it will be undefined by default
+        qaqc.dataArray=[] // same for array
         labels= arr[0]
         labels.forEach((label)=>{
             qaqc.data[label]=[]
@@ -109,6 +111,7 @@ qaqc.tabulateTxt=(txt=qaqc.dataTxt)=>{
         labels.forEach(label=>{
             qaqc.data[label]=qaqc.numberType(qaqc.data[label])
         })
+        qaqc.buildArray()
     }
 
 }
@@ -143,7 +146,12 @@ qaqc.saveFile=(txt,fileName)=>{
         a.click();
         //return a
     }else{
-        let h=`filename:<input><button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">save data as JSON</button>`
+        //let h=`filename:<input>
+        //      <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Object</button>
+        //      <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
+        let h=`filename:<input>
+              <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.data))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Object</button>
+              <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
         return h
     }
 }
@@ -165,6 +173,19 @@ qaqc.csvJSON= (csv)=>{
   }
   //return result; //JavaScript object
   return JSON.stringify(result); //JSON
+}
+
+qaqc.buildArray=()=>{
+  let labels=Object.keys(qaqc.data)
+  let arr=[]
+  qaqc.data[labels[0]].forEach((v,i)=>{
+      arr[i]={}
+      labels.forEach(L=>{
+          arr[i][L]=qaqc.data[L][i]
+      })
+  })
+  qaqc.dataArray=arr
+  return arr
 }
 
 qaqc.dataAnalysis=(div="dataAnalysisDiv")=>{
@@ -199,6 +220,7 @@ qaqc.getParms=function(){
     // actions
     if(qaqc.parms.url){
         setTimeout(_=>{
+            let loadURL=document.getElementById('loadURL')
             loadURL.click()
             inputURL.value=qaqc.parms.url
             loadFileFromURL.click()

@@ -10,14 +10,14 @@ let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with
       //check which variables have not been uploaded
       //https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
       var upCol=[]
-      var allCol=["UniqueID", "PersonID", "Study", "contrType", "Status", "DNA_source", "DNA_sourceOt", "matchId", "SubStudy", "Studytype", "StudytypeOt", "Exclusion", "AgeInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "Sex", "EthnicityClass", "EthnicitySubClass", "ethnOt", "raceM", "raceF", "FamHist", "Fhnumber", "Fhscore", "ER_statusIndex"]
+      var allCol=["UniqueID", "PersonID", "Study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchId", "SubStudy", "Studytype", "StudytypeOt", "Exclusion", "AgeInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "Sex", "EthnicityClass", "EthnicitySubClass", "ethnOt", "raceM", "raceF", "FamHist", "Fhnumber", "Fhscore", "ER_statusIndex"]
 
       for (var [key, value] of Object.entries(qaqc.data)) {
           upCol.push(key)
         }
         acceptedCol=upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
 
-
+//---------------------------------------------------------------------------
         function difference(a1, a2) {
           var a2Set = new Set(a2);
           return a1.filter(function(x) { return !a2Set.has(x); })
@@ -43,27 +43,31 @@ let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with
       //if less collumns accepted than uploaded, indicate why (ie column names not in correct format. rows not in format)
       // if more than 31 columns uploaded, indicate error? (ie 33 columns with 31 of the variables needed
 
-      //https://zellwk.com/blog/looping-through-js-objects/ looping through object
-        const keys=Object.keys(qaqc.data)
-        const values=[]
-        for(var i =0; i<keys.length; i++ ){
-            var key = keys[i]
-            values[i]= qaqc.data[key]
-            for (j=0; j < upCol.length; j++ ){
-               if(key==acceptedCol[j]){
-                //h +=`<p style= "color:red">${key} : ${qaqc.data[key]}</p>`// accepted columns and rows
-                }
-                  for (a=0; a< qaqc.data[key].length; a++){
-                    //console.log(qaqc.data[key][a])
-
-                    if (qaqc.data[key][a]===undefined && key===acceptedCol[j] ) {
-                        h +=`<p style= "color:red">ERROR: Empty value(s) found in ${key} column </p>`
-                        h +=`<ul style= "color:red">Missing values should be listed as 777 </ul>`
-
-                  }{ break; }
-                }
+//https://zellwk.com/blog/looping-through-js-objects/ looping through object
+function Missing(data){
+for (var i = 0; i < Object.keys(data).length; i++) { //MAKE FUNCT RETURN COUNT LORENA
+  var key1 = Object.keys(data)[i]
+    for (j = 0; j < upCol.length; j++) {
+    //if (key1 == acceptedCol[j]) {
+      //h +=`<p style= "color:red">${key} : ${qaqc.data[key]}</p>`// accepted columns and rows
+    //}
+    var empty_count = 0
+    for (a = 0; a < data[key1].length; a++) {
+      //console.log(qaqc.data[key][a])
+      if (data[key1][a] === undefined && key1 === acceptedCol[j]) {
+//https://stackoverflow.com/questions/41940955/using-a-for-loop-to-count-how-many-times-a-specific-number-appears-in-an-array
+        empty_count++
+        h += `<p style= "color:red">ERROR: ${empty_count} empty value(s) found in ${key1} column </p>`
+        h += `<ul style= "color:red">Missing values should be listed as 777 </ul>`
         }
+
       }
+      console.log(empty_count)
+    }
+}
+}
+var miss = Missing(qaqc.data)
+console.log(miss)
       //for (const col  of upCol){
       //  values.forEach((row) =>console.log(row))
 

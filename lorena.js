@@ -158,7 +158,7 @@ let h=`<p style= "color:red; font-weight:bold">Successfully uploaded: table with
         // ...
         return h
     }
-// }
+
 // for (const col in qaqc.data){
 //     if (col.indexOf("") > -1) {
 //       missing=""

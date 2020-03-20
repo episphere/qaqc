@@ -171,9 +171,10 @@ qaqc.csvJSON= (csv)=>{
 	  }
 	  result.push(obj);
   }
-  //return result; //JavaScript object
-  return JSON.stringify(result); //JSON
+  return result; //JavaScript object
+  //return JSON.stringify(JSON.parse(json),null,2); //JSON
 }
+
 
 qaqc.buildArray=()=>{
   let labels=Object.keys(qaqc.data)
@@ -187,6 +188,7 @@ qaqc.buildArray=()=>{
   qaqc.dataArray=arr
   return arr
 }
+
 
 qaqc.dataAnalysis=(div="dataAnalysisDiv")=>{
     console.log(`qaqc analysis triggered at ${Date()}`)

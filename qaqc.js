@@ -156,7 +156,6 @@ qaqc.saveFile=(txt,fileName)=>{
     }
 }
 
-//----------------------------------start Lorena (returns JSON with numbers as strings :(
 qaqc.csvJSON= (csv)=>{
 
   var lines=csv.split("\n");
@@ -176,7 +175,7 @@ qaqc.csvJSON= (csv)=>{
   //return JSON.stringify(JSON.parse(json),null,2); //JSON
 }
 
-<<<<<<< Updated upstream
+
 qaqc.buildArray=()=>{
   let labels=Object.keys(qaqc.data)
   let arr=[]
@@ -189,10 +188,7 @@ qaqc.buildArray=()=>{
   qaqc.dataArray=arr
   return arr
 }
-=======
 
-// -----------------------------------------end Lorena
->>>>>>> Stashed changes
 
 qaqc.dataAnalysis=(div="dataAnalysisDiv")=>{
     console.log(`qaqc analysis triggered at ${Date()}`)

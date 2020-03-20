@@ -90,7 +90,6 @@ console.log(miss)
       h +=`<p style= "font-weight:bold"> INPUT FILE REQUIREMENTS: 6  data groups consisting of up to 31 columns in the following format</p>`
       h += `<p style="font-size: 10px">Example input files available via the "Download Example Input Files" link on the left panel.<p/>`
                     //Hover to display text? https://codepen.io/Paulie-D/pen/OVRJBx
-
       h += `<p>ID column names (12):<p/>`
         h += `<li>UniqueID</li>` // unique person identifier (Concatenation of Study Acronym, "-", and PersonID)
         h += `<li>PersonID</li>` //Check whether PersonID is unique within each study: for a few studies this is not the case, for one study this variable was missing; however, since UniqueID is unique for all studies, nothing needs to be changed
@@ -122,7 +121,7 @@ console.log(miss)
 
       h += `<p></p>`
       h += `<p>Sex column name (1):<p/>`
-      h += `<li>sex</li>`//**ADD SPECIFIC CHECKS**
+        h += `<li>sex</li>`//**ADD SPECIFIC CHECKS**
 
       h += `<p></p>`
       h += `<p>Ethnicity column names (3): <p/>`
@@ -140,15 +139,6 @@ console.log(miss)
       h += `<p>ER status column name (1): <p/>`
         h += `<li>ER_statusIndex</li>` //**ADD SPECIFIC CHECKS**
 
-      h += `<p></p>`
-      h += `<p> Uploaded data: </p>`
-
-      h += '<p style="color:blue">'
-
-    for (const [key, value] of Object.entries(qaqc.data)) { //List of columns and rows
-      h += `<li style="color:blue">${key}: ${value}</li>`
-    }
-
     // //Col 2 BCAC_ID array
     // for (i = 0; i < Object.entries(qaqc.data)[1][1].length; i++) {
     //   console.log(Object.entries(qaqc.data)[1][1][i])
@@ -156,8 +146,69 @@ console.log(miss)
     //     alert("Check column BCAC_ID for missing entry")
 
         h += '</p>'
-        h += qaqc.saveFile(qaqc.csvJSON(qaqc.dataTxt))
-        //h += qaqc.saveFile(qaqc.dataTxt)
+        // json= qaqc.csvJSON(qaqc.dataTxt)
+        // console.log(json)
+        // console.log(JSON.stringify(qaqc.data,null,2))
+        // // h += qaqc.saveFile(JSON.stringify(json))
+        // age= data["ageInt"]
+        //
+        // var obj = {};
+        // age.forEach(function(value, idx) {
+        //   obj['ageInt' + ( idx + 1)] = value
+        // });
+        // arr= []
+        // obj1 = arr.push(obj)
+        // //json= qaqc.csvJSON(qaqc.dataTxt)
+        // console.log(obj)
+        // console.log(JSON.stringify(obj,null,2))
+        // h += qaqc.saveFile(JSON.stringify(obj))
+//https://stackoverflow.com/questions/2693021/how-to-count-javascript-array-objects
+        function objectLength(obj) {
+          var result = 0;
+          for(var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+            // or Object.prototype.hasOwnProperty.call(obj, prop)
+              result++;
+            }
+          }
+          return result;
+        }
+        objectLength(qaqc.data); // for your example, 3 or
+        Object.keys(qaqc.data).length;
+
+        for (let [key, value] of Object.entries(qaqc.data)) {
+  console.log(`${key}: ${value}`);
+}
+// https://stackoverflow.com/questions/19260472/use-object-name-in-javascript-loop-of-array
+        var data = qaqc.data
+        var arr=[]
+        var ob = {}
+  for (let [k, v] of Object.entries(data)) {
+
+   for (index in v){
+            ob[k]= data[k][index]
+            console.log(k, ":", data[k][index])
+      }
+    }
+    arr.push(ob)
+        console.log(arr)
+
+        // // https://stackoverflow.com/questions/19260472/use-object-name-in-javascript-loop-of-array
+        //         var arr=[]
+        //         var ob = {}
+        //
+        //         while(i <17){
+        //           for (a=0; a < qaqc.data[i].length; a++){
+        //
+        //             ob[i]= qaqc.data[i][a]
+        //             i= i+1
+        //             console.log(i, ":", qaqc.data[i][a])
+        //             console.log(ob)
+        //             }
+        //       }
+        //           arr.push(ob)
+        //         console.log(arr)
+        //console.log(arr)
         //debugger
         // ...
         return h

@@ -149,7 +149,7 @@ qaqc.saveFile=(txt,fileName)=>{
         //let h=`filename:<input>
         //      <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Object</button>
         //      <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
-        let h=`filename:<input>
+        let h=`filename:<input value="file${Date.now().toString().slice(3)}.json">
               <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.data))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Object</button>
               <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
         return h

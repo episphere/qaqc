@@ -12,12 +12,12 @@ for (let [key,value] of Object.entries(qaqc.data)){
       console.log(key);
       }
 }
-function printprops(obj){
-  for(var col in obj)
-    h +=`<p style= "color:red">${col+ ": " +obj[col] + "\n"}</p>`
-    }
+// function printprops(obj){
+//   for(var col in obj)
+//     h +=`<p style= "color:red">${col+ ": " +obj[col] + "\n"}</p>`
+//     }
 
-printprops(qaqc.data)
+// printprops(qaqc.data)
 
 
 function add(obj){
@@ -49,3 +49,9 @@ add(qaqc.data)
 //     if (col.indexOf("") > -1) {
 //       missing=""
 //       h +=`<p style= "color:red">${col} column has missing data<p>`
+///////////////////////////////////////////
+dat["BCAC_ID"].forEach(function(val, index){console.log(index, val)})
+let ssArray = ["Consortia", "studyDesign", "study", "ethnicityClass", "status","statusTotal","age20.29","age30.39","age40.49","age50.59","age60.69","age70.79","age80.89","age90.99","ageDK	ER_statusIndex_pos","ER_statusIndex_neg","ER_statusIndex_DK","famHist_yes","famHist_no","famHist_DK"]
+let inArray = ["studyType", "study", "ethnicityClass", "status", "ageInt","ER_statusIndex", "famHist"]
+for (i; i<inArray.length;i++){console.log(inArray[i])}
+

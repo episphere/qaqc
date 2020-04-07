@@ -158,10 +158,10 @@ console.log(miss)
         // });
         // arr= []
         // obj1 = arr.push(obj)
-        // //json= qaqc.csvJSON(qaqc.dataTxt)
-        // console.log(obj)
+        json= qaqc.csvJSON(qaqc.dataTxt)
+        //console.log(obj)
         // console.log(JSON.stringify(obj,null,2))
-        // h += qaqc.saveFile(JSON.stringify(obj))
+        h += qaqc.saveFile(JSON.stringify(json))
 //https://stackoverflow.com/questions/2693021/how-to-count-javascript-array-objects
         function objectLength(obj) {
           var result = 0;
@@ -211,6 +211,7 @@ console.log(miss)
         //console.log(arr)
         //debugger
         // ...
+        h+=qaqc.saveFile(JSON.stringify(qaqc.data))
         return h
     }
 

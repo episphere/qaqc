@@ -42,7 +42,23 @@ add(qaqc.data)
 
         //debugger
         // ...
-        return h
+let ssArray = ["Consortia", "studyDesign", "study", "ethnicityClass", "status","statusTotal","age20.29","age30.39","age40.49","age50.59","age60.69","age70.79","age80.89","age90.99","ageDK	ER_statusIndex_pos","ER_statusIndex_neg","ER_statusIndex_DK","famHist_yes","famHist_no","famHist_DK"]
+let inArray = ["studyType", "study", "ethnicityClass", "status", "ageInt","ER_statusIndex", "famHist"]
+let dat = qaqc.data
+//dat["BCAC_ID"].forEach(function(val, index){console.log(index, val)})
+
+// for (i=0; i<inArray.length;i++){console.log(inArray[i])}
+// for (i=0; i<inArray.length;i++){
+//   dat[inArray[i]].forEach(function(val, index){console.log(index, val)})}
+  for (i=0; i<inArray.length;i++){console.log(inArray[i],
+    dat[inArray[i]])}
+
+    for (i=0; i<inArray.length;i++){
+      dat[inArray[i]].forEach(function(val, index)
+      {console.log("working")})
+      
+
+    return h
     }
 // }
 // for (const col in qaqc.data){
@@ -50,8 +66,4 @@ add(qaqc.data)
 //       missing=""
 //       h +=`<p style= "color:red">${col} column has missing data<p>`
 ///////////////////////////////////////////
-dat["BCAC_ID"].forEach(function(val, index){console.log(index, val)})
-let ssArray = ["Consortia", "studyDesign", "study", "ethnicityClass", "status","statusTotal","age20.29","age30.39","age40.49","age50.59","age60.69","age70.79","age80.89","age90.99","ageDK	ER_statusIndex_pos","ER_statusIndex_neg","ER_statusIndex_DK","famHist_yes","famHist_no","famHist_DK"]
-let inArray = ["studyType", "study", "ethnicityClass", "status", "ageInt","ER_statusIndex", "famHist"]
-for (i; i<inArray.length;i++){console.log(inArray[i])}
 

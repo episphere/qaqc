@@ -47,18 +47,51 @@ const filterCombiner = (d, filterArray) => {
   }
   return true;
 }
-const filterArray3 = [
-  d => d.status != 0,
-  d => d.ageInt < 40,
+const filterArrayCases = [
+  d => d.status != 0
+  //d => d.ageInt < 40,
 ]
-const arr3 = data1.filter(d => filterCombiner(d, filterArray3))
-console.log('arr3', arr3)
-let total = Object.keys(arr3).pop()
-let total1 = Number(total)+1
-h +=`<p>Cases under 40: ${total1}<p/>`
+
+const arrCases = data1.filter(d => filterCombiner(d, filterArrayCases))
+console.log("arrCases", arrCases)
+let totalCases1 = Object.keys(arrCases).pop()
+let totalCases = Number(totalCases1)+1
+h +=`<p style= "font-weight:bold">Cases: ${totalCases}<p/>`
+
+const filterArrayControls = [
+  d => d.status == 0
+]
+
+const arrControls = data1.filter(d => filterCombiner(d, filterArrayControls))
+console.log('arrControls', arrControls)
+let totalControls1 = Object.keys(arrControls).pop()
+let totalControls = Number(totalControls1)+1
+h +=`<p style= "font-weight:bold">Controls: ${totalControls}<p/>`
+
+const filterArrayEurCas = [
+  d => d.status != 0,
+  d => d.ethnicityClass == 1
+]
+
+const arrEurCas = data1.filter(d => filterCombiner(d, filterArrayEurCas))
+console.log('arrEurCas', arrEurCas)
+let totalEurCas1 = Object.keys(arrEurCas).pop()
+let totalEurCas = Number(totalEurCas1)+1
+h +=`<p style= "font-weight:bold">European Ancestry Cases: ${totalEurCas}<p/>`
+
+const filterArrayEurCon = [
+  d => d.status == 0,
+  d => d.ethnicityClass == 1
+]
+
+const arrEurCon = data1.filter(d => filterCombiner(d, filterArrayEurCon))
+console.log('arrEurCon', arrEurCon)
+let totalEurCon1 = Object.keys(arrEurCon).pop()
+let totalEurCon = Number(totalEurCon1)+1
+h +=`<p style= "font-weight:bold">European Ancestry Controls: ${totalEurCon}<p/>`
+h += '<p><p/>'
 
 ///////////////////////////////////////////////////////////////////
-        h += '</p>'
         h += `<p>Save summary statistics below.<p/>`
         h += qaqc.saveFile(qaqc.csvJSON(qaqc.dataTxt))
         //h += qaqc.saveFile(JSON.stringify(qaqc.data))

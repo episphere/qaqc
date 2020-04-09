@@ -50,15 +50,36 @@ let dat = qaqc.data
 // for (i=0; i<inArray.length;i++){console.log(inArray[i])}
 // for (i=0; i<inArray.length;i++){
 //   dat[inArray[i]].forEach(function(val, index){console.log(index, val)})}
-  for (i=0; i<inArray.length;i++){console.log(inArray[i],
-    dat[inArray[i]])}
+  // for (i=0; i<inArray.length;i++){console.log(inArray[i],
+  //   dat[inArray[i]])}
 
-    for (i=0; i<inArray.length;i++){
-      dat[inArray[i]].forEach(function(val, index)
-      {console.log("working")})
+  //   for (i=0; i<inArray.length;i++){
+  //     dat[inArray[i]].forEach(function(val, index)
+  //     {console.log("working")})
       
+  //     for (i=0; i<inArray.length;i++){
+  //       dat[inArray[i]].forEach(function(val, index)
+  //                               {if (inArray[i]=="status"){if (val===0){console.log("case")}}
+  //                               })}
+https://stackoverflow.com/questions/5667888/counting-the-occurrences-frequency-of-array-elements?noredirect=1&lq=1
+var arr = qaqc.data["status"]
 
-    return h
+var counts = {};
+ 
+for (var i = 0; i < arr.length; i++) {
+  var num = arr[i];
+  counts[num] = counts[num] ? counts[num] + 1 : 1;
+ }
+console.log(counts)
+let emptArr=[]
+
+emptArr.push(counts)
+
+for (let [key,value] of Object.entries(counts)){console.log(`${key}: ${value}`);}
+counts["case"]=counts[1]
+delete counts[1]
+console.log(counts)
+ return h
     }
 // }
 // for (const col in qaqc.data){
@@ -66,4 +87,3 @@ let dat = qaqc.data
 //       missing=""
 //       h +=`<p style= "color:red">${col} column has missing data<p>`
 ///////////////////////////////////////////
-

@@ -90,7 +90,7 @@ let totalEurCon1 = Object.keys(arrEurCon).pop()
 let totalEurCon = Number(totalEurCon1)+1
 h +=`<p style= "font-weight:bold">European Ancestry Controls: ${totalEurCon}<p/>`
 h += '<p><p/>'
-
+let arrEurCon = function(...)
 ///////////////////////////////////////////////////////////////////
         h += `<p>Save summary statistics below.<p/>`
         h += qaqc.saveFile(qaqc.csvJSON(qaqc.dataTxt))

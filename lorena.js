@@ -1,6 +1,5 @@
-///////////////////////////////////
 console.log(`lorena.js ran at ${Date()}`)
-//
+
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 

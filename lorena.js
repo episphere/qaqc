@@ -44,7 +44,12 @@ runQAQC = function (data) {
 let status1 = ["control", "invasive case", "in-situ case", "case unknown invasiveness", "excluded sample" ]
 let status2 = [0,1,2,3,9]
 
-
+datArray["status"].forEach(function statusCheck(variable, index){
+  for (i in status2){
+  if (variable != i){
+  console.log("error")} //check status column
+  }
+})
   h += qaqc.saveFile(JSON.stringify(qaqc.data))
   return h
 }

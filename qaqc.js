@@ -46,7 +46,7 @@ qaqc.load=el=>{
             <button onclick="epibox.refreshToken()">Refresh</button>
             <button onclick="(async function(){await epibox.getUser();epibox.msg(JSON.stringify(epibox.oauth.user,null,3))})()">User</button>
             <button onclick="epibox.logout()">Logout</button>
-            file id: <input id="boxInput">`
+            file id: <input id="boxInput" style="color:green">`
             setTimeout(async _=>{
                 let ip=document.getElementById('boxInput')
                 ip.focus()
@@ -233,6 +233,27 @@ qaqc.getParms=function(){
             document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
         },100)
     }
+    if(qaqc.parms.boxId){
+      setTimeout(_=>{
+        loadBox.click()
+        setTimeout(_=>{
+          boxInput.value=''
+          qaqc.parms.boxId.split('').forEach((_,i)=>{
+            setTimeout(_=>{
+              boxInput.value+=qaqc.parms.boxId[i]
+            },i*100)
+          })
+          epibox.getText(`https://api.box.com/2.0/files/${qaqc.parms.boxId}/content`).then(txt=>{
+              //epibox.msg('... done')
+              qaqc.dataTxt=txt
+              qaqc.tabulateTxt()
+              qaqc.dataAnalysis()
+          })
+        },1000)
+        //document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
+      },2000)
+    }
+
 
 
     //debugger

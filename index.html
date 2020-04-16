@@ -21,30 +21,10 @@
         <h3>Script list</h3>
         <ol id="scriptList">
         <li><input type="radio" name="run" class="runScript" checked> none</li>
-        <li><input type="radio" name="run" class="runScript"> jonas.js - Jonas' QAQC experiments</li>
+        <li><input type="radio" name="run" class="runScript"> parmType.js - inferring type of each parameter</li>
         <li><input type="radio" name="run" class="runScript"> lorena.js - QAQC</li>
         <li><input type="radio" name="run" class="runScript"> lorena2.js - Summary statistics</li>
-        <script>
-            document.querySelectorAll('.runScript').forEach(el=>{
-                el.value=el.parentElement.textContent.match(/^\s*\S+\s*/g)[0].replace(/\s/g,'')
-                el.parentElement.style.cursor="pointer"
-                el.parentElement.onclick=ev=>{
-                    el.checked=true
-                    if(el.value!='none'){
-                        let s=document.createElement('script')
-                        s.src=el.parentElement.parentElement.scriptSrc=el.value
-                        //s.onload=qaqc.dataAnalysis
-                        document.head.appendChild(s)
-                        if(document.getElementById('qaqcReport')){
-                            document.getElementById('qaqcReport').innerHTML='<p style="color:red">... if this takes too long please <a href="https://github.com/episphere/qaqc/issues" target="_blank">create an issue</a>.</p>'
-                        }
-                        setTimeout(qaqc.dataAnalysis,1000)
-                    }else{
-
-                    }
-                }
-            })
-        </script>
+        <li><input type="radio" name="run" class="runScript"> upset.js - simplified upset plot</li>
         <li>...</li>
         </ol>
         <hr>
@@ -54,5 +34,26 @@
         <h3>Privacy</h3>
         <p class="info"> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures, particulalry data wrangling, can migrate to where the data is without exposing the source data. </p>
     </div>
+    <script>
+        document.querySelectorAll('.runScript').forEach(el=>{
+            el.value=el.parentElement.textContent.match(/^\s*\S+\s*/g)[0].replace(/\s/g,'')
+            el.parentElement.style.cursor="pointer"
+            el.parentElement.onclick=ev=>{
+                el.checked=true
+                if(el.value!='none'){
+                    let s=document.createElement('script')
+                    s.src=el.parentElement.parentElement.scriptSrc=el.value
+                    //s.onload=qaqc.dataAnalysis
+                    document.head.appendChild(s)
+                    if(document.getElementById('qaqcReport')){
+                        document.getElementById('qaqcReport').innerHTML='<p style="color:red">... if this takes too long please <a href="https://github.com/episphere/qaqc/issues" target="_blank">create an issue</a>.</p>'
+                    }
+                    setTimeout(qaqc.dataAnalysis,1000)
+                }else{
+
+                }
+            }
+        })
+    </script>
 </body>
 </html>

@@ -8,8 +8,8 @@ runQAQC = function (data) {
 
   //check which variables have not been uploaded
   //https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-  const datArray = qaqc.data
-  const dat = qaqc.dataArray
+  const data1 = qaqc.data
+  const data2 = qaqc.dataArray
   let upCol = []   //columns uploaded
   const allCol = ["UniqueID", "PersonID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchid", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
 
@@ -39,16 +39,41 @@ runQAQC = function (data) {
     var failed_str = ""
   }
 
-  //https://zellwk.com/blog/looping-through-js-objects/ looping through object
-let status1 = ["control", "invasive case", "in-situ case", "case unknown invasiveness", "excluded sample" ]
-let status2 = [0,1,2,3,9]
+//https://zellwk.com/blog/looping-through-js-objects/ looping through object
 
-datArray["status"].forEach(function statusCheck(variable, index){
-  for (i in status2){
-  if (variable != i){
-  console.log("error")} //check status column
+////////for age use this function
+//https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions
+function isNumberBetween(value, min, max) {
+  return value >= min && value <= max
+}
+function isValueOneOf(value, validValues) {
+  for(validIdx=0; validIdx < validValues.length; validIdx++) {
+    if (validValues[validIdx] === value) {
+      return true;
+    }
   }
-})
-  h += qaqc.saveFile(JSON.stringify(qaqc.data))
+  return false;
+}
+//ad for i in data.status
+let badCount=[];   
+let f1=""
+let validStatus = [0,1,2,3,9]
+for (i=0; i< data1.status.length;i++){ 
+  if (isValueOneOf(data1.status[i], validStatus)){ 
+     }else{
+     badCount.push(data1.status[i])
+     }
+    }
+let setBadCount= new Set()
+setBadCount.add(badCount)
+let arrBadCount=Array.from(setBadCount)
+
+if (arrBadCount.length > 0){
+h +=`<p style="color:blue;font-weight:bold;font-size: 20px">Invalid status value(s) found: ${arrBadCount}</p>`
+}else if (arrBadCount.length==0){
+h +=`<p style="color:blue;font-weight:bold;font-size: 20px">Valid status value(s) found</p>`
+  }
+
+  h += qaqc.saveFile(JSON.stringify(data1))
   return h
 }

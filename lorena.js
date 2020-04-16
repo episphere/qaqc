@@ -10,14 +10,14 @@ runQAQC = function (data) {
   //https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
   const data1 = qaqc.data
   const data2 = qaqc.dataArray
-  let upCol = []   //columns uploaded
+  let upCol = [] //columns uploaded
   const allCol = ["UniqueID", "PersonID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchid", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
 
   for (var [key, value] of Object.entries(qaqc.data)) {
     upCol.push(key)
   }
- 
-  // check if column names match the data dictionary--------------------------------------------------------------------------
+
+  // check if column names match the data dictionary
   let acceptedCol = upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
 
   function difference(a1, a2) {
@@ -39,40 +39,52 @@ runQAQC = function (data) {
     var failed_str = ""
   }
 
-//https://zellwk.com/blog/looping-through-js-objects/ looping through object
+  //https://zellwk.com/blog/looping-through-js-objects/ looping through object
 
-////////for age use this function
-//https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions
-function isNumberBetween(value, min, max) {
-  return value >= min && value <= max
-}
-function isValueOneOf(value, validValues) {
-  for(validIdx=0; validIdx < validValues.length; validIdx++) {
-    if (validValues[validIdx] === value) {
-      return true;
-    }
+  ////////for age use this function
+  //https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions
+  function isNumberBetween(value, min, max) {
+    return value >= min && value <= max
   }
-  return false;
-}
-//ad for i in data.status
-let badCount=[];   
-let f1=""
-let validStatus = [0,1,2,3,9]
-for (i=0; i< data1.status.length;i++){ 
-  if (isValueOneOf(data1.status[i], validStatus)){ 
-     }else{
-     badCount.push(data1.status[i])
-     }
-    }
-let setBadCount= new Set()
-setBadCount.add(badCount)
-let arrBadCount=Array.from(setBadCount)
 
-if (arrBadCount.length > 0){
-h +=`<p style="color:blue;font-weight:bold;font-size: 20px">Invalid status value(s) found: ${arrBadCount}</p>`
-}else if (arrBadCount.length==0){
-h +=`<p style="color:blue;font-weight:bold;font-size: 20px">Valid status value(s) found</p>`
+  function isValueOneOf(value, validValues) {
+    for (validIdx = 0; validIdx < validValues.length; validIdx++) {
+      if (validValues[validIdx] === value) {
+        return true;
+      }
+    }
+    return false;
   }
+//use is Val and isNum functions in checkCol function below
+
+function checkColumns(validValuesList, variable){
+  badCount=[]
+  Object.keys(data1).forEach(k => {
+    if (k == variable) {
+     
+      for (i = 0; i < data1[k].length; i++) {
+        if (isValueOneOf(data1[k][i], validValuesList)) {} else {
+          badCount.push(data1[k][i])
+        }
+      }
+    }
+  })
+  console.log(badCount)
+  len_bad= badCount.length
+
+
+  let badSetStatus = new Set(badCount)
+  //badSetStatus.add(badCount)
+  let arrBadCount = Array.from(badSetStatus)
+  if (arrBadCount.length > 0) {
+    h += `<p style="color:blue;font-weight:bold;font-size: 20px">${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
+  } else if (arrBadCount.length == 0) {
+    h += `<p style="color:blue;font-weight:bold;font-size: 20px">All Valid ${variable} value(s) found</p>`
+  }
+}
+//check each column for invalid values
+checkColumns( validStatusValues=[0,1,2,3,9],variable="status" )
+checkColumns( validStatusValues=[undefined,0,1,888],variable="ER_statusIndex" )
 
   h += qaqc.saveFile(JSON.stringify(data1))
   return h

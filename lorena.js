@@ -39,8 +39,6 @@ runQAQC = function (data) {
     var failed_str = ""
   }
 
-  //https://zellwk.com/blog/looping-through-js-objects/ looping through object
-
   ////////for age use this function
   //https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions
   function isNumberBetween(value, min, max) {
@@ -55,7 +53,8 @@ runQAQC = function (data) {
     }
     return false;
   }
-//use is Val and isNum functions in checkCol function below
+
+//use is Val and isNum function from above in checkCol function 
 
 function checkColumns(validValuesList, variable){
   badCount=[]
@@ -72,19 +71,27 @@ function checkColumns(validValuesList, variable){
   console.log(badCount)
   len_bad= badCount.length
 
-
   let badSetStatus = new Set(badCount)
-  //badSetStatus.add(badCount)
   let arrBadCount = Array.from(badSetStatus)
+
   if (arrBadCount.length > 0) {
     h += `<p style="color:blue;font-weight:bold;font-size: 20px">${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
   } else if (arrBadCount.length == 0) {
     h += `<p style="color:blue;font-weight:bold;font-size: 20px">All Valid ${variable} value(s) found</p>`
   }
 }
-//check each column for invalid values
-checkColumns( validStatusValues=[0,1,2,3,9],variable="status" )
-checkColumns( validStatusValues=[undefined,0,1,888],variable="ER_statusIndex" )
+//check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
+checkColumns( validValuesList=[0,1,2,3,9],variable="status" )
+checkColumns( validValuesList=[undefined,0,1,888],variable="ER_statusIndex" )
+checkColumns( validValuesList=[1,2,3,4,5,6,777,888],variable="contrType" )
+checkColumns( validValuesList=[777,888],variable="matchid" )
+checkColumns( validValuesList=[777,888],variable="subStudy" )
+checkColumns( validValuesList=[0,1,2,777,888],variable="studyType" )
+checkColumns( validValuesList=[1,3,4,5,6,7,8,888],variable="exclusion" )
+checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="ethnicityClass" )
+checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="raceM" )
+checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="raceF" )
+checkColumns( validValuesList=[0,1,888],variable="famHist" )
 
   h += qaqc.saveFile(JSON.stringify(data1))
   return h

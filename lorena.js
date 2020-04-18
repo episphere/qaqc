@@ -3,7 +3,7 @@ console.log(`lorena.js ran at ${Date()}`)
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 
-  let h = `<p style= "color:red; font-weight:bold">File uploaded: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
+  let h = `<p style= "color:red; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
   h += `<p></p>`
 
   //check which variables have not been uploaded
@@ -29,8 +29,8 @@ runQAQC = function (data) {
 
   let failedUpCol = difference(upCol, acceptedCol)
   if (failedUpCol.length > 0) {
-    alert("Failed to upload! Please see error report for details.")
-    var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check that spelling or remove excess columns"
+    alert("Invalid columns found! Please see error report for details.")
+    var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
     h += `<p style= "color:red;font-size: 20px">ERROR: ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
     h += `<ul style= "color:red;font-size: 10px">Variable options: ${allCol.join(", ")}</ul>`
@@ -68,17 +68,19 @@ function checkColumns(validValuesList, variable){
       }
     }
   })
-  console.log(badCount)
   len_bad= badCount.length
 
   let badSetStatus = new Set(badCount)
   let arrBadCount = Array.from(badSetStatus)
 
+  alertRow=[]
   if (arrBadCount.length > 0) {
+    alertRow.push(1);
     h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
   } else if (arrBadCount.length == 0) {
     h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
   }
+ console.log(alertRow) 
 }
 //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
 checkColumns( validValuesList=[0,1,2,3,9],variable="status" )

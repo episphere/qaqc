@@ -33,7 +33,7 @@ runQAQC = function (data) {
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
     h += `<p style= "color:red;font-size: 20px">ERROR: ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
-    h += `<ul style= "color:red;font-size: 10px">Variable options: ${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:red;font-size: 10px">Please choose from the folllowing variable options: ${allCol.join(", ")}</ul>`
 
   } else {
     var failed_str = ""
@@ -76,12 +76,12 @@ function checkColumns(validValuesList, variable){
   alertRow=[]
   if (arrBadCount.length > 0) {
     alertRow.push(1);
-    h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
-  } else if (arrBadCount.length == 0) {
-    h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
+    h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) ${arrBadCount} found.</p>`
+  // } else if (arrBadCount.length == 0) {
+  //   h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
   }
- console.log(alertRow) 
-}
+//  console.log(alertRow) 
+ }
 //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
 checkColumns( validValuesList=[0,1,2,3,9],variable="status" )
 checkColumns( validValuesList=[undefined,0,1,888],variable="ER_statusIndex" )
@@ -89,7 +89,7 @@ checkColumns( validValuesList=[1,2,3,4,5,6,777,888],variable="contrType" )
 checkColumns( validValuesList=[777,888],variable="matchid" )
 checkColumns( validValuesList=[777,888],variable="subStudy" )
 checkColumns( validValuesList=[0,1,2,777,888],variable="studyType" )
-checkColumns( validValuesList=[1,3,4,5,6,7,8,888],variable="exclusion" )
+checkColumns( validValuesList=[0,1,3,4,5,6,7,8,888],variable="exclusion" )
 checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="ethnicityClass" )
 checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="raceM" )
 checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="raceF" )

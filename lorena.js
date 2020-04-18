@@ -3,7 +3,7 @@ console.log(`lorena.js ran at ${Date()}`)
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 
-  let h = `<p style= "color:red; font-weight:bold">Successfully uploaded: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
+  let h = `<p style= "color:red; font-weight:bold">File uploaded: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
   h += `<p></p>`
 
   //check which variables have not been uploaded
@@ -30,8 +30,8 @@ runQAQC = function (data) {
   let failedUpCol = difference(upCol, acceptedCol)
   if (failedUpCol.length > 0) {
     alert("Failed to upload! Please see error report for details.")
-    var failed_str = " The following " + failedUpCol.length + " column(s) rejected:"
-    h += `<p style= "color:red">ERROR: ${failed_str}</p>` //${upCol.join(", ")}
+    var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check that spelling or remove excess columns"
+    h += `<p style= "color:red;font-size: 20px">ERROR: ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
     h += `<ul style= "color:red;font-size: 10px">Variable options: ${allCol.join(", ")}</ul>`
 
@@ -75,9 +75,9 @@ function checkColumns(validValuesList, variable){
   let arrBadCount = Array.from(badSetStatus)
 
   if (arrBadCount.length > 0) {
-    h += `<p style="color:blue;font-weight:bold;font-size: 20px">${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
+    h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
   } else if (arrBadCount.length == 0) {
-    h += `<p style="color:blue;font-weight:bold;font-size: 20px">All Valid ${variable} value(s) found</p>`
+    h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
   }
 }
 //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )

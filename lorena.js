@@ -29,7 +29,7 @@ runQAQC = function (data) {
 
   let failedUpCol = difference(upCol, acceptedCol)
   if (failedUpCol.length > 0) {
-    alert("Invalid columns found! Please see error report for details.")
+    alert("Invalid column name values found!")
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
     h += `<p style= "color:red;font-size: 20px">ERROR: ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
@@ -54,47 +54,65 @@ runQAQC = function (data) {
     return false;
   }
 
-//use is Val and isNum function from above in checkCol function 
+  //use is Val and isNum function from above in checkCol function 
 
-function checkColumns(validValuesList, variable){
-  badCount=[]
-  Object.keys(data1).forEach(k => {
-    if (k == variable) {
-     
-      for (i = 0; i < data1[k].length; i++) {
-        if (isValueOneOf(data1[k][i], validValuesList)) {} else {
-          badCount.push(data1[k][i])
+  function checkColumns(validValuesList, variable) {
+    badCount = []
+    Object.keys(data1).forEach(k => {
+      if (k == variable) {
+
+        for (i = 0; i < data1[k].length; i++) {
+          if (isValueOneOf(data1[k][i], validValuesList)) {} else {
+            badCount.push(data1[k][i])
+          }
         }
       }
+    })
+    len_bad = badCount.length
+
+    let badSetStatus = new Set(badCount)
+    let arrBadCount = Array.from(badSetStatus)
+
+    alertRow = []
+    if (arrBadCount.length > 0) {
+      //alertRow.push(1);
+      return h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) ${arrBadCount} found.</p>`
+      //return true
+    } else {
+      return false
+      //   h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
     }
-  })
-  len_bad= badCount.length
-
-  let badSetStatus = new Set(badCount)
-  let arrBadCount = Array.from(badSetStatus)
-
-  alertRow=[]
-  if (arrBadCount.length > 0) {
-    alertRow.push(1);
-    h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) ${arrBadCount} found.</p>`
-  // } else if (arrBadCount.length == 0) {
-  //   h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
+    //  console.log(alertRow) 
   }
-//  console.log(alertRow) 
- }
-//check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
-checkColumns( validValuesList=[0,1,2,3,9],variable="status" )
-checkColumns( validValuesList=[undefined,0,1,888],variable="ER_statusIndex" )
-checkColumns( validValuesList=[1,2,3,4,5,6,777,888],variable="contrType" )
-checkColumns( validValuesList=[777,888],variable="matchid" )
-checkColumns( validValuesList=[777,888],variable="subStudy" )
-checkColumns( validValuesList=[0,1,2,777,888],variable="studyType" )
-checkColumns( validValuesList=[0,1,3,4,5,6,7,8,888],variable="exclusion" )
-checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="ethnicityClass" )
-checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="raceM" )
-checkColumns( validValuesList=[1,2,3,4,5,6,888],variable="raceF" )
-checkColumns( validValuesList=[0,1,888],variable="famHist" )
+  //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
+  let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
+  let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
+  let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
+  let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
+  let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
+  let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888], variable = "studyType")
+  let exclusionCheckColumns = checkColumns(validValuesList = [0, 1, 3, 4, 5, 6, 7, 8, 888], variable = "exclusion")
+  let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "ethnicityClass")
+  let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceM")
+  let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
+  let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888], variable = "famHist")
+  
+  const checkColumnsList = [statusCheckColumns, erCheckColumns,contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 
+                  exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns, famHistCheckColumns]
+  console.log(checkColumnsList)
+  
+  for (i=0;i < checkColumnsList.length; i++) {
+    console.log(checkColumnsList[i])
 
+    if (checkColumnsList[i] != false) {
+      alert("Invalid row values found!")
+      checkColumnsList[i] = false
+      break
+    }
+  }
+//use number function
+  //fix later
+  alert("Please see error report for details.")
   h += qaqc.saveFile(JSON.stringify(data1))
   return h
 }

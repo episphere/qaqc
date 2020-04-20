@@ -29,9 +29,9 @@ runQAQC = function (data) {
 
   let failedUpCol = difference(upCol, acceptedCol)
   if (failedUpCol.length > 0) {
-    alert("Invalid column name values found!")
+    alert("Invalid column name(s) found!")
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
-    h += `<p style= "color:red;font-size: 20px">ERROR: ${failed_str}</p>` //${upCol.join(", ")}
+    h += `<p style= "color:red;font-size: 20px">ERROR. ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
     h += `<ul style= "color:red;font-size: 10px">Please choose from the folllowing variable options: ${allCol.join(", ")}</ul>`
 
@@ -39,8 +39,8 @@ runQAQC = function (data) {
     var failed_str = ""
   }
 
-  ////////for age use this function
-  //https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions
+////////for age use this function
+//https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions
   function isNumberBetween(value, min, max) {
     return value >= min && value <= max
   }
@@ -54,8 +54,31 @@ runQAQC = function (data) {
     return false;
   }
 
-  //use is Val and isNum function from above in checkCol function 
+//use isNum function from above in checkCol function 
+function checkColumnsNum(numList,min, max) {
+  badCount = []
+  Object.keys(data1).forEach(k => {
+    if (k == numList) {
 
+      for (i = 0; i < data1[k].length; i++) {
+        if (isNumberBetween(data1[k][i],min, max)) {} else {
+          badCount.push(data1[k][i])
+        }
+      }
+    }
+  })
+  let len_bad = badCount.length
+  let badSetStatus = new Set(badCount)
+  let arrBadCount = Array.from(badSetStatus)
+  if (arrBadCount.length > 0) {
+    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid ageInt value(s) found: ${arrBadCount}</p>`
+  } else {
+    return false
+  }
+}
+
+
+//use is Val and function from above in checkCol function 
   function checkColumns(validValuesList, variable) {
     badCount = []
     Object.keys(data1).forEach(k => {
@@ -68,22 +91,16 @@ runQAQC = function (data) {
         }
       }
     })
-    len_bad = badCount.length
-
+    let len_bad = badCount.length
     let badSetStatus = new Set(badCount)
     let arrBadCount = Array.from(badSetStatus)
-
-    alertRow = []
     if (arrBadCount.length > 0) {
-      //alertRow.push(1);
-      return h += `<p style="color:red;font-size: 20px">ERROR: ${len_bad} invalid ${variable} value(s) ${arrBadCount} found.</p>`
-      //return true
+      return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
     } else {
       return false
-      //   h += `<p style="color:blue;font-size: 20px">Valid ${variable} value(s) found</p>`
     }
-    //  console.log(alertRow) 
   }
+
   //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
   let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
   let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
@@ -96,9 +113,12 @@ runQAQC = function (data) {
   let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceM")
   let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
   let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888], variable = "famHist")
-  
+  let ageCheckColumnsNum=checkColumnsNum(numList="ageInt",min=12, max=100)
+console.log("ageInt", ageCheckColumnsNum)
+
   const checkColumnsList = [statusCheckColumns, erCheckColumns,contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 
-                  exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns, famHistCheckColumns]
+                  exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns, famHistCheckColumns,
+                  ageCheckColumnsNum]
   console.log(checkColumnsList)
   
   for (i=0;i < checkColumnsList.length; i++) {

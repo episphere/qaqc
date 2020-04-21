@@ -6,25 +6,19 @@ runQAQC=function(data){
     h+='<p style="color:blue">Studies: <span style="color:brown">'
     upset.getStudies()
     upset.data.studies.forEach(s=>{
-        h+=`<input type='checkbox' id="${s}_check">${s.slice(6)} `
+        h+=`<input type='checkbox' id="${s}_check" onchange="upset.count()">${s.slice(6)}; `
     })
     h+='</span></p>'
     // table
-    h+='<div>'
     h+='<p style="color:blue">Constraints: <span style="color:green">'
     upset.data.parms.forEach(s=>{
-        h+=`<input type='checkbox' id="${s}_parm">${s} `
+        h+=`<input type='checkbox' id="${s}_parm" onchange="upset.count()">${s}; `
     })
     h+='</span></p>'
+    h+='<hr>'
+    h+='<div id="upsetCountDiv">'
     h+='</div>'
 
-    //Object.keys(qaqc.data).forEach(k=>{
-    //    h+=`<li style="color:blue">${k} (${qaqc.data[k].length} x ${typeof(qaqc.data[k][0])=='string' ? 'string' : 'number'})</li>`
-    //})
-    //h+='</p>'
-    //h+=qaqc.saveFile(JSON.stringify(qaqc.data))
-    //debugger
-    // ...
     return h
 }
 
@@ -44,4 +38,11 @@ upset.getStudies=_=>{
         }
     })
     return upset.data.studies
+}
+
+upset.count=(data=qaqc.data,div='upsetCountDiv')=>{
+    if(typeof(div)=='string'){
+        div=document.getElementById(div)
+    }
+    div.innerHTML=Date()
 }

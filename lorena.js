@@ -32,9 +32,8 @@ runQAQC = function (data) {
     alert("Invalid column name(s) found!")
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
     h += `<p style= "color:red;font-size: 20px">ERROR. ${failed_str}</p>` //${upCol.join(", ")}
-    h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
-    h += `<ul style= "color:red;font-size: 15px">Please choose from the folllowing variable options: ${allCol.join(", ")}</ul>`
-
+    h += `<ul style= "color:red;font-size: 20px"> ${failedUpCol.join(", ")}</ul>`
+    h += `<ul style= "color:red;font-size: 15px">Please choose from the following variable options: <br>${allCol.join(", ")}</ul>`
   } else {
     var failed_str = ""
   }
@@ -79,7 +78,7 @@ function checkColumnsEmpty(variable) {
   let badSetStatus = new Set(badCount)
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
-    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid empty value(s) found in ${variable} column.</p>`
+    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid value(s) found in ${variable} column: blank</p>`
   } else {
     return false
   }
@@ -117,9 +116,10 @@ function checkColumnsNum(variable,min, max) {
       if (k == variable) {
 
         for (i = 0; i < data1[k].length; i++) {
-          if (isValueOneOf(data1[k][i], validValuesList)) {} else {
-            badCount.push(data1[k][i])
-          }
+        if ((!(isValueOneOf(data1[k][i], validValuesList)))  && isEmpty(data1[k][i])) {badCount.push("blank")} 
+          else if(isValueOneOf(data1[k][i], validValuesList)) {}
+            else {badCount.push(data1[k][i])
+          } 
         }
       }
     })
@@ -159,37 +159,25 @@ function checkColumnsNum(variable,min, max) {
   // }
   //let test = checkColumns2(validValuesList = [0,1], variable = "status")
 
-    //check 2 values from 2 columns 
-    function checkColumns2(variable1,variable2) {
-    let var1= []
-    let var2= []
-    Object.keys(data1).forEach(k => {
-         if (k == variable1) {
-           data1[k].forEach((row, idx)=>{
-             var1.push(row)
-           })
-          } else if(k == variable2) {
-            data1[k].forEach((row, idx)=>{
-              var2.push(row)
-            })             
-          }
-        })
-   
-      return h += `<p style="color:red;font-size: 20px">ERROR.${var1}</p>`
-     }
-    //let test2= checkColumns2("status", "contrType")
-
   //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
-  //QC_03_01 end
+  //QC_03_01 start
   let studyCheckColumns = checkColumnsEmpty(variable = "study")
   //QC_03_01 end
-
+  //QC_04_01 start
+  let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
+  //(1)
+  data1["status"].forEach((k1,idx1) => {
+    if (k1== 0 && data1["contrType"][idx1]==777 ){
+      h += `<ul style="color:red;font-size: 15px">Row ${idx1}: If contrType = 777, then status should NOT be 0.</ul>`
+    } 
+  })
+  //QC_04_01 end
   //QC_05_01 start
   let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
   if (statusCheckColumns != false){h += `<ul style="color:red;font-size: 15px"> Values 777, 888 or blank are not allowed in the status column.</ul>`}
   //QC_05_01 end
   let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
-  let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
+  
   let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
   let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888], variable = "studyType")

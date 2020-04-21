@@ -46,7 +46,7 @@ qaqc.load=el=>{
             <button onclick="epibox.refreshToken()">Refresh</button>
             <button onclick="(async function(){await epibox.getUser();epibox.msg(JSON.stringify(epibox.oauth.user,null,3))})()">User</button>
             <button onclick="epibox.logout()">Logout</button>
-            file id: <input id="boxInput">`
+            file id: <input id="boxInput" style="color:green">`
             setTimeout(async _=>{
                 let ip=document.getElementById('boxInput')
                 ip.focus()
@@ -149,7 +149,7 @@ qaqc.saveFile=(txt,fileName)=>{
         //let h=`filename:<input>
         //      <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Object</button>
         //      <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
-        let h=`filename:<input>
+        let h=`filename:<input value="file${Date.now().toString().slice(3)}.json">
               <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.data))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Object</button>
               <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
         return h
@@ -233,6 +233,27 @@ qaqc.getParms=function(){
             document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
         },100)
     }
+    if(qaqc.parms.boxid){
+      setTimeout(_=>{
+        loadBox.click()
+        setTimeout(_=>{
+          boxInput.value=''
+          qaqc.parms.boxid.split('').forEach((_,i)=>{
+            setTimeout(_=>{
+              boxInput.value+=qaqc.parms.boxid[i]
+            },i*100)
+          })
+          epibox.getText(`https://api.box.com/2.0/files/${qaqc.parms.boxid}/content`).then(txt=>{
+              //epibox.msg('... done')
+              qaqc.dataTxt=txt
+              qaqc.tabulateTxt()
+              qaqc.dataAnalysis()
+          })
+        },1000)
+        //document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
+      },2000)
+    }
+
 
 
     //debugger

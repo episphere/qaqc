@@ -79,7 +79,7 @@ function checkColumnsEmpty(variable) {
   let badSetStatus = new Set(badCount)
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
-    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid ${variable} empty value(s) found.</p>`
+    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid empty value(s) found in ${variable} column.</p>`
   } else {
     return false
   }
@@ -87,10 +87,10 @@ function checkColumnsEmpty(variable) {
 
 
 //use isNum function from above in checkCol function 
-function checkColumnsNum(numList,min, max) {
+function checkColumnsNum(variable,min, max) {
   badCount = []
   Object.keys(data1).forEach(k => {
-    if (k == numList) {
+    if (k == variable) {
 
       for (i = 0; i < data1[k].length; i++) {
         if (isNumberBetween(data1[k][i],min, max)) {} else {
@@ -103,7 +103,7 @@ function checkColumnsNum(numList,min, max) {
   let badSetStatus = new Set(badCount)
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
-    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid ageInt value(s) found: ${arrBadCount}</p>`
+    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid value(s) found in ageInt column: ${arrBadCount}</p>`
   } else {
     return false
   }
@@ -127,14 +127,59 @@ function checkColumnsNum(numList,min, max) {
     let badSetStatus = new Set(badCount)
     let arrBadCount = Array.from(badSetStatus)
     if (arrBadCount.length > 0) {
-      return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid ${variable} value(s) found: ${arrBadCount}</p>`
+      return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid value(s) found in ${variable} column: ${arrBadCount}</p>`
     } else {
       return false
     }
   }
 
+  // //use is Val and function from above in checkCol function 
+  // function checkColumns2(validValuesList, variable) {
+  //   badCount1 = []
+  //   badPosition1 = []
+  //   Object.keys(data1).forEach(k => {
+  //     if (k == variable) {
+  //       data1[k].forEach((row, idx)=>{
+  //       //for (i = 0; i < data1[k].length; i++) {
+  //         if (isValueOneOf(row, validValuesList)) {} else {
+  //           badCount1.push(row)
+  //           badPosition1.push(idx)
+  //         }
+  //       })
+  //     }
+  //   })
+  //   let len_bad1 = badCount1.length
+  //   let badSet1 = Array.from(new Set(badCount1))
+  //   if (badSet1.length > 0) {
+  //     return h += `<p style="color:red;font-size: 20px">TEST.ERROR. ${len_bad1} invalid value(s) found in ${variable} column.</p>
+  //     <ul style="color:red;font-size: 15px">Invalid values: ${badCount1} Corresponding positions ${badPosition1}</ul>`
+  //   } else {
+  //     return false
+  //   }
+  // }
+  //let test = checkColumns2(validValuesList = [0,1], variable = "status")
+
+    //check 2 values from 2 columns 
+    function checkColumns2(variable1,variable2) {
+    let var1= []
+    let var2= []
+    Object.keys(data1).forEach(k => {
+         if (k == variable1) {
+           data1[k].forEach((row, idx)=>{
+             var1.push(row)
+           })
+          } else if(k == variable2) {
+            data1[k].forEach((row, idx)=>{
+              var2.push(row)
+            })             
+          }
+        })
+   
+      return h += `<p style="color:red;font-size: 20px">ERROR.${var1}</p>`
+     }
+    //let test2= checkColumns2("status", "contrType")
+
   //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
-  
   //QC_03_01 end
   let studyCheckColumns = checkColumnsEmpty(variable = "study")
   //QC_03_01 end
@@ -153,7 +198,7 @@ function checkColumnsNum(numList,min, max) {
   let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceM")
   let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
   let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888], variable = "famHist")
-  let ageCheckColumnsNum=checkColumnsNum(numList="ageInt",min=12, max=100)
+  let ageCheckColumnsNum=checkColumnsNum(variable="ageInt",min=12, max=100)
 console.log("ageInt", ageCheckColumnsNum)
 
   const checkColumnsList = [studyCheckColumns,statusCheckColumns, erCheckColumns,contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 

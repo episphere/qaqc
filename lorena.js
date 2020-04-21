@@ -33,7 +33,7 @@ runQAQC = function (data) {
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
     h += `<p style= "color:red;font-size: 20px">ERROR. ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:red"> ${failedUpCol.join(", ")}</ul>`
-    h += `<ul style= "color:red;font-size: 10px">Please choose from the folllowing variable options: ${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:red;font-size: 15px">Please choose from the folllowing variable options: ${allCol.join(", ")}</ul>`
 
   } else {
     var failed_str = ""
@@ -53,6 +53,38 @@ runQAQC = function (data) {
     }
     return false;
   }
+
+
+//check studycolumns or strings
+//https://stackoverflow.com/questions/154059/how-can-i-check-for-an-empty-undefined-null-string-in-javascript
+  
+  function isEmpty(str) {
+  return (!str || 0 === str.length);
+}
+
+//use isEmpty function from above in checkColumnEmpty function 
+function checkColumnsEmpty(variable) {
+  badCount = []
+  Object.keys(data1).forEach(k => {
+    if (k == variable) {
+
+      for (i = 0; i < data1[k].length; i++) {
+        if (isEmpty(data1[k][i])) {
+          badCount.push(data1[k][i])
+        } else { }
+      }
+    }
+  })
+  let len_bad = badCount.length
+  let badSetStatus = new Set(badCount)
+  let arrBadCount = Array.from(badSetStatus)
+  if (arrBadCount.length > 0) {
+    return h += `<p style="color:red;font-size: 20px">ERROR. ${len_bad} invalid ${variable} empty value(s) found.</p>`
+  } else {
+    return false
+  }
+}
+
 
 //use isNum function from above in checkCol function 
 function checkColumnsNum(numList,min, max) {
@@ -102,7 +134,15 @@ function checkColumnsNum(numList,min, max) {
   }
 
   //check each column for invalid values (not including continuos variables(age,year,etc) and ethOt, studyTypeOt )
+  
+  //QC_03_01 end
+  let studyCheckColumns = checkColumnsEmpty(variable = "study")
+  //QC_03_01 end
+
+  //QC_05_01 start
   let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
+  if (statusCheckColumns != false){h += `<ul style="color:red;font-size: 15px"> Values 777, 888 or blank are not allowed in the status column.</ul>`}
+  //QC_05_01 end
   let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
   let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
   let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
@@ -116,7 +156,7 @@ function checkColumnsNum(numList,min, max) {
   let ageCheckColumnsNum=checkColumnsNum(numList="ageInt",min=12, max=100)
 console.log("ageInt", ageCheckColumnsNum)
 
-  const checkColumnsList = [statusCheckColumns, erCheckColumns,contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 
+  const checkColumnsList = [studyCheckColumns,statusCheckColumns, erCheckColumns,contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 
                   exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns, famHistCheckColumns,
                   ageCheckColumnsNum]
   console.log(checkColumnsList)
@@ -125,7 +165,7 @@ console.log("ageInt", ageCheckColumnsNum)
     console.log(checkColumnsList[i])
 
     if (checkColumnsList[i] != false) {
-      alert("Invalid row values found!")
+      alert("Invalid row value(s) found!")
       checkColumnsList[i] = false
       break
     }

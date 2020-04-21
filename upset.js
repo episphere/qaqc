@@ -6,7 +6,7 @@ runQAQC=function(data){
     h+='<p style="color:blue">Studies: <span style="color:brown">'
     upset.getStudies()
     upset.data.studies.forEach(s=>{
-        h+=`<input type='checkbox' id="${s}_check" onchange="upset.count()">${s.slice(6)}; `
+        h+=`<input type='checkbox' id="${s}_check" onchange="upset.count()" checked=true>${s.slice(6)}; `
     })
     h+='</span></p>'
     // table
@@ -18,7 +18,7 @@ runQAQC=function(data){
     h+='<hr>'
     h+='<div id="upsetCountDiv">'
     h+='</div>'
-
+    setTimeout(upset.count,1000)
     return h
 }
 
@@ -40,9 +40,22 @@ upset.getStudies=_=>{
     return upset.data.studies
 }
 
-upset.count=(data=qaqc.data,div='upsetCountDiv')=>{
+upset.count=function(data=qaqc.data,div='upsetCountDiv'){
     if(typeof(div)=='string'){
         div=document.getElementById(div)
     }
-    div.innerHTML=Date()
+    // count studies
+    let n=qaqc.data[upset.data.studies[0]].length
+    upset.data.studiesArray=[...Array(n)].map((_,i)=>0)
+    upset.data.studies.forEach(s=>{
+        let ip = document.getElementById(s+'_check')
+        if(ip.checked){
+            upset.data.studiesArray=upset.data.studiesArray.map((x,i)=>{
+                return x||data[s][i]
+            })
+        }
+        //debugger
+    })
+    let h = `# individuals in studies selected: ${upset.data.studiesArray.reduce((a,b)=>a+b)}`
+    div.innerHTML=h
 }

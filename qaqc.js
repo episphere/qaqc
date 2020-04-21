@@ -233,17 +233,17 @@ qaqc.getParms=function(){
             document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
         },100)
     }
-    if(qaqc.parms.boxId){
+    if(qaqc.parms.boxid){
       setTimeout(_=>{
         loadBox.click()
         setTimeout(_=>{
           boxInput.value=''
-          qaqc.parms.boxId.split('').forEach((_,i)=>{
+          qaqc.parms.boxid.split('').forEach((_,i)=>{
             setTimeout(_=>{
-              boxInput.value+=qaqc.parms.boxId[i]
+              boxInput.value+=qaqc.parms.boxid[i]
             },i*100)
           })
-          epibox.getText(`https://api.box.com/2.0/files/${qaqc.parms.boxId}/content`).then(txt=>{
+          epibox.getText(`https://api.box.com/2.0/files/${qaqc.parms.boxid}/content`).then(txt=>{
               //epibox.msg('... done')
               qaqc.dataTxt=txt
               qaqc.tabulateTxt()

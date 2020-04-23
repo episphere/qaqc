@@ -46,7 +46,7 @@ qaqc.load=el=>{
             <button onclick="epibox.refreshToken()">Refresh</button>
             <button onclick="(async function(){await epibox.getUser();epibox.msg(JSON.stringify(epibox.oauth.user,null,3))})()">User</button>
             <button onclick="epibox.logout()">Logout</button>
-            file id: <input id="boxInput" style="color:green">`
+            file id: <input id="boxInput" style="color:green">(enter)`
             setTimeout(async _=>{
                 let ip=document.getElementById('boxInput')
                 ip.focus()

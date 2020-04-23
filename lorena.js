@@ -73,8 +73,8 @@ function checkColumnsEmpty(variable) {
     if (k == variable) {
       for (i = 0; i < data1[k].length; i++) {
         if (isEmpty(data1[k][i])==true) {
-          badCount.push("blank")
-          badPosition.push(i+1+"")
+          badCount.push(" blank ")
+          badPosition.push(" "+i+1+"")
 
         } else { }
       }
@@ -99,7 +99,7 @@ function checkColumnsNum(variable,min, max) {
     if (k == variable) {
       for (i = 0; i < data1[k].length; i++) {
         if (isNumberBetween(data1[k][i],min, max)) {} else {
-          badCount.push(data1[k][i])
+           badCount.push(" "+data1[k][i]+" ")
           badPosition.push(" "+i+1+" ")
         }
       }
@@ -123,11 +123,11 @@ function checkColumnsNum(variable,min, max) {
        if (k == variable) {
         for (i = 0; i < data1[k].length; i++) {
         if ((!(isValueOneOf(data1[k][i], validValuesList)))  && isEmpty(data1[k][i])) {
-          badCount.push("blank ")
+          badCount.push(" blank ")
           badPosition.push(" "+i+1+" ")
         } 
           else if(isValueOneOf(data1[k][i], validValuesList)) {}
-            else {badCount.push(data1[k][i]+" ");
+            else {badCount.push(" "+data1[k][i]+" ");
               badPosition.push(" "+i+1+" ");
           } 
         }

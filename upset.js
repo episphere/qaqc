@@ -67,7 +67,7 @@ upset.count=function(data=qaqc.data,div='upsetCountDiv'){
     // ... update count so far
     upset.data.countConstrained=[{total:upset.data.studiesArray.reduce((a,b)=>a+b)}]
 
-    let h = `<p style="color:navy"># individuals in the studies selected: (<span style="color:blue">${upset.data.countConstrained[0].total}</span>)`
+    let h = `<p style="color:navy"><span style="color:maroon"># individuals in the studies selected: (<span style="color:blue">${upset.data.countConstrained[0].total}</span>)</span>`
     console.log(upset.data.selectedParms)
     upset.data.selectedParms.forEach((p,i)=>{
         upset.data.countAll=upset.data.countAll.map((x,i)=>{
@@ -156,7 +156,9 @@ upset.constrainedPlotly=_=>{
                 size:14
             }
         })
-        annotations[0].text=Object.keys(upset.data.countConstrained[0])[0]
+        annotations[0].text='Total'
+        annotations[0].font.color='maroon'
+
     })
     Plotly.newPlot('constrainedPlotly',[trace],{
         height: 500,

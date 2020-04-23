@@ -3,7 +3,7 @@ console.log(`lorena.js ran at ${Date()}`)
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 
-  let h = `<p style= "color:red; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
+  let h = `<p style= "color:darkblue; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
   h += `<p></p>`
 
   //check which variables have not been uploaded
@@ -30,9 +30,9 @@ runQAQC = function (data) {
 
   if (failedUpCol.length > 0) {
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
-    h += `<p style= "color:red;font-size: 20px">ERROR! ${failed_str}</p>` //${upCol.join(", ")}
-    h += `<ul style= "color:red;font-size: 20px"> ${failedUpCol.join(", ")}</ul>`
-    h += `<ul style= "color:red;font-size: 15px">Please choose from the following variable options: <br>${allCol.join(", ")}</ul>`
+    h += `<p style= "color:darkblue;font-size: 20px">ERROR! ${failed_str}</p>` //${upCol.join(", ")}
+    h += `<ul style= "color:darkblue;font-size: 20px"> ${failedUpCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Please choose from the following variable options: <br>${allCol.join(", ")}</ul>`
   } else {
     var failed_str = ""
   }
@@ -77,8 +77,8 @@ function checkColumnsEmpty(variable) {
   let badSetStatus = new Set(badCount)
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
-     return h += `<p style="color:red;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
-     <ul style="color:red;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
+     return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+     <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
     return false
   }
@@ -103,8 +103,8 @@ function checkColumnsNum(variable,min, max) {
   let badSetStatus = new Set(badCount)
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
-    return h += `<p style="color:red;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
-    <ul style="color:red;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`  
+    return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+    <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`  
   } else {
     return false
   }
@@ -130,8 +130,8 @@ function checkColumnsNum(variable,min, max) {
      let len_bad = badCount.length
      let badSet = Array.from(new Set(badCount))
      if (badSet.length > 0) {
-       return h += `<p style="color:red;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
-       <ul style="color:red;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
+       return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+       <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
      } else {
        return false
      }
@@ -140,12 +140,18 @@ function checkColumnsNum(variable,min, max) {
 //////////////check each column for invalid values 
   //QC_03_01 check study for empty rows
   let studyCheckColumns = checkColumnsEmpty("study")
+  if (data1.study != undefined){ 
+  if (studyCheckColumns != false){
+    h += `<ul style="color:darkblue;font-size: 15px"> 
+    <br>Blank values are not allowed in this variable.</ul>`
+  }
+}
   //QC_04_01 start
   let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
   //(04_valid_values)
  if (data1.contrType != undefined){ 
   if (contrTypeCheckColumns != false){
-     h += `<ul style="color:red;font-size: 15px"> 
+     h += `<ul style="color:darkblue;font-size: 15px"> 
      Valid values include
      1=population-based, 2=hospital-based, 3=family-based, 4=blood donor, 
      5 =nested case-control, 6=BRCA1/2 carrier without bc, 
@@ -157,7 +163,7 @@ function checkColumnsNum(variable,min, max) {
   if (data1.status != undefined){
   data1["status"].forEach((status,idx) => {
     if (status== 0 && data1["contrType"][idx]==777 ){
-      h += `<ul style="color:red;font-size: 15px">QC_04_01 check row ${idx} : If contrType = 777, then status should NOT be 0.</ul>`
+      h += `<ul style="color:darkblue;font-size: 15px">QC_04_01 check row ${idx} : If contrType = 777, then status should NOT be 0.</ul>`
     } 
   })
 }
@@ -169,7 +175,7 @@ function checkColumnsNum(variable,min, max) {
       if ((contrType != 777 && contrType != 888) && 
           (data1["status"][idx] !=0 && data1["status"][idx] !=9)){
               console.log("04_02",contrType, data1["status"][idx])
-              h += `<ul style="color:red;font-size: 15px">QC_04_02 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_02 check row ${idx} : 
               if contrType ≠ 777 or 888, then status should be 0 or 9.</ul>`
       } 
     })
@@ -179,7 +185,7 @@ function checkColumnsNum(variable,min, max) {
     data1["contrType"].forEach((contrType,idx) => {
       if ((contrType == undefined) && data1["status"][idx] == 0){
               console.log("04_04",contrType, data1["status"][idx])
-              h += `<ul style="color:red;font-size: 15px">QC_04_04 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_04 check row ${idx} : 
               if status = 0 and contrtype is missing, update contrType with 888 or the correct contrtype.</ul>`
       } 
     })
@@ -190,7 +196,7 @@ function checkColumnsNum(variable,min, max) {
       if ((contrType == undefined || contrType == 888) && 
           (data1["status"][idx] == 1 || data1["status"][idx] == 2 || data1["status"][idx] == 3)){
               console.log("04_05", contrType, data1["status"][idx])
-              h += `<ul style="color:red;font-size: 15px">QC_04_05 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_05 check row ${idx} : 
               if contrType is missing or 888 and status = 1, 2, or 3, update contrType with 777.</ul>`
       } 
     })
@@ -200,7 +206,7 @@ function checkColumnsNum(variable,min, max) {
     data1["contrType"].forEach((contrType,idx) => {
       if (contrType == undefined){
         console.log("04_06", contrType, idx)
-              h += `<ul style="color:red;font-size: 15px">QC_04_06 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_06 check row ${idx} : 
                   contrType should not be left blank,highlight those records to centre 
                   if both controlType and status are missing.</ul>`
       } 
@@ -211,13 +217,22 @@ function checkColumnsNum(variable,min, max) {
   //(04_valid_values)
    if (data1.status!= undefined){ 
    if (statusCheckColumns != false){
-      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
       0=control, 1=invasive case, 2=in-situ case, 3=case unknown invasiveness, 9=excluded sample. 
       <br>Blank, 777 and 888 values are not allowed in this variable.</ul>`
     }
   }
-  // //QC_05_01 end
+
+  //QC_26 ER_status
   let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
+   //(26_valid_values)
+   if (data1.status!= undefined){ 
+    if (statusCheckColumns != false){
+       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
+       0=negative, 1=positive, 888=DK.
+       <br>Blank values are allowed for controls in this variable.</ul>`//add AC_26_01 check fro this
+     }
+   }
   let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
   let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888], variable = "studyType")

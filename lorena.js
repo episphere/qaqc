@@ -12,15 +12,12 @@ runQAQC = function (data) {
   const data2 = qaqc.dataArray
   let upCol = [] //columns uploaded
   const allCol = ["UniqueID", "PersonID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchid", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
-console.log(upCol)
   for (var [key, value] of Object.entries(qaqc.data)) {
     upCol.push(key)
   }
-  console.log(upCol)
 
   // check if column names match the data dictionary
   let acceptedCol = upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
-  console.log(acceptedCol)
 
   function difference(a1, a2) {
     let a2Set = new Set(a2);
@@ -30,9 +27,6 @@ console.log(upCol)
   }
 
   let failedUpCol = difference(upCol, acceptedCol)
-  console.log(failedUpCol)
-  console.log(failedUpCol.length)
-
 
   if (failedUpCol.length > 0) {
     var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
@@ -60,7 +54,6 @@ console.log(upCol)
 
 //check for empty values function
 //https://stackoverflow.com/questions/154059/how-can-i-check-for-an-empty-undefined-null-string-in-javascript
-  
   function isEmpty(str) {
   return (!str || 0 === str.length);
 }
@@ -74,9 +67,9 @@ function checkColumnsEmpty(variable) {
       for (i = 0; i < data1[k].length; i++) {
         if (isEmpty(data1[k][i])==true) {
           badCount.push(" blank ")
-          badPosition.push(" "+i+1+"")
-
-        } else { }
+          badPosition.push(" "+(Number(i)+1)+" ")
+        } else {
+        }
       }
     }
   })
@@ -85,7 +78,7 @@ function checkColumnsEmpty(variable) {
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
      return h += `<p style="color:red;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
-     <ul style="color:red;font-size: 15px">Value(s): ${badCount}<br> Row position(s): ${badPosition}</ul>`
+     <ul style="color:red;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
     return false
   }
@@ -98,9 +91,10 @@ function checkColumnsNum(variable,min, max) {
   Object.keys(data1).forEach(k => {
     if (k == variable) {
       for (i = 0; i < data1[k].length; i++) {
-        if (isNumberBetween(data1[k][i],min, max)) {} else {
+        if (isNumberBetween(data1[k][i],min, max)) {
+        } else {
            badCount.push(" "+data1[k][i]+" ")
-          badPosition.push(" "+i+1+" ")
+          badPosition.push(" "+(Number(i)+1)+" ")
         }
       }
     }
@@ -110,12 +104,12 @@ function checkColumnsNum(variable,min, max) {
   let arrBadCount = Array.from(badSetStatus)
   if (arrBadCount.length > 0) {
     return h += `<p style="color:red;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
-    <ul style="color:red;font-size: 15px">Values: ${badCount} <br> Row position(s): ${badPosition}</ul>`  
+    <ul style="color:red;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`  
   } else {
     return false
   }
 }
- /////use is Val and function from above in checkCol function 
+ /////use is Val function from above in checkCol function 
    function checkColumns(validValuesList, variable) {
      badCount = []
      badPosition = []
@@ -124,11 +118,11 @@ function checkColumnsNum(variable,min, max) {
         for (i = 0; i < data1[k].length; i++) {
         if ((!(isValueOneOf(data1[k][i], validValuesList)))  && isEmpty(data1[k][i])) {
           badCount.push(" blank ")
-          badPosition.push(" "+i+1+" ")
+          badPosition.push(" "+(Number(i)+1)+" ")
         } 
           else if(isValueOneOf(data1[k][i], validValuesList)) {}
             else {badCount.push(" "+data1[k][i]+" ");
-              badPosition.push(" "+i+1+" ");
+              badPosition.push(" "+(Number(i)+1)+" ");
           } 
         }
        }
@@ -137,34 +131,93 @@ function checkColumnsNum(variable,min, max) {
      let badSet = Array.from(new Set(badCount))
      if (badSet.length > 0) {
        return h += `<p style="color:red;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
-       <ul style="color:red;font-size: 15px">Values: ${badCount} <br> Row position(s): ${badPosition}</ul>`
+       <ul style="color:red;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
      } else {
        return false
      }
    }
 
-  //check each column for invalid values 
-  //QC_03_01 start check study for empty rows
+//////////////check each column for invalid values 
+  //QC_03_01 check study for empty rows
   let studyCheckColumns = checkColumnsEmpty("study")
-
-  //QC_03_01 end
   //QC_04_01 start
   let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
-  //(1)
-//   if (data1.status!= undefined){
-//   data1["status"].forEach((QC4,idx4) => {
-//     if (QC4== 0 && data1["contrType"][idx4]==777 ){
-//       h += `<ul style="color:red;font-size: 15px">Row ${idx4}: If contrType = 777, then status should NOT be 0.</ul>`
-//     } 
-//   })
-// }
-  //QC_04_01 end
+  //(04_valid_values)
+ if (data1.contrType != undefined){ 
+  if (contrTypeCheckColumns != false){
+     h += `<ul style="color:red;font-size: 15px"> 
+     Valid values include
+     1=population-based, 2=hospital-based, 3=family-based, 4=blood donor, 
+     5 =nested case-control, 6=BRCA1/2 carrier without bc, 
+     777=NA=not applicable (for cases), 888=DK=don't know. 
+     <br>Blank values are not allowed in this variable.</ul>`
+   }
+ }
+  //(04_01)
+  if (data1.status != undefined){
+  data1["status"].forEach((status,idx) => {
+    if (status== 0 && data1["contrType"][idx]==777 ){
+      h += `<ul style="color:red;font-size: 15px">QC_04_01 check row ${idx} : If contrType = 777, then status should NOT be 0.</ul>`
+    } 
+  })
+}
+ 
+  //(04_02)
+  //(2) if contrType ≠ 777 or 888, then status should be 0 or 9
+  if (data1.contrType != undefined){
+    data1["contrType"].forEach((contrType,idx) => {
+      if ((contrType != 777 && contrType != 888) && 
+          (data1["status"][idx] !=0 && data1["status"][idx] !=9)){
+              console.log("04_02",contrType, data1["status"][idx])
+              h += `<ul style="color:red;font-size: 15px">QC_04_02 check row ${idx} : 
+              if contrType ≠ 777 or 888, then status should be 0 or 9.</ul>`
+      } 
+    })
+  }
+  //(04_04) 04_03 deleted in rules version 2
+  if (data1.contrType != undefined){
+    data1["contrType"].forEach((contrType,idx) => {
+      if ((contrType == undefined) && data1["status"][idx] == 0){
+              console.log("04_04",contrType, data1["status"][idx])
+              h += `<ul style="color:red;font-size: 15px">QC_04_04 check row ${idx} : 
+              if status = 0 and contrtype is missing, update contrType with 888 or the correct contrtype.</ul>`
+      } 
+    })
+  }
+  //(04_05) 
+  if (data1.contrType != undefined){
+    data1["contrType"].forEach((contrType,idx) => {
+      if ((contrType == undefined || contrType == 888) && 
+          (data1["status"][idx] == 1 || data1["status"][idx] == 2 || data1["status"][idx] == 3)){
+              console.log("04_05", contrType, data1["status"][idx])
+              h += `<ul style="color:red;font-size: 15px">QC_04_05 check row ${idx} : 
+              if contrType is missing or 888 and status = 1, 2, or 3, update contrType with 777.</ul>`
+      } 
+    })
+  }
+  //(04_06) 
+  if (data1.contrType != undefined){
+    data1["contrType"].forEach((contrType,idx) => {
+      if (contrType == undefined){
+        console.log("04_06", contrType, idx)
+              h += `<ul style="color:red;font-size: 15px">QC_04_06 check row ${idx} : 
+                  contrType should not be left blank,highlight those records to centre 
+                  if both controlType and status are missing.</ul>`
+      } 
+    })
+  }
   //QC_05_01 start
    let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
-    if (statusCheckColumns != false){h += `<ul style="color:red;font-size: 15px"> Values 777, 888 or blank are not allowed in the status column.</ul>`}
+  //(04_valid_values)
+   if (data1.status!= undefined){ 
+   if (statusCheckColumns != false){
+      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+      0=control, 1=invasive case, 2=in-situ case, 3=case unknown invasiveness, 9=excluded sample. 
+      <br>Blank, 777 and 888 values are not allowed in this variable.</ul>`
+    }
+  }
   // //QC_05_01 end
   let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
-  
   let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
   let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888], variable = "studyType")
@@ -174,7 +227,6 @@ function checkColumnsNum(variable,min, max) {
   let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
   let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888], variable = "famHist")
   let ageCheckColumnsNum=checkColumnsNum(variable="ageInt",min=12, max=100)
-// console.log("ageInt", ageCheckColumnsNum)
 
 const checkColumnsList = [studyCheckColumns,statusCheckColumns, erCheckColumns,
                    contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 

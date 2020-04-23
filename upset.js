@@ -2,7 +2,7 @@
 
 runQAQC=function(data){
     console.log(`upset.js runQAQC function ran at ${Date()}`)
-    let h=`<table><tr><td>`
+    let h=`<table><tr><td vAlign="bottom">`
     h+=`<p>Raw data: ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
     h+='<p style="color:blue">Studies: <br><span style="color:brown">'
     upset.getStudies()
@@ -12,12 +12,12 @@ runQAQC=function(data){
     h+='</span></p>'
     // table
     h+='<p style="color:blue">Constraints: <span style="color:green">'
-    upset.data.parms.forEach(s=>{
-        h+=`<br><input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
+    upset.data.parms.forEach((s,i)=>{
+        h+=`<br>${i}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
     })
     h+='</span></p>'
     h+='</td><td vAlign="bottom"><div id="constrainingPlotly"></div></td></tr>'
-    h+='<tr><td>'
+    h+='<tr><td vAlign="top">'
     h+='<hr>'
     h+='<div id="upsetCountDiv">'
     h+='</div>'
@@ -65,23 +65,31 @@ upset.count=function(data=qaqc.data,div='upsetCountDiv'){
     // count with all constraints
     upset.data.countAll=upset.data.studiesArray
     // ... update count so far
-    let h = `# individuals in the studies selected: ${upset.data.studiesArray.reduce((a,b)=>a+b)}`
+    upset.data.countConstrained=[{total:upset.data.studiesArray.reduce((a,b)=>a+b)}]
+
+    let h = `<p style="color:navy"># individuals in the studies selected: (<span style="color:blue">${upset.data.countConstrained[0].total}</span>)`
     console.log(upset.data.selectedParms)
-    upset.data.selectedParms.forEach(p=>{
+    upset.data.selectedParms.forEach((p,i)=>{
         upset.data.countAll=upset.data.countAll.map((x,i)=>{
             return x&data[p][i]
         })
-        h+=`<br>with ${p}: ${upset.data.countAll.reduce((a,b)=>a+b)}`
+        let c = {}
+        c[p]=upset.data.countAll.reduce((a,b)=>a+b)
+        upset.data.countConstrained.push(c)
+        h+=`<br>${i+1}. with ${p}: (<span style="color:blue">${c[p]}</span>)`
     })
+    upset.data.countParms={}
     upset.data.parms.forEach(s=>{
         let c = document.getElementById(s+'_count')
-        c.textContent=upset.data.countAll.map((x,i)=>{
+        upset.data.countParms[s]=upset.data.countAll.map((x,i)=>{
             return x&data[s][i]
         }).reduce((a,b)=>a+b)
-        //debugger
+        c.textContent=upset.data.countParms[s]
     })
-
+    h+='</p>'
     div.innerHTML=h
+    upset.constrainingPlotly()
+    upset.constrainedPlotly()
 }
 
 upset.check=(s)=>{
@@ -92,5 +100,71 @@ upset.check=(s)=>{
         upset.data.selectedParms=upset.data.selectedParms.slice(0,ind).concat(upset.data.selectedParms.slice(ind+1))
         //debugger
     }
+}
+
+upset.constrainingPlotly=_=>{
+    let trace={
+        x:[],
+        y:[],
+        text:[],
+        type: 'bar',
+        orientation: 'h',
+        textposition:"inside",
+        width:0.9,
+    }
+    upset.data.parms.forEach((p,i)=>{
+        trace.x.push(upset.data.countParms[p])
+        trace.y.push(i+1)
+        trace.text.push(p)
+    })
+    Plotly.newPlot('constrainingPlotly',[trace],{
+        height: 35*upset.data.parms.length,
+        width: 500,
+        yaxis: {autorange: 'reversed'},
+        xaxis:{
+            title:'cohort size (# individuals)'
+        }
+    })
+}
+
+upset.constrainedPlotly=_=>{
+    let trace={
+        type:'scatter',
+        x:[],
+        y:[],
+        //text:[],
+        //mode: 'lines+markers+text',
+        mode: 'lines+markers',
+        line:{
+            color:'blue'
+        }
+    }
+    let annotations=[]
+    upset.data.countConstrained.forEach((x,i)=>{
+        let L = Object.keys(upset.data.countConstrained[i])[0]
+        trace.x.push(i)
+        //trace.text.push(L)
+        trace.y.push(x[L])
+        annotations.push({
+            showarrow: false,
+            x: i,
+            y: x[L],
+            text:`${upset.data.parms.indexOf(L)}. ${L}`,
+            textangle:-30,
+            font: {
+                color: 'green',
+                size:14
+            }
+        })
+        annotations[0].text=Object.keys(upset.data.countConstrained[0])[0]
+    })
+    Plotly.newPlot('constrainedPlotly',[trace],{
+        height: 500,
+        width: 500,
+        yaxis:{
+            title:'cohort size (# individuals)'
+        },
+        annotations:annotations
+    })
     
 }

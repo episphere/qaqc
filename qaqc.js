@@ -230,12 +230,18 @@ qaqc.getParms=function(){
     }
     if(qaqc.parms.script){
         setTimeout(_=>{
-            document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
+          if(document.querySelectorAll('.runScript').length>0){
+             document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
+          }else{
+             setTimeout(_=>{
+               document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
+             },1000)
+          }
         },100)
     }
     if(qaqc.parms.boxid){
       setTimeout(_=>{
-        loadBox.click()
+        document.getElementById('loadBox').click()
         setTimeout(_=>{
           boxInput.value=''
           qaqc.parms.boxid.split('').forEach((_,i)=>{
@@ -249,7 +255,7 @@ qaqc.getParms=function(){
               qaqc.tabulateTxt()
               qaqc.dataAnalysis()
           })
-        },1000)
+        },2000)
         //document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
       },2000)
     }

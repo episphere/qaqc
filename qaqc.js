@@ -235,7 +235,7 @@ qaqc.getParms=function(){
           }else{
              setTimeout(_=>{
                document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
-             },1000)
+             },2000)
           }
         },100)
     }
@@ -257,7 +257,7 @@ qaqc.getParms=function(){
           })
         },2000)
         //document.querySelectorAll('.runScript')[qaqc.parms.script-1].click()
-      },2000)
+      },3000)
     }
 
 

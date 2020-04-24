@@ -3,7 +3,7 @@
 runQAQC=function(data){
     console.log(`upset.js runQAQC function ran at ${Date()}`)
     let h=`<table><tr><td vAlign="bottom">`
-    h+=`<p>Raw data: ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
+    h+=`<p>Data: ${Object.keys(data).length}x${qaqc.data[Object.keys(data)[0]].length}, demo:<a href="https://www.youtube.com/watch?v=Asi0jMGz3fQ" target="_blank" style="background-color:yellow">YouTube</a></p>`
     h+='<p style="color:blue">Studies: <br><span style="color:brown">'
     upset.getStudies()
     upset.data.studies.forEach(s=>{
@@ -13,7 +13,7 @@ runQAQC=function(data){
     // table
     h+='<p style="color:blue">Constraints: <span style="color:green">'
     upset.data.parms.forEach((s,i)=>{
-        h+=`<br>${i}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
+        h+=`<br>${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
     })
     h+='</span></p>'
     h+='</td><td vAlign="bottom"><div id="constrainingPlotly"></div></td></tr>'

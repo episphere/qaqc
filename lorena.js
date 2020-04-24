@@ -42,7 +42,6 @@ runQAQC = function (data) {
   function isNumberBetween(value, min, max) {
     return value >= min && value <= max
   }
-
   function isValueOneOf(value, validValues) {
     for (validIdx = 0; validIdx < validValues.length; validIdx++) {
       if (validValues[validIdx] === value) {
@@ -51,11 +50,11 @@ runQAQC = function (data) {
     }
     return false;
   }
-
 //check for empty values function
 //https://stackoverflow.com/questions/154059/how-can-i-check-for-an-empty-undefined-null-string-in-javascript
   function isEmpty(str) {
-  return (!str || 0 === str.length);
+ // return (!str || 0 === str.length);
+  return (str===undefined || 0 === str.length);
 }
 
 //use isEmpty function from above in checkColumnEmpty function 
@@ -84,7 +83,33 @@ function checkColumnsEmpty(variable) {
   }
 }
 
-//use isNum function from above in checkCol function 
+//check if number or other integer (888) in fhscore 
+function checkColumnsInt(variable, num) {
+  badCount = []
+  badPosition=[]
+  Object.keys(data1).forEach(k => { 
+    if (k == variable) {
+      for (i = 0; i < data1[k].length; i++) {
+        if ((isEmpty(data1[k][i]))===true){
+          badCount.push(" blank ")
+          badPosition.push(" "+(Number(i)+1)+" ")
+        } else if (!(((data1[k][i]) % 1 === 0) && (num %1 === 0))){
+          badCount.push(" "+(data1[k][i])+" ")
+          badPosition.push(" "+(Number(i)+1)+" ")
+        }else {}
+      }
+    }
+  })
+  let len_bad = badCount.length
+     let badSet = Array.from(new Set(badCount))
+     if (badSet.length > 0) {
+     return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+     <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
+    } else {
+    return false
+  }
+}
+//use isNumber between function from above in checkCol function 
 function checkColumnsNum(variable,min, max) {
   badCount = []
   badPosition = []
@@ -93,35 +118,34 @@ function checkColumnsNum(variable,min, max) {
       for (i = 0; i < data1[k].length; i++) {
         if (isNumberBetween(data1[k][i],min, max)) {
         } else {
-           badCount.push(" "+data1[k][i]+" ")
+           badCount.push(" "+(data1[k][i])+" ")
           badPosition.push(" "+(Number(i)+1)+" ")
         }
       }
     }
   })
   let len_bad = badCount.length
-  let badSetStatus = new Set(badCount)
-  let arrBadCount = Array.from(badSetStatus)
-  if (arrBadCount.length > 0) {
+     let badSet = Array.from(new Set(badCount))
+     if (badSet.length > 0) {
     return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
     <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`  
   } else {
     return false
   }
 }
- /////use is Val function from above in checkCol function 
+ /////use is Val function from above in checkCol function--for list use numbers and strings [0,1,888, "0", "1", "888"]
    function checkColumns(validValuesList, variable) {
      badCount = []
      badPosition = []
      Object.keys(data1).forEach(k => {
        if (k == variable) {
         for (i = 0; i < data1[k].length; i++) {
-        if ((!(isValueOneOf(data1[k][i], validValuesList)))  && isEmpty(data1[k][i])) {
+        if (!(isValueOneOf(data1[k][i], validValuesList)) && (isEmpty(data1[k][i])==true)) {
           badCount.push(" blank ")
           badPosition.push(" "+(Number(i)+1)+" ")
         } 
-          else if(isValueOneOf(data1[k][i], validValuesList)) {}
-            else {badCount.push(" "+data1[k][i]+" ");
+          else if((isValueOneOf(value=(data1[k][i]), validValues=validValuesList))===false) {
+            badCount.push(" "+(data1[k][i])+" ");
               badPosition.push(" "+(Number(i)+1)+" ");
           } 
         }
@@ -137,7 +161,7 @@ function checkColumnsNum(variable,min, max) {
      }
    }
 
-//////////////check each column for invalid values 
+//////////////check each column for invalid values ////////////////////////////////////////////////////////
   //QC_03_01 check study for empty rows
   let studyCheckColumns = checkColumnsEmpty("study")
   if (data1.study != undefined){ 
@@ -146,7 +170,7 @@ function checkColumnsNum(variable,min, max) {
     <br>Blank values are not allowed in this variable.</ul>`
   }
 }
-  //QC_04_01 start
+  //QC_04_01 start contrType
   let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888], variable = "contrType")
   //(04_valid_values)
  if (data1.contrType != undefined){ 
@@ -167,7 +191,6 @@ function checkColumnsNum(variable,min, max) {
     } 
   })
 }
- 
   //(04_02)
   //(2) if contrType ≠ 777 or 888, then status should be 0 or 9
   if (data1.contrType != undefined){
@@ -212,7 +235,7 @@ function checkColumnsNum(variable,min, max) {
       } 
     })
   }
-  //QC_05_01 start
+  //QC_05_01 start status
    let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
   //(04_valid_values)
    if (data1.status!= undefined){ 
@@ -223,32 +246,79 @@ function checkColumnsNum(variable,min, max) {
     }
   }
 
-  //QC_26 ER_status
-  let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
-   //(26_valid_values)
-   if (data1.status!= undefined){ 
-    if (statusCheckColumns != false){
-       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
-       0=negative, 1=positive, 888=DK.
-       <br>Blank values are allowed for controls in this variable.</ul>`//add AC_26_01 check fro this
-     }
-   }
   let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
   let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888], variable = "studyType")
   let exclusionCheckColumns = checkColumns(validValuesList = [0, 1, 3, 4, 5, 6, 7, 8, 888], variable = "exclusion")
-  let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "ethnicityClass")
   let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceM")
   let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
-  let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888], variable = "famHist")
+  //QC_17 ethnicityClass
+  let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "ethnicityClass")
+  if(data1.ethnicityClass != undefined){
+  if(ethnicityClassCheckColumns != false){
+    h += `<ul style="color:red;font-size: 15px"> Valid values include 
+    1=European, 2=Hispanic American, 3=African, 4=Asian Subcontinent, 5=Sout-East Asian, 6=Other (including 'mixed race'), 888 = don't know.
+       <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+     }
+   }
+  //  QC_17_01 ethnicityClass
+  if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 1 && (data1["ethnicitySubClass"][idx]!=1
+                  && data1["ethnicitySubClass"][idx]!=2
+                  && data1["ethnicitySubClass"][idx]!=3
+                  && data1["ethnicitySubClass"][idx]!=4
+                  && data1["ethnicitySubClass"][idx]!=5
+                  && data1["ethnicitySubClass"][idx]!=888
+              )){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_01 check row ${idx} : 
+        If EthnicityClass=1, then EthnicitySubClass should be 1, 2, 3, 4, 5, or 888.</ul>`
+      } 
+    })
+  }
+  //QC_25 famHist
+  let famHistCheckColumns = checkColumns(validValuesList = [0,1,888, "0", "1", "888"], variable = "famHist")
+  if(data1.famHist != undefined){
+  if(famHistCheckColumns != false){
+    h += `<ul style="color:red;font-size: 15px"> Valid values include 
+    family history of  breast cancer in a first degree relative (0=no, 1=yes), 888 = don't know.
+       <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+     }
+   }
+  //QC_27 fhnumber
+   let fhnumberCheckColumns = checkColumnsInt(variable = "fhnumber", num=888)  // add way to read str like checkcolumns
+   if(data1["fhnumber"] != undefined){
+   if(fhnumberCheckColumns != false){
+     h += `<ul style="color:red;font-size: 15px"> Valid values include 
+         integer = number of affected (breast cancer) first degree relatives, 888 = don't know.
+        <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+      }
+    }
+   //QC_27 fhscore
+  let fhscoreCheckColumns = checkColumnsInt(variable = "fhscore", num=888)  // add way to read str like checkcolumns
+  if(data1["fhscore"] != undefined){
+  if(fhscoreCheckColumns != false){
+    h += `<ul style="color:red;font-size: 15px"> Valid values include 
+    1 for each first degree affected relative, 0.5 for second degree, 0.25 for third degree (not ovarian for any relative), 888 = don't know.
+       <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+     }
+   }
+    //QC_28 ER_status
+    let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
+    //(28_valid_values)
+    if (data1["ER_statusIndex"]!= undefined){ 
+     if (statusCheckColumns != false){
+        h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
+        0=negative, 1=positive, 888=DK.
+        <br>Blank values are allowed for controls in this variable.</ul>`//add AC_26_01 check fro this
+      }
+    }
   let ageCheckColumnsNum=checkColumnsNum(variable="ageInt",min=12, max=100)
 
 const checkColumnsList = [studyCheckColumns,statusCheckColumns, erCheckColumns,
                    contrTypeCheckColumns,matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns, 
                    exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns, 
-                   famHistCheckColumns, ageCheckColumnsNum]
-   console.log(checkColumnsList)
-  
+                   famHistCheckColumns, ageCheckColumnsNum]  
 
 for (i=0; i<checkColumnsList.length; i++){
     if (checkColumnsList[i] != false || failedUpCol.length > 0){

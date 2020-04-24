@@ -187,7 +187,7 @@ function checkColumnsNum(variable,min, max) {
   if (data1.status != undefined){
   data1["status"].forEach((status,idx) => {
     if (status== 0 && data1["contrType"][idx]==777 ){
-      h += `<ul style="color:darkblue;font-size: 15px">QC_04_01 check row ${idx} : If contrType = 777, then status should NOT be 0.</ul>`
+      h += `<ul style="color:darkblue;font-size: 15px">QC_04_01 check row ${idx+1} : If contrType = 777, then status should NOT be 0.</ul>`
     } 
   })
 }
@@ -198,7 +198,7 @@ function checkColumnsNum(variable,min, max) {
       if ((contrType != 777 && contrType != 888) && 
           (data1["status"][idx] !=0 && data1["status"][idx] !=9)){
               console.log("04_02",contrType, data1["status"][idx])
-              h += `<ul style="color:darkblue;font-size: 15px">QC_04_02 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_02 check row ${idx+1} : 
               if contrType ≠ 777 or 888, then status should be 0 or 9.</ul>`
       } 
     })
@@ -208,7 +208,7 @@ function checkColumnsNum(variable,min, max) {
     data1["contrType"].forEach((contrType,idx) => {
       if ((contrType == undefined) && data1["status"][idx] == 0){
               console.log("04_04",contrType, data1["status"][idx])
-              h += `<ul style="color:darkblue;font-size: 15px">QC_04_04 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_04 check row ${idx+1} : 
               if status = 0 and contrtype is missing, update contrType with 888 or the correct contrtype.</ul>`
       } 
     })
@@ -219,7 +219,7 @@ function checkColumnsNum(variable,min, max) {
       if ((contrType == undefined || contrType == 888) && 
           (data1["status"][idx] == 1 || data1["status"][idx] == 2 || data1["status"][idx] == 3)){
               console.log("04_05", contrType, data1["status"][idx])
-              h += `<ul style="color:darkblue;font-size: 15px">QC_04_05 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_05 check row ${idx+1} : 
               if contrType is missing or 888 and status = 1, 2, or 3, update contrType with 777.</ul>`
       } 
     })
@@ -229,7 +229,7 @@ function checkColumnsNum(variable,min, max) {
     data1["contrType"].forEach((contrType,idx) => {
       if (contrType == undefined){
         console.log("04_06", contrType, idx)
-              h += `<ul style="color:darkblue;font-size: 15px">QC_04_06 check row ${idx} : 
+              h += `<ul style="color:darkblue;font-size: 15px">QC_04_06 check row ${idx+1} : 
                   contrType should not be left blank,highlight those records to centre 
                   if both controlType and status are missing.</ul>`
       } 
@@ -271,11 +271,142 @@ function checkColumnsNum(variable,min, max) {
                   && data1["ethnicitySubClass"][idx]!=5
                   && data1["ethnicitySubClass"][idx]!=888
               )){
-        h += `<ul style="color:darkblue;font-size: 15px">QC_17_01 check row ${idx} : 
-        If EthnicityClass=1, then EthnicitySubClass should be 1, 2, 3, 4, 5, or 888.</ul>`
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_01 check row ${idx+1} : 
+        If ethnicityClass=1, then EthnicitySubClass should be 1, 2, 3, 4, 5, or 888.</ul>`
       } 
     })
   }
+  //  QC_17_02 ethnicityClass
+  if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 2 && (data1["ethnicitySubClass"][idx]!=6)){
+        h += `<ul style="color:red;font-size: 15px">QC_17_02 check row ${idx+1} : 
+        If ethnicityClass=2, then EthnicitySubClass=6 ADD 888?.</ul>`
+      } 
+    })
+  }
+  //  QC_17_03 ethnicityClass
+  if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 3 && (data1["ethnicitySubClass"][idx]!=7)
+                 && (data1["ethnicitySubClass"][idx]!=8)
+                 && (data1["ethnicitySubClass"][idx]!=9)
+                 && (data1["ethnicitySubClass"][idx]!=888)
+          ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_03 check row ${idx+1} : 
+        If ethnicityClass=3, check whether EthnicitySubClass=7, 8, 9, or 888.</ul>`
+      } 
+    })
+  }
+  //  QC_17_04 ethnicityClass
+  if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 4 && (data1["ethnicitySubClass"][idx]!=10)
+                 && (data1["ethnicitySubClass"][idx]!=11)
+                 && (data1["ethnicitySubClass"][idx]!=12)
+                 && (data1["ethnicitySubClass"][idx]!=888)
+        ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_04 check row ${idx+1} : 
+        If ethnicityClass=4, then EthnicitySubClass=10, 11, 12, or 888.</ul>`
+      } 
+    })
+  }
+   //  QC_17_05 ethnicityClass
+   if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 5 && (data1["ethnicitySubClass"][idx]!=13)
+                 && (data1["ethnicitySubClass"][idx]!=14)
+                 && (data1["ethnicitySubClass"][idx]!=15)
+                 && (data1["ethnicitySubClass"][idx]!=888)
+        ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_05 check row ${idx+1} : 
+        If ethnicityClass=5, then EthnicitySubClass=13, 14, 15, or 888.</ul>`
+      } 
+    })
+  } 
+   //  QC_17_06 ethnicityClass
+   if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 6 && ((data1["ethnicitySubClass"][idx]!=16)
+                 || (data1["ethnOt"][idx]!=777))
+        ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_06 check row ${idx+1} : 
+        If ethnicityClass=6, then EthnicitySubClass=16, ethnOt≠777.</ul>`
+      } 
+    })
+  } 
+   //  QC_17_07 ethnicityClass
+   if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k=== 888 && ((data1["ethnicitySubClass"][idx]!=888)
+                 || (data1["ethnOt"][idx]!=888))
+        ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_07 check row ${idx+1} : 
+        If ethnicityClass=888, then EthnicitySubClass=888 and ethnOt=888.</ul>`
+      } 
+    })
+  } 
+   //  QC_17_08 ethnicityClass
+   if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k != 6 && k != 888
+                 &&  data1["ethnicitySubClass"][idx]!=16
+                 && ((data1["ethnOt"][idx]==888)
+                  || (data1["ethnOt"][idx]==undefined))
+        ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_08 check row ${idx+1} : 
+        If ethnicityClass ≠ 6 and ethnicityClass ≠ 888 and ethnicithSubClass ≠ 16 and ethnot = 888 or missing, then update ethnot with 777.</ul>`
+      } 
+    })
+  } 
+   //  QC_17_09 ethnicityClass
+   if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k == undefined 
+                  &&  data1["ethnicitySubClass"][idx]!=777
+                  &&  data1["ethnicitySubClass"][idx]!=888
+        ){
+        let k = "(blank value)"
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_09 check row ${idx+1} ${k} : 
+        If ethnicityClass is missing and ethnicitySubClass is not 777 or 888, work out ethnicityClass based on ethnicitySubClass.</ul>`
+      } 
+    })
+  } 
+   //  QC_17_11 ethnicityClass (10 deleted in this version)
+   if (data1.ethnicityClass != undefined){
+    data1["ethnicityClass"].forEach((k,idx) => {
+      if (k == 6 
+                  &&  data1["ethnOt"][idx]!=undefined
+                  &&  data1["ethnOt"][idx]!=888
+        ){
+        h += `<ul style="color:darkblue;font-size: 15px">QC_17_11 check row ${idx+1} : 
+        If ethnicityClass = 6, details should be put in ethnot; if details not known, ethnOt = 888.</ul>`
+      } 
+    })
+  } 
+ //  QC_17_13 ethnicityClass (12 deleted or missing in this version)
+ if (data1.ethnicityClass != undefined){
+  data1["ethnicityClass"].forEach((k,idx) => {
+    if (k == 888 &&
+                 ( data1["ethnicitySubClass"][idx]!=888
+                ||  data1["ethnOt"][idx]!=888)
+      ){
+      h += `<ul style="color:darkblue;font-size: 15px">QC_17_13 check row ${idx+1} : 
+      If ethnicityClass is 888= don't know, update ethnicitySubClass and ethOt with 888.</ul>`
+    } 
+  })
+} 
+ //  QC_17_14 ethnicityClass 
+ if (data1.ethnicityClass != undefined){
+  data1["ethnicityClass"].forEach((k,idx) => {
+    if (k != 888 && k != 1 && k != 2 && k != 3 && k != 4
+          && k != 5 && k != 6
+      ){
+      h += `<ul style="color:darkblue;font-size: 15px">QC_17_14 check row ${idx+1} : 
+      Check if ethnicityClass is in the range of 1-6 or 888.</ul>`
+    } 
+  })
+} 
   //QC_25 famHist
   let famHistCheckColumns = checkColumns(validValuesList = [0,1,888, "0", "1", "888"], variable = "famHist")
   if(data1.famHist != undefined){

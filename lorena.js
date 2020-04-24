@@ -183,7 +183,7 @@ function checkColumnsNum(variable,min, max) {
      <br>Blank values are not allowed in this variable.</ul>`
    }
  }
-  //(04_01)
+  //QC_04_01 contrType
   if (data1.status != undefined){
   data1["status"].forEach((status,idx) => {
     if (status== 0 && data1["contrType"][idx]==777 ){
@@ -191,7 +191,7 @@ function checkColumnsNum(variable,min, max) {
     } 
   })
 }
-  //(04_02)
+  //QC_04_02 contrType
   //(2) if contrType ≠ 777 or 888, then status should be 0 or 9
   if (data1.contrType != undefined){
     data1["contrType"].forEach((contrType,idx) => {
@@ -203,7 +203,7 @@ function checkColumnsNum(variable,min, max) {
       } 
     })
   }
-  //(04_04) 04_03 deleted in rules version 2
+  //QC_04_04 contrType  (03 deleted in rules version 2)
   if (data1.contrType != undefined){
     data1["contrType"].forEach((contrType,idx) => {
       if ((contrType == undefined) && data1["status"][idx] == 0){
@@ -213,7 +213,7 @@ function checkColumnsNum(variable,min, max) {
       } 
     })
   }
-  //(04_05) 
+  //QC_04_05 contrType
   if (data1.contrType != undefined){
     data1["contrType"].forEach((contrType,idx) => {
       if ((contrType == undefined || contrType == 888) && 
@@ -224,7 +224,7 @@ function checkColumnsNum(variable,min, max) {
       } 
     })
   }
-  //(04_06) 
+  //QC_04_06 contrType
   if (data1.contrType != undefined){
     data1["contrType"].forEach((contrType,idx) => {
       if (contrType == undefined){
@@ -235,9 +235,10 @@ function checkColumnsNum(variable,min, max) {
       } 
     })
   }
-  //QC_05_01 start status
+  
+  //QC_05_01 status
    let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
-  //(04_valid_values)
+  //QC_05_01 status valid values
    if (data1.status!= undefined){ 
    if (statusCheckColumns != false){
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 

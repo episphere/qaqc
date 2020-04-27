@@ -119,7 +119,7 @@ runQAQC = function (data) {
           if (!isNumberBetween(data1[k][i], min, max)) {
             badCount.push(" " + (data1[k][i]) + " ")
             badPosition.push(" " + (Number(i) + 2) + " ")
-          } else if (isEmpty(data1[k][i])){
+          } else if (isEmpty(data1[k][i])) {
             badCount.push(" blank ")
             badPosition.push(" " + (Number(i) + 2) + " ")
           }
@@ -270,15 +270,15 @@ runQAQC = function (data) {
       }
     })
   }
-    //QC_11_02 ageInt 
-    if (data1.ageInt != undefined) {
-      data1["ageInt"].forEach((k, idx) => {
-        if (k == undefined && (data1["ageDiagIndex"]==888 || data1["ageDiagIndex"]==undefined)) { //agediag== 888 or null, is null blank?
-          h += `<ul style="color:red;font-size: 15px">QC_11_01 check row ${idx+2} : 
+  //QC_11_02 ageInt 
+  if (data1.ageInt != undefined) {
+    data1["ageInt"].forEach((k, idx) => {
+      if (k == undefined && (data1["ageDiagIndex"] == 888 || data1["ageDiagIndex"] == undefined)) { //agediag== 888 or null, is null blank?
+        h += `<ul style="color:red;font-size: 15px">QC_11_01 check row ${idx+2} : 
           When AgeInt is missing, if AgeDiagIndex = null or 888, update AgeInt with 888. (agediag== 888 or null, is null blank?)</ul>`
-        }
-      })
-    }
+      }
+    })
+  }
   // QC_16 sex (M, F, U)
   let sexCheckColumns = checkColumns(validValuesList = ["M", "F", "U"], variable = "sex")
   if (data1.ethnicityClass != undefined) {
@@ -450,6 +450,45 @@ runQAQC = function (data) {
       }
     })
   }
+  //1=Northern European, 2=Southern European, 3=Western European, 4=Eastern European, 5=American European, 6=Hispanic American, 7=African (Africa), 8=Carribbean African, 9=American African, 10=Indian, 11=Pakistani, 12=East and West Bengali, 13=Chinese, 14=Malaysian Peninsula, 15=Japanese, 16=Other (including 'mixed race'), 888=DK
+  //QC_18 ethnicitySubClass
+  let ethnicitySubClassCheckColumns = checkColumns(
+    validValuesList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 888], variable = "ethnicitySubClass")
+  if (data1.ethnicitySubClass != undefined) {
+    if (ethnicitySubClassCheckColumns != false) {
+      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+        1=Northern European, 2=Southern European, 3=Western European, 4=Eastern European, 5=American European, 6=Hispanic American, 7=African (Africa), 8=Carribbean African, 9=American African, 10=Indian, 11=Pakistani, 12=East and West Bengali, 13=Chinese, 14=Malaysian Peninsula, 15=Japanese, 16=Other (including 'mixed race'), 888 = don't know.
+         <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+    }
+  }
+  //  QC_18_01 ethnicitySubClass
+  if (data1.ethnicitySubClass != undefined) {
+    data1["ethnicitySubClass"].forEach((k, idx) => {
+      if (k === undefined) {
+        h += `<ul style="color:darkblue;font-size: 15px">QC_18_01 check row ${idx+2} : 
+          If ethnicitySubClass is missing, update ethnicitySubClass with 888.</ul>`
+      }
+    })
+  }
+  //  QC_18_02 ethnicitySubClass
+  if (data1.ethnicitySubClass != undefined) {
+    data1["ethnicitySubClass"].forEach((k, idx) => {
+      if (k != undefined && data1["ethnicityClass"][idx] === undefined) {
+        h += `<ul style="color:darkblue;font-size: 15px">QC_18_02 check row ${idx+2} : 
+              If ethnicitySubClass is NOT null and ethnicityClass is null, update ethnicityClass based on the EthnicitySubClass.</ul>`
+      }
+    })
+  }
+   //  QC_18_03 ethnicitySubClass
+   if (data1.ethnicitySubClass != undefined) {
+    data1["ethnicitySubClass"].forEach((k, idx) => {
+      if (k == 16 && data1["ethnOt"][idx] != 888) {
+        h += `<ul style="color:darkblue;font-size: 15px">QC_18_03 check row ${idx+2} : 
+              If ethnicitySubClass = 16, details should be given in ethnOt, if details not known, ethnOt = 888.</ul>`
+      }
+    })
+  }
+     //  QC_18_03 ethnicitySubClass check 04 and 05 as duplicates
   //QC_25 famHist
   let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888, "0", "1", "888"], variable = "famHist")
   if (data1.famHist != undefined) {
@@ -487,6 +526,28 @@ runQAQC = function (data) {
         <br>Blank values are allowed for controls in this variable.</ul>` //add AC_26_01 check fro this
     }
   }
+  //QC_29 DNA_source
+  let DNA_sourceClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 888], variable = "DNA_source")
+  //(29_valid_values)
+  if (data1.DNA_source != undefined) {
+    if (DNA_sourceClassCheckColumns != false) {
+      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+      1=whole blood, 2=buccal cell, 3=mouthwash/saliva, 4=other, 5=no DNA, 888=DK.
+       <br>Blank values are not allowed?? blanks not in dict or rules in this variable.</ul>`
+    }
+  }
+  //  QC_29_01 DNA_source
+  // if (data1.DNA_source != undefined) {
+  //   data1["DNA_source"].forEach((k, idx) => {
+  //     if (k === 1 && (data1["DNA_source"][idx] != 1 &&
+  //         data1["DNA_source"][idx] != 2 &&
+  //         data1["DNA_source"][idx] != 888
+  //       )) {
+  //       h += `<ul style="color:darkblue;font-size: 15px">QC_29_01 check row ${idx+2} : 
+  //       If ethnicityClass=1, then EthnicitySubClass should be 1, 2, 3, 4, 5, or 888.</ul>`
+  //     }
+  //   })
+  // }
   // Check for errors (return false) from checkcolumns function, if true.. alert ERROR!
   const checkColumnsList = [studyCheckColumns, statusCheckColumns, erCheckColumns,
     contrTypeCheckColumns, matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,

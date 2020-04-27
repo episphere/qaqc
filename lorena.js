@@ -236,9 +236,9 @@ runQAQC = function (data) {
     })
   }
 
-  //QC_05_01 status
+  //QC_05 status
   let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
-  //QC_05_01 status valid values
+  //QC_05 status valid values
   if (data1.status != undefined) {
     if (statusCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
@@ -246,8 +246,25 @@ runQAQC = function (data) {
       <br>Blank, 777 and 888 values are not allowed in this variable.</ul>`
     }
   }
-
-  let matchIDCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
+//QC_06 matchId
+  let matchidCheckColumns = checkColumns(validValuesList = [777, 888], variable = "matchid")
+    //QC_06 matchid valid values
+if (data1.matchid != undefined) {
+    if (matchidCheckColumns != false) {
+      h += `<ul style="color:red;font-size: 15px"> Valid values include 777=NA, 888=DK 
+      <br>Blank values are not allowed in this variable?</ul>`
+    }
+  }
+    //QC_06_02 matchid 
+    if (data1.matchid != undefined) {
+      data1["matchid"].forEach((k, idx) => {
+        if (k === undefined){
+          h += `<ul style="color:red;font-size: 15px">QC_11_02 check row ${idx+2} : 
+          If matchid is missing (not an individually matched study), update matchid with 777</ul>`
+        }
+      })
+    }
+  
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
   let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888], variable = "studyType")
   let exclusionCheckColumns = checkColumns(validValuesList = [0, 1, 3, 4, 5, 6, 7, 8, 888], variable = "exclusion")
@@ -550,7 +567,7 @@ runQAQC = function (data) {
   // }
   // Check for errors (return false) from checkcolumns function, if true.. alert ERROR!
   const checkColumnsList = [studyCheckColumns, statusCheckColumns, erCheckColumns,
-    contrTypeCheckColumns, matchIDCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
+    contrTypeCheckColumns, matchidCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
     exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns,
     famHistCheckColumns, ageCheckColumnsNum
   ]

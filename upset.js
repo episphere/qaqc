@@ -2,7 +2,7 @@
 
 runQAQC=function(data){
     console.log(`upset.js runQAQC function ran at ${Date()}`)
-    let h=`<table><tr><td vAlign="bottom">`
+    let h=`<table><tr><td vAlign="bottom" style="white-space:nowrap">`
     h+=`<p>Data: ${Object.keys(data).length}x${qaqc.data[Object.keys(data)[0]].length}, demo:<a href="https://www.youtube.com/watch?v=Asi0jMGz3fQ" target="_blank" style="background-color:yellow">YouTube</a></p>`
     h+='<p style="color:blue">Studies: <br><span style="color:brown">'
     upset.getStudies()
@@ -16,16 +16,18 @@ runQAQC=function(data){
         h+=`<br>${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
     })
     h+='</span></p>'
-    h+='</td><td vAlign="bottom"><div id="constrainingPlotly"></div></td></tr>'
-    h+='<tr><td vAlign="top">'
+    h+='</td><td vAlign="bottom"><div id="constrainedPlotly"></div></td><td vAlign="bottom"><div id="constrainingPlotly"></div></td></tr>'
+    h+='<tr><td vAlign="top" style="white-space:nowrap">'
     h+='<hr>'
     h+='<div id="upsetCountDiv">'
     h+='</div>'
-    h+='</td><td vAlign="top"><div id="constrainedPlotly"></div></td></tr>'
+    h+='</td><td vAlign="top" colspan=2><div id="upsetTableDiv"></td>'
+    h+='</tr>'
     h+='</table>'
     setTimeout(upset.count,1000)
     return h
 }
+    
 
 upset={
     data:{
@@ -76,7 +78,7 @@ upset.count=function(data=qaqc.data,div='upsetCountDiv'){
         let c = {}
         c[p]=upset.data.countAll.reduce((a,b)=>a+b)
         upset.data.countConstrained.push(c)
-        h+=`<br>${i+1}. with ${p}: (<span style="color:blue">${c[p]}</span>)`
+        h+=`<br>${i+1}. with ${p.replace(' available','')}: (<span style="color:blue">${c[p]}</span>)`
     })
     upset.data.countParms={}
     upset.data.parms.forEach(s=>{
@@ -118,11 +120,19 @@ upset.constrainingPlotly=_=>{
         trace.text.push(p)
     })
     Plotly.newPlot('constrainingPlotly',[trace],{
-        height: 35*upset.data.parms.length,
-        width: 500,
+        //height: 35*upset.data.parms.length,
+        height:300,
+        width: 300,
         yaxis: {autorange: 'reversed'},
         xaxis:{
             title:'cohort size (# individuals)'
+        },
+        margin: {
+            l: 20,
+            r: 5,
+            b: 40,
+            t: 10,
+            pad: 4
         }
     })
 }
@@ -149,7 +159,7 @@ upset.constrainedPlotly=_=>{
             showarrow: false,
             x: i,
             y: x[L],
-            text:`${upset.data.parms.indexOf(L)}. ${L}`,
+            text:`${upset.data.parms.indexOf(L)+1}. ${L}`,
             textangle:-30,
             font: {
                 color: 'green',
@@ -160,13 +170,43 @@ upset.constrainedPlotly=_=>{
         annotations[0].font.color='maroon'
 
     })
-    Plotly.newPlot('constrainedPlotly',[trace],{
-        height: 500,
-        width: 500,
-        yaxis:{
-            title:'cohort size (# individuals)'
+    let layout={
+        height: 300,
+        width: 200,
+        margin: {
+            l: 60,
+            r: 5,
+            b: 20,
+            t: 10,
+            pad: 4
         },
         annotations:annotations
-    })
-    
+    }
+    if(upset.data.selectedParms.length>0){
+        layout.yaxis={
+            title:'cohort size (# individuals)'
+        }
+        layout.width=Math.min(450,200+40*upset.data.selectedParms.length)
+        layout.margin.l=50
+    }
+    Plotly.newPlot('constrainedPlotly',[trace],layout)
+    setTimeout(upset.table,1000)
+}
+
+upset.table=(div='upsetTableDiv')=>{
+    if(typeof(div)=='string'){
+        div=document.getElementById(div)
+    }
+    h='<hr><table>'
+    // headers
+    //h+='<tr>'
+    for(let i=2;i<10;i++){
+        h+='<tr>'
+        h+=`<td style="color:green" align="left">${i+1}. ${upset.data.parms[i].slice(0,upset.data.parms[i].indexOf('_'))}</td>`
+        //h+=`<td style="writing-mode:vertical-lr;transform:rotate(-90deg);transform-origin:top right">${upset.data.parms[i].slice(0,upset.data.parms[i].indexOf('_'))}</td>`
+        h+='</tr>'
+    }
+    h+='</table>'
+    div.innerHTML=h
+    return div
 }

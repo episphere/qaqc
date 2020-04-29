@@ -2,7 +2,7 @@
 
 runQAQC=function(data){
     console.log(`upset.js runQAQC function ran at ${Date()}`)
-    let h=`<table><tr><td vAlign="bottom" style="white-space:nowrap">`
+    let h=`<table align="left"><tr><td vAlign="bottom" style="white-space:nowrap">`
     h+=`<p>Data: ${Object.keys(data).length}x${qaqc.data[Object.keys(data)[0]].length}, demo:<a href="https://www.youtube.com/watch?v=Asi0jMGz3fQ" target="_blank" style="background-color:yellow">YouTube</a></p>`
     h+='<p style="color:blue">Studies: <br><span style="color:brown">'
     upset.getStudies()
@@ -16,7 +16,7 @@ runQAQC=function(data){
         h+=`<br>${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
     })
     h+='</span></p>'
-    h+='</td><td vAlign="bottom"><div id="constrainedPlotly"></div></td><td vAlign="bottom"><div id="constrainingPlotly"></div></td></tr>'
+    h+='</td><td vAlign="bottom" width=100><div id="constrainedPlotly"></div></td><td vAlign="bottom" align="left"><div id="constrainingPlotly"></div></td></tr>'
     h+='<tr><td vAlign="top" style="white-space:nowrap">'
     h+='<hr>'
     h+='<div id="upsetCountDiv">'
@@ -197,12 +197,48 @@ upset.table=(div='upsetTableDiv')=>{
     if(typeof(div)=='string'){
         div=document.getElementById(div)
     }
+    /*
+    let fac=(n,p=1)=>{
+        if(n>1){return fac(n-1,p*n)}
+        else{return p}
+    }
+    let comb=(n,k)=>fac(n)/(fac(n-k)*fac(k))
+    let n=0 // number of combinations
+    */
+    let m=upset.data.parms.length-2
+    //for(var i=1;i<=m;i++){n+=comb(m,i)}
+    let n=2**m
+    upset.baseStr=[... Array(m+1)].map(_=>'0').join('')
+    int2bin=function(x,baseStr=upset.baseStr){
+        let i = Math.floor(Math.log2(x))
+        baseStr=baseStr.split('')
+        baseStr[baseStr.length-i-1]='1'
+        //baseStr[i]='1'
+        baseStr=baseStr.join('')
+        x = x-2**i
+        if(x>0){
+            return int2bin(x,baseStr)
+        }else{
+            return baseStr
+        }
+    }
+    upset.values=[]
+    for(var i=1;i<=2**m;i++){
+        upset.values[i]={
+            str:int2bin(i),
+            count:0
+        }
+    }
     h='<hr><table>'
     // headers
     //h+='<tr>'
-    for(let i=2;i<10;i++){
+    for(let i=2;i<m+2;i++){
         h+='<tr>'
-        h+=`<td style="color:green" align="left">${i+1}. ${upset.data.parms[i].slice(0,upset.data.parms[i].indexOf('_'))}</td>`
+        h+=`<td style="color:green" align="left">${i+1}.${upset.data.parms[i].slice(0,upset.data.parms[i].indexOf('_'))}</td>`
+        for(let j=1;j<=2**m;j++){
+            if(upset.values[j].str[i]=='0'){h+=`<td>&#9898;</td>`}
+            else {h+=`<td>&#9899;</td>`}
+        }
         //h+=`<td style="writing-mode:vertical-lr;transform:rotate(-90deg);transform-origin:top right">${upset.data.parms[i].slice(0,upset.data.parms[i].indexOf('_'))}</td>`
         h+='</tr>'
     }

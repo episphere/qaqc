@@ -125,7 +125,7 @@ upset.constrainingPlotly=_=>{
         width: 300,
         yaxis: {autorange: 'reversed'},
         xaxis:{
-            title:'cohort size (# individuals)'
+            title:'# selected individuals with attribute'
         },
         margin: {
             l: 20,

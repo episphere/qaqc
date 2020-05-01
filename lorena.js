@@ -163,6 +163,17 @@ runQAQC = function (data) {
   }
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
+  //QC_02_01 check personID for unique values
+  
+  personIDCheckColumns=   data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i)  // fix to person ID?
+  if (data1.BCAC_ID != undefined) {
+    if (personIDCheckColumns.length > 0) {
+      h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether PersonID is unique within each study.
+      <br>Duplicate(s) found: ${personIDCheckColumns}
+      <br>Blank values are not allowed in this variable.</p>`
+    }
+  }
+  
   //QC_03_01 check study for empty rows
   let studyCheckColumns = checkColumnsEmpty("study")
   if (data1.study != undefined) {

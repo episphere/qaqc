@@ -163,8 +163,16 @@ runQAQC = function (data) {
   }
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
+  //QC_01_01 check personID for unique values
+  uniqueIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i)
+  if (data1.uniqueID != undefined) {
+    if (uniqueIDCheckColumns.length > 0) {
+      h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether uniqueID is unique within each study.
+      <br>Duplicate(s) found: ${uniqueIDCheckColumns}. Blank values are not allowed in this variable? PersonID 
+      should be  a concatenation of Study Acronym, "-", and PersonID, a few studies have created a new UniiqueID, which is also ok.</p>`
+    }
+  }
   //QC_02_01 check personID for unique values
-
   personIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
   if (data1.BCAC_ID != undefined) {
     if (personIDCheckColumns.length > 0) {
@@ -172,7 +180,6 @@ runQAQC = function (data) {
       <br>Duplicate(s) found: ${personIDCheckColumns}. Blank values are not allowed in this variable.</p>`
     }
   }
-
   //QC_03_01 check study for empty rows
   let studyCheckColumns = checkColumnsEmpty("study")
   if (data1.study != undefined) {
@@ -358,7 +365,7 @@ runQAQC = function (data) {
       }
     })
   }
-    //QC_11 ageInt 
+  //QC_11 ageInt 
   let ageCheckColumnsNum = checkColumnsNum(variable = "ageInt", min = 12, max = 100)
   if (data1.ageInt != undefined) {
     if (ageCheckColumnsNum != false) {
@@ -379,9 +386,44 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
       if (k == undefined && (data1["ageDiagIndex"] == 888 || data1["ageDiagIndex"] == undefined)) { //agediag== 888 or null, is null blank?
-        h += `<p style="color:red;font-size: 20px">QC_11_01 check row ${idx+2} : 
-          When AgeInt is missing, if AgeDiagIndex = null or 888, 
-          update AgeInt with 888. (agediag== 888 or null, is null blank?)</p>`
+        h += `<p style="color:darkblue;font-size: 20px">QC_11_02 check row ${idx+2} : 
+          When AgeInt is missing, if AgeDiagIndex = null or 888, update AgeInt with 888.</p>`
+      }
+    })
+  }
+  //QC_11_03 ageInt 
+  if (data1.ageInt != undefined) {
+    data1["ageInt"].forEach((k, idx) => {
+      if (k == undefined && data1["ageDiagIndex"] != undefined){
+        h += `<p style="color:darkblue;font-size: 20px">QC_11_03 check row ${idx+2} : 
+          If AgeInt is missing and AgeDiagIndex is not null, update AgeInt with ageDiagIndex.</p>`
+      }
+    })
+  }
+  //QC_11_04 ageInt 
+  if (data1.ageInt != undefined) {
+    data1["ageInt"].forEach((k, idx) => {
+      if (data1["ageDiagIndex"] != 777 && data1["ageDiagIndex"] != undefined && data1["status"] == 0) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_11_04 check row ${idx+2} : 
+              If there are ageDiag data for controls, check with study if this is meant to be ageInt data.</p>`
+      }
+    })
+  }
+  //QC_11_05 ageInt 
+  if (data1.ageInt != undefined) {
+    data1["ageInt"].forEach((k, idx) => {
+      if (k == undefined) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_11_05 check row ${idx+2} : 
+        AgeInt should not be null.</p>`
+      }
+    })
+  }
+  //QC_11_06 ageInt 
+  if (data1.ageInt != undefined) {
+    data1["ageInt"].forEach((k, idx) => {
+      if (k < 18) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_11_06 check row ${idx+2} : 
+        AgeInt should not be < 18.</p>`
       }
     })
   }
@@ -626,40 +668,40 @@ runQAQC = function (data) {
       }
     })
   }
-//QC_22 raceM (covers QC_02_02)
-let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceM")
-if (data1.raceM != undefined) {
-  if (raceMCheckColumns != false) {
-    h += `<ul style="color:darkblue;font-size: 15px"> Valid raceM values 
+  //QC_22 raceM (covers QC_02_02)
+  let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceM")
+  if (data1.raceM != undefined) {
+    if (raceMCheckColumns != false) {
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid raceM values 
     should be between 1 and 6 or 888.</ul>`
+    }
   }
-}
-//QC_22_01
-if (data1.raceM != undefined) {
-  data1["raceM"].forEach((k, idx) => {
-    if (k === undefined) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_22_01 check row ${idx+2} : 
+  //QC_22_01
+  if (data1.raceM != undefined) {
+    data1["raceM"].forEach((k, idx) => {
+      if (k === undefined) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_22_01 check row ${idx+2} : 
       if raceM is missing, update it with 888. Blanks are not allowed in this column.</p>`
-    }
-  })
-}
-//QC_23 raceF
-let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
-if (data1.raceF != undefined) {
-  if (raceFCheckColumns != false) {
-    h += `<ul style="color:darkblue;font-size: 15px"> Valid raceF values 
-    should be between 1 and 6 or 888.</ul>`
+      }
+    })
   }
-}
-//QC_23_01
-if (data1.raceF != undefined) {
-  data1["raceF"].forEach((k, idx) => {
-    if (k === undefined) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_23_01 check row ${idx+2} : 
-      if raceF is missing, update it with 888. Blanks are not allowed in this column.</p>`
+  //QC_23 raceF
+  let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
+  if (data1.raceF != undefined) {
+    if (raceFCheckColumns != false) {
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid raceF values 
+    should be between 1 and 6 or 888.</ul>`
     }
-  })
-}
+  }
+  //QC_23_01
+  if (data1.raceF != undefined) {
+    data1["raceF"].forEach((k, idx) => {
+      if (k === undefined) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_23_01 check row ${idx+2} : 
+      if raceF is missing, update it with 888. Blanks are not allowed in this column.</p>`
+      }
+    })
+  }
 
   //QC_25 famHist
   let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888, "0", "1", "888"], variable = "famHist")

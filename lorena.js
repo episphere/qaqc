@@ -25,11 +25,11 @@ runQAQC = function (data) {
       return !a2Set.has(x);
     })
   }
-
+console.log(upCol.length)
   let failedUpCol = difference(upCol, acceptedCol)
 
   if (failedUpCol.length > 0) {
-    var failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
+    let failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
     h += `<p style= "color:darkblue;font-size: 20px">ERROR! ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:darkblue;font-size: 20px"> ${failedUpCol.join(", ")}</ul>`
     h += `<ul style= "color:darkblue;font-size: 15px">Please choose from the following variable options: <br>${allCol.join(", ")}</ul>`
@@ -164,7 +164,9 @@ runQAQC = function (data) {
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
   //QC_01_01 check personID for unique values
-  let uniqueIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i)
+  if (data1.uniqueID != undefined) {
+  let uniqueIDCheckColumns = data1["UniqueID"].filter((e, i, a) => a.indexOf(e) !== i)
+  }
   if (data1.uniqueID != undefined) {
     if (uniqueIDCheckColumns.length > 0) {
       h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether uniqueID is unique within each study.
@@ -172,9 +174,12 @@ runQAQC = function (data) {
       should be  a concatenation of Study Acronym, "-", and PersonID, a few studies have created a new UniiqueID, which is also ok.</p>`
     }
   }
+
   //QC_02_01 check personID for unique values
-  let personIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
-  if (data1.BCAC_ID != undefined) {
+  if (data1.uniqueID != undefined) {
+  let personIDCheckColumns = data1["PersonID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
+  }
+  if (data1.personID != undefined) {
     if (personIDCheckColumns.length > 0) {
       h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether PersonID is unique within each study.
       <br>Duplicate(s) found: ${personIDCheckColumns}. Blank values are not allowed in this variable.</p>`
@@ -229,6 +234,7 @@ runQAQC = function (data) {
       }
     })
   }
+
   //QC_04_05 contrType
   if (data1.contrType != undefined) {
     data1["contrType"].forEach((contrType, idx) => {
@@ -818,12 +824,13 @@ if (data1.refMonth != undefined) {
   //   })
   // }
   // Check for errors (return false) from checkcolumns function, if true.. alert ERROR!
+
+
   const checkColumnsList = [studyCheckColumns, statusCheckColumns, erCheckColumns,
     contrTypeCheckColumns, matchidCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
     exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns,
     famHistCheckColumns, ageCheckColumnsNum
   ]
-  console.log("save file")
 
   for (i = 0; i < checkColumnsList.length; i++) {
     if (checkColumnsList[i] != false || failedUpCol.length > 0) {
@@ -831,7 +838,6 @@ if (data1.refMonth != undefined) {
       break;
     }
   }
-  console.log("save file")
 
   h += qaqc.saveFile(JSON.stringify(data1))
   return h

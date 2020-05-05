@@ -164,7 +164,7 @@ runQAQC = function (data) {
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
   //QC_01_01 check personID for unique values
-  uniqueIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i)
+  let uniqueIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i)
   if (data1.uniqueID != undefined) {
     if (uniqueIDCheckColumns.length > 0) {
       h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether uniqueID is unique within each study.
@@ -173,7 +173,7 @@ runQAQC = function (data) {
     }
   }
   //QC_02_01 check personID for unique values
-  personIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
+  let personIDCheckColumns = data1["BCAC_ID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
   if (data1.BCAC_ID != undefined) {
     if (personIDCheckColumns.length > 0) {
       h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether PersonID is unique within each study.
@@ -280,6 +280,7 @@ runQAQC = function (data) {
     })
   }
   //QC_07 subStudy
+  console.log("QC 07 subStudy")
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = "subStudy")
   //QC_07 subStudy valid values
   if (data1.subStudy != undefined) {
@@ -319,6 +320,7 @@ runQAQC = function (data) {
     })
   }
   //QC_09 exclusion
+  console.log("QC 09 exclusion")
   let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888], variable = "exclusion")
   //QC_09 exclusion valid values
   if (data1.exclusion != undefined) {
@@ -382,30 +384,33 @@ runQAQC = function (data) {
       }
     })
   }
+  console.log("QC 11 ageInt")
+
   //QC_11_02 ageInt 
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
-      if (k == undefined && (data1["ageDiagIndex"] == 888 || data1["ageDiagIndex"] == undefined)) { //agediag== 888 or null, is null blank?
+      if (k == undefined && (data1["AgeDiagIndex"][idx] == 888 || data1["AgeDiagIndex"][idx] == undefined)){ //agediag== 888 or null, is null blank?
         h += `<p style="color:darkblue;font-size: 20px">QC_11_02 check row ${idx+2} : 
           When AgeInt is missing, if AgeDiagIndex = null or 888, update AgeInt with 888.</p>`
       }
     })
   }
+
   //QC_11_03 ageInt 
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
-      if (k == undefined && data1["ageDiagIndex"] != undefined){
+      if (k == undefined && (data1["AgeDiagIndex"][idx] != undefined)){
         h += `<p style="color:darkblue;font-size: 20px">QC_11_03 check row ${idx+2} : 
-          If AgeInt is missing and AgeDiagIndex is not null, update AgeInt with ageDiagIndex.</p>`
+          If AgeInt is missing and AgeDiagIndex is not null, update AgeInt with AgeDiagIndex.</p>`
       }
     })
   }
   //QC_11_04 ageInt 
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
-      if (data1["ageDiagIndex"] != 777 && data1["ageDiagIndex"] != undefined && data1["status"] == 0) {
+      if ((data1["AgeDiagIndex"][idx] != 777) && (data1["AgeDiagIndex"][idx] != undefined) && (data1["status"] == 0)){
         h += `<p style="color:darkblue;font-size: 20px">QC_11_04 check row ${idx+2} : 
-              If there are ageDiag data for controls, check with study if this is meant to be ageInt data.</p>`
+              If there are AgeDiagIndex data for controls, check with study if this is meant to be ageInt data.</p>`
       }
     })
   }
@@ -427,6 +432,47 @@ runQAQC = function (data) {
       }
     })
   }
+    //QC_13_01 refMonth 
+
+    if (data1.refMonth != undefined) {
+      data1["refMonth"].forEach((k, idx) => {
+        if ((k >12 || k < 1) && k != 888 ) {
+          h += `<p style="color:darkblue;font-size: 20px">QC_13_01 check row ${idx+2} : 
+          Month should be between 1 and 12 or 888.</p>`
+        }
+      })
+    }
+    //QC_13_02 refMonth 
+    console.log("QC 13 02 refMonth")
+
+    if (data1.refMonth != undefined) {
+      data1["refMonth"].forEach((k, idx) => {
+        if ((k == undefined) && (data1["status"][idx] == 1) && (data1["AgeDiagIndex"][idx] != undefined) ) {
+          h += `<p style="color:darkblue;font-size: 20px">QC_13_02 check row ${idx+2} : 
+          If refmonth is missing and dateDiag in case is available, update refmonth with mont(dateDiag).</p>`
+        }
+      })
+    }
+
+//QC_13_03 refMonth 
+if (data1.refMonth != undefined) {
+  data1["refMonth"].forEach((k, idx) => {
+    if ((k == undefined) && (data1["intDate"][idx] != undefined) && data1["status"][idx] == 0) {
+      h += `<p style="color:darkblue;font-size: 20px">QC_13_03 check row ${idx+2} : 
+      For controls, if refMonth is missing but intDate is available, update refMonth with month(intDate).</p>`
+    }
+  })
+}
+//QC_13_04 refMonth 
+if (data1.refMonth != undefined) {
+  data1["refMonth"].forEach((k, idx) => {
+    if (k == undefined  ) {
+      h += `<p style="color:darkblue;font-size: 20px">QC_13_04 check row ${idx+2} : 
+      If refmonth is missing, update with 888.</p>`
+    }
+  })
+}
+
   // QC_16 sex (M, F, U)
   let sexCheckColumns = checkColumns(validValuesList = ["M", "F", "U"], variable = "sex")
   if (data1.ethnicityClass != undefined) {
@@ -445,7 +491,9 @@ runQAQC = function (data) {
       }
     })
   }
+
   //QC_17 ethnicityClass
+  console.log("QC 17 ethnicityClass")
   let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "ethnicityClass")
   if (data1.ethnicityClass != undefined) {
     if (ethnicityClassCheckColumns != false) {
@@ -686,6 +734,8 @@ runQAQC = function (data) {
     })
   }
   //QC_23 raceF
+  console.log("QC 23 raceF")
+
   let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888], variable = "raceF")
   if (data1.raceF != undefined) {
     if (raceFCheckColumns != false) {
@@ -742,6 +792,8 @@ runQAQC = function (data) {
     }
   }
   //QC_29 DNA_source
+  console.log("QC 29 DNA_source")
+
   let DNA_sourceClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 888], variable = "DNA_source")
   //(29_valid_values)
   if (data1.DNA_source != undefined) {
@@ -751,6 +803,8 @@ runQAQC = function (data) {
        <br>Blank values are not allowed?? blanks not in dict or rules in this variable.</ul>`
     }
   }
+  console.log("save file")
+
   //  QC_29_01 DNA_source
   // if (data1.DNA_source != undefined) {
   //   data1["DNA_source"].forEach((k, idx) => {
@@ -769,6 +823,7 @@ runQAQC = function (data) {
     exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns,
     famHistCheckColumns, ageCheckColumnsNum
   ]
+  console.log("save file")
 
   for (i = 0; i < checkColumnsList.length; i++) {
     if (checkColumnsList[i] != false || failedUpCol.length > 0) {
@@ -776,6 +831,7 @@ runQAQC = function (data) {
       break;
     }
   }
+  console.log("save file")
 
   h += qaqc.saveFile(JSON.stringify(data1))
   return h

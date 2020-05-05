@@ -212,8 +212,8 @@ upset.table=(div='upsetTableDiv')=>{
     int2bin=function(x,baseStr=upset.baseStr){
         let i = Math.floor(Math.log2(x))
         baseStr=baseStr.split('')
-        baseStr[baseStr.length-i-1]='1'
-        //baseStr[i]='1'
+        //baseStr[baseStr.length-i-1]='1'
+        baseStr[i+1]='1'
         baseStr=baseStr.join('')
         x = x-2**i
         if(x>0){

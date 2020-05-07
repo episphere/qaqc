@@ -89,6 +89,7 @@ upset.count=function(data=qaqc.data,div='upsetCountDiv'){
         c.textContent=upset.data.countParms[s]
     })
     h+='</p>'
+    h+='<img src="downset.png">'
     div.innerHTML=h
     upset.constrainingPlotly()
     upset.constrainedPlotly()

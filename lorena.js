@@ -225,7 +225,7 @@ runQAQC = function (data) {
           if ((isEmpty(data1[k][i])) === true) {
             badCount.push(" blank ")
             badPosition.push(" " + (Number(i) + 2) + " ")
-          } else if (!(((data1[k][i]) % 1 === 0) && (num % 1 === 0))) {
+          } else if ((data1[k][i] != num) && (/\d/.test(data1[k][i])==false)) {
             badCount.push(" " + (data1[k][i]) + " ")
             badPosition.push(" " + (Number(i) + 2) + " ")
           } else {}
@@ -915,9 +915,10 @@ runQAQC = function (data) {
   let fhscoreCheckColumns = checkColumnsInt(variable = fhscore, num = 888) // add way to read str like checkcolumns
   if (data1[fhscore] != undefined) {
     if (fhscoreCheckColumns != false) {
-      h += `<ul style="color:red;font-size: 15px"> Valid values include 
-    1 for each first degree affected relative, 0.5 for second degree, 0.25 for third degree (not ovarian for any relative), 888 = don't know.
-       <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
+    1 for each first degree affected relative, 0.5 for second degree, 
+    0.25 for third degree (not ovarian for any relative), and 888 = don't know.
+       <br>Blank values are not allowed in this variable.</ul>`
     }
   }
   //QC_28 ER_status

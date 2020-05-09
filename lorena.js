@@ -11,26 +11,158 @@ runQAQC = function (data) {
   const data1 = qaqc.data
   const data2 = qaqc.dataArray
   let upCol = [] //columns uploaded
-  const allCol = ["UniqueID", "PersonID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchid", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
+  // for (var [key, value] of Object.entries(qaqc.data)) {
+  //   var key="/"+key+"/gi"
+  //   upCol.push(key)
+  // }
+  const allCol = ["uniqueID", "personID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchid", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
   for (var [key, value] of Object.entries(qaqc.data)) {
     upCol.push(key)
   }
 
   // check if column names match the data dictionary
   let acceptedCol = upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
+  //https://stackoverflow.com/questions/47008384/es6-filter-an-array-with-regex
+  //https://stackoverflow.com/questions/42035717/js-filter-object-array-for-partial-matches
+  //https://stackoverflow.com/questions/46771410/javascript-regex-how-to-filter-characters-that-are-not-part-of-regex
+  //regex  
 
+  //try this*******************use .match? true false
+  //let regexp1=(new RegExp(('^Status'+'{0,5}$'), 'gi'));
+  // upCol.filter(x =>console.log(x,regexp1, regexp1.test(x)))
+
+
+  //console.log(str.match(/[^a-z0-9\-_.&\s]/gi))
+  // const matchedSites = Object.keys(data1).filter((x) => x.match(/Status/gi));
+  // console.log(matchedSites);
+  // let stat= allCol.forEach(variable=> {
+  //           let regexp1=(new RegExp(variable,'i'))
+  //           upCol.filter(x => regexp1.test(x))
+
+  //rename keys to run QCs*******************
+  // function renameKeys(obj, newKeys) {
+  //   const keyValues = Object.keys(obj).map(key => {
+  //     const newKey = newKeys[key] || key;
+  //     return { [newKey]: obj[key] };
+  //   });
+  //   return Object.assign({}, ...keyValues);
+  // }
+  // const obj = { a: "1", b: "2" };
+  // const newKeys = { a: "A", c: "C" };
+  // const renamedObj = renameKeys(obj, newKeys);
+  // console.log(renamedObj);
+  // {A:"1", b:"2"}
+
+  // Object.keys(data1).forEach(key =>{
+  //   if (key.match(/^Status{0,5}$/gi)!= null){
+  //     console.log(key.match(/^Status{0,5}$/gi))
+  //   }
+  // })
+  //tryfor study**********
+//define variables from input column names////////////////////////////
+  let uniqueID = Object.keys(data1).map(key =>
+    key.match(/^UniqueID$/gi)).filter(key =>
+    key != undefined);
+  let personID = Object.keys(data1).map(key =>
+    key.match(/^PersonID$/gi)).filter(key =>
+    key != undefined);
+  let study = Object.keys(data1).map(key =>
+    key.match(/^study$/gi)).filter(key =>
+    key != undefined);
+  let contrType = Object.keys(data1).map(key =>
+    key.match(/^contrType$/gi)).filter(key =>
+    key != undefined);
+  let status = Object.keys(data1).map(key =>
+    key.match(/^status$/gi)).filter(key =>
+    key != undefined);
+  let DNA_source = Object.keys(data1).map(key =>
+    key.match(/^DNA_source$/gi)).filter(key =>
+    key != undefined);
+  let DNA_sourceOt = Object.keys(data1).map(key =>
+    key.match(/^DNA_sourceOt$/gi)).filter(key =>
+    key != undefined);
+  let matchid = Object.keys(data1).map(key =>
+    key.match(/^matchid$/gi)).filter(key =>
+    key != undefined);
+  let subStudy = Object.keys(data1).map(key =>
+    key.match(/^subStudy$/gi)).filter(key =>
+    key != undefined);
+  let studyType = Object.keys(data1).map(key =>
+    key.match(/^studyType$/gi)).filter(key =>
+    key != undefined);
+  let exclusion = Object.keys(data1).map(key =>
+    key.match(/^exclusion$/gi)).filter(key =>
+    key != undefined);
+  let ageInt = Object.keys(data1).map(key =>
+    key.match(/^ageInt$/gi)).filter(key =>
+    key != undefined);
+  let intDate = Object.keys(data1).map(key =>
+    key.match(/^intDate$/gi)).filter(key =>
+    key != undefined);
+  let intDate_known = Object.keys(data1).map(key =>
+    key.match(/^intDate_known$/gi)).filter(key =>
+    key != undefined);
+  let intDay = Object.keys(data1).map(key =>
+    key.match(/^intDay$/gi)).filter(key =>
+    key != undefined);
+  let intMonth = Object.keys(data1).map(key =>
+    key.match(/^intMonth$/gi)).filter(key =>
+    key != undefined);
+  let intYear = Object.keys(data1).map(key =>
+    key.match(/^intYear$/gi)).filter(key =>
+    key != undefined);
+  let refMonth = Object.keys(data1).map(key =>
+    key.match(/^refMonth$/gi)).filter(key =>
+    key != undefined);
+  let refYear = Object.keys(data1).map(key =>
+    key.match(/^refYear$/gi)).filter(key =>
+    key != undefined);
+  let AgeDiagIndex = Object.keys(data1).map(key =>
+    key.match(/^AgeDiagIndex$/gi)).filter(key =>
+    key != undefined);
+  let sex = Object.keys(data1).map(key =>
+    key.match(/^sex$/gi)).filter(key =>
+    key != undefined);
+  let ethnicityClass = Object.keys(data1).map(key =>
+    key.match(/^ethnicityClass$/gi)).filter(key =>
+    key != undefined);
+  let ethnicitySubClass = Object.keys(data1).map(key =>
+    key.match(/^ethnicitySubClass$/gi)).filter(key =>
+    key != undefined);
+  let ethnOt = Object.keys(data1).map(key =>
+    key.match(/^ethnOt$/gi)).filter(key =>
+    key != undefined);
+  let raceM = Object.keys(data1).map(key =>
+    key.match(/^raceM$/gi)).filter(key =>
+    key != undefined);
+  let raceF = Object.keys(data1).map(key =>
+    key.match(/^raceF$/gi)).filter(key =>
+    key != undefined);
+  let famHist = Object.keys(data1).map(key =>
+    key.match(/^famHist$/gi)).filter(key =>
+    key != undefined);
+  let fhnumber = Object.keys(data1).map(key =>
+    key.match(/^fhnumber$/gi)).filter(key =>
+    key != undefined);
+  let fhscore = Object.keys(data1).map(key =>
+    key.match(/^fhscore$/gi)).filter(key =>
+    key != undefined);
+  let ER_statusIndex = Object.keys(data1).map(key =>
+    key.match(/^ER_statusIndex$/gi)).filter(key =>//add space regex***?
+    key != undefined);
+  //////////////////////////////////////////////////////////
   function difference(a1, a2) {
     let a2Set = new Set(a2);
     return a1.filter(function (x) {
       return !a2Set.has(x);
     })
   }
-console.log(upCol.length)
+  console.log(upCol.length)
   let failedUpCol = difference(upCol, acceptedCol)
 
   if (failedUpCol.length > 0) {
-    let failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling or remove excess columns."
-    h += `<p style= "color:darkblue;font-size: 20px">ERROR! ${failed_str}</p>` //${upCol.join(", ")}
+    let failed_str = " The following " + failedUpCol.length + " column(s) rejected. Please check spelling (case-sensistive) or remove excess columns."
+    h += `<p style= "color:darkblue;font-size: 20px">Warning! ${failed_str}</p>` //${upCol.join(", ")}
     h += `<ul style= "color:darkblue;font-size: 20px"> ${failedUpCol.join(", ")}</ul>`
     h += `<ul style= "color:darkblue;font-size: 15px">Please choose from the following variable options: <br>${allCol.join(", ")}</ul>`
   } else {
@@ -165,7 +297,7 @@ console.log(upCol.length)
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
   //QC_01_01 check personID for unique values
   if (data1.uniqueID != undefined) {
-  let uniqueIDCheckColumns = data1["UniqueID"].filter((e, i, a) => a.indexOf(e) !== i)
+    let uniqueIDCheckColumns = data1["UniqueID"].filter((e, i, a) => a.indexOf(e) !== i)
   }
   if (data1.uniqueID != undefined) {
     if (uniqueIDCheckColumns.length > 0) {
@@ -177,7 +309,7 @@ console.log(upCol.length)
 
   //QC_02_01 check personID for unique values
   if (data1.uniqueID != undefined) {
-  let personIDCheckColumns = data1["PersonID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
+    let personIDCheckColumns = data1["PersonID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
   }
   if (data1.personID != undefined) {
     if (personIDCheckColumns.length > 0) {
@@ -186,7 +318,7 @@ console.log(upCol.length)
     }
   }
   //QC_03_01 check study for empty rows
-  let studyCheckColumns = checkColumnsEmpty("study")
+  let studyCheckColumns = checkColumnsEmpty(study)
   if (data1.study != undefined) {
     if (studyCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px">Blank values are not allowed in this variable.</ul>`
@@ -259,7 +391,7 @@ console.log(upCol.length)
   }
 
   //QC_05 status
-  let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9], variable = "status")
+  let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9, "0", "1", "2", "3", "9"], variable = "status")
   //QC_05 status valid values
   if (data1.status != undefined) {
     if (statusCheckColumns != false) {
@@ -395,7 +527,7 @@ console.log(upCol.length)
   //QC_11_02 ageInt 
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
-      if (k == undefined && (data1["AgeDiagIndex"][idx] == 888 || data1["AgeDiagIndex"][idx] == undefined)){ //agediag== 888 or null, is null blank?
+      if (k == undefined && (data1["AgeDiagIndex"][idx] == 888 || data1["AgeDiagIndex"][idx] == undefined)) { //agediag== 888 or null, is null blank?
         h += `<p style="color:darkblue;font-size: 20px">QC_11_02 check row ${idx+2} : 
           When AgeInt is missing, if AgeDiagIndex = null or 888, update AgeInt with 888.</p>`
       }
@@ -405,7 +537,7 @@ console.log(upCol.length)
   //QC_11_03 ageInt 
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
-      if (k == undefined && (data1["AgeDiagIndex"][idx] != undefined)){
+      if (k == undefined && (data1["AgeDiagIndex"][idx] != undefined)) {
         h += `<p style="color:darkblue;font-size: 20px">QC_11_03 check row ${idx+2} : 
           If AgeInt is missing and AgeDiagIndex is not null, update AgeInt with AgeDiagIndex.</p>`
       }
@@ -414,7 +546,7 @@ console.log(upCol.length)
   //QC_11_04 ageInt 
   if (data1.ageInt != undefined) {
     data1["ageInt"].forEach((k, idx) => {
-      if ((data1["AgeDiagIndex"][idx] != 777) && (data1["AgeDiagIndex"][idx] != undefined) && (data1["status"] == 0)){
+      if ((data1["AgeDiagIndex"][idx] != 777) && (data1["AgeDiagIndex"][idx] != undefined) && (data1["status"] == 0)) {
         h += `<p style="color:darkblue;font-size: 20px">QC_11_04 check row ${idx+2} : 
               If there are AgeDiagIndex data for controls, check with study if this is meant to be ageInt data.</p>`
       }
@@ -438,46 +570,46 @@ console.log(upCol.length)
       }
     })
   }
-    //QC_13_01 refMonth 
+  //QC_13_01 refMonth 
 
-    if (data1.refMonth != undefined) {
-      data1["refMonth"].forEach((k, idx) => {
-        if ((k >12 || k < 1) && k != 888 ) {
-          h += `<p style="color:darkblue;font-size: 20px">QC_13_01 check row ${idx+2} : 
+  if (data1.refMonth != undefined) {
+    data1["refMonth"].forEach((k, idx) => {
+      if ((k > 12 || k < 1) && k != 888) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_13_01 check row ${idx+2} : 
           Month should be between 1 and 12 or 888.</p>`
-        }
-      })
-    }
-    //QC_13_02 refMonth 
-    console.log("QC 13 02 refMonth")
+      }
+    })
+  }
+  //QC_13_02 refMonth 
+  console.log("QC 13 02 refMonth")
 
-    if (data1.refMonth != undefined) {
-      data1["refMonth"].forEach((k, idx) => {
-        if ((k == undefined) && (data1["status"][idx] == 1) && (data1["AgeDiagIndex"][idx] != undefined) ) {
-          h += `<p style="color:darkblue;font-size: 20px">QC_13_02 check row ${idx+2} : 
+  if (data1.refMonth != undefined) {
+    data1["refMonth"].forEach((k, idx) => {
+      if ((k == undefined) && (data1["status"][idx] == 1) && (data1["AgeDiagIndex"][idx] != undefined)) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_13_02 check row ${idx+2} : 
           If refmonth is missing and dateDiag in case is available, update refmonth with mont(dateDiag).</p>`
-        }
-      })
-    }
+      }
+    })
+  }
 
-//QC_13_03 refMonth 
-if (data1.refMonth != undefined) {
-  data1["refMonth"].forEach((k, idx) => {
-    if ((k == undefined) && (data1["intDate"][idx] != undefined) && data1["status"][idx] == 0) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_13_03 check row ${idx+2} : 
+  //QC_13_03 refMonth 
+  if (data1.refMonth != undefined) {
+    data1["refMonth"].forEach((k, idx) => {
+      if ((k == undefined) && (data1["intDate"][idx] != undefined) && data1["status"][idx] == 0) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_13_03 check row ${idx+2} : 
       For controls, if refMonth is missing but intDate is available, update refMonth with month(intDate).</p>`
-    }
-  })
-}
-//QC_13_04 refMonth 
-if (data1.refMonth != undefined) {
-  data1["refMonth"].forEach((k, idx) => {
-    if (k == undefined  ) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_13_04 check row ${idx+2} : 
+      }
+    })
+  }
+  //QC_13_04 refMonth 
+  if (data1.refMonth != undefined) {
+    data1["refMonth"].forEach((k, idx) => {
+      if (k == undefined) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_13_04 check row ${idx+2} : 
       If refmonth is missing, update with 888.</p>`
-    }
-  })
-}
+      }
+    })
+  }
 
   // QC_16 sex (M, F, U)
   let sexCheckColumns = checkColumns(validValuesList = ["M", "F", "U"], variable = "sex")
@@ -791,7 +923,7 @@ if (data1.refMonth != undefined) {
   let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888], variable = "ER_statusIndex")
   //(28_valid_values)
   if (data1["ER_statusIndex"] != undefined) {
-    if (statusCheckColumns != false) {
+    if (erCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
         0=negative, 1=positive, 888=DK.
         <br>Blank values are allowed for controls in this variable.</ul>` //add AC_26_01 check fro this

@@ -90,6 +90,9 @@ runQAQC = function (data) {
   let studyType = String(Object.keys(data1).map(key =>
     key.match(/^studyType$/gi)).filter(key =>
     key != undefined))
+    let studyTypeOt = String(Object.keys(data1).map(key =>
+      key.match(/^studyTypeOt$/gi)).filter(key =>
+      key != undefined))
   let exclusion = String(Object.keys(data1).map(key =>
     key.match(/^exclusion$/gi)).filter(key =>
     key != undefined))
@@ -241,6 +244,28 @@ runQAQC = function (data) {
       return false
     }
   }
+  function checkColumnsTxt(variable) {
+    badCount = []
+    badPosition = []
+    Object.keys(data1).forEach(k => {
+      if (k == variable) {
+        for (i = 0; i < data1[k].length; i++) {
+          if (!/[a-z]/gi.test(data1[k][i]) === true && isEmpty(data1[k][i]) === false) {
+            badCount.push(" " + (data1[k][i]) + " ")
+            badPosition.push(" " + (Number(i) + 2) + " ")
+          } 
+        }
+      }
+    })
+    let len_bad = badCount.length
+    let badSet = Array.from(new Set(badCount))
+    if (badSet.length > 0) {
+      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+     <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
+    } else {
+      return false
+    }
+  }
   //use isNumber between function from above in checkCol function 
   function checkColumnsNum(variable, min, max) {
     badCount = []
@@ -279,7 +304,7 @@ runQAQC = function (data) {
             badPosition.push(" " + (Number(i) + 2) + " ")
 
           } else if (!(isValueOneOf(data1[k][i], validValuesList)) && (/\s/g.test(data1[k][i]) == true)) {
-            badCount.push(" " + (data1[k][i]) + "(whitespace) ");
+            badCount.push(" " + (data1[k][i]) + "(+whitespace) ");
             badPosition.push(" " + (Number(i) + 2) + " ");
     
           } else if ((isValueOneOf(value = (data1[k][i]), validValues = validValuesList)) === false) {
@@ -409,14 +434,15 @@ runQAQC = function (data) {
   //QC_06 matchid valid values
   if (data1.matchid != undefined) {
     if (matchidCheckColumns != false) {
-      h += `<ul style="color:red;font-size: 15px"> Valid values include 777=NA, 888=DK. Blank values are not allowed in this variable?</ul>`
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 777=NA, 888=DK. 
+      <br>Blank values are not allowed in this variable.</ul>`
     }
   }
   //QC_06_02 matchid 
   if (data1.matchid != undefined) {
     data1[matchid].forEach((k, idx) => {
       if (k === undefined) {
-        h += `<p style="color:red;font-size: 20px">QC_06_02 check row ${idx+2} : 
+        h += `<p style="color:darkblue;font-size: 20px">QC_06_02 check row ${idx+2} : 
           If matchid is missing (not an individually matched study), update matchid with 777.</p>`
       }
     })
@@ -461,15 +487,16 @@ runQAQC = function (data) {
       }
     })
   }
+
   //QC_09 exclusion
   console.log("QC 09 exclusion")
   let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888,"0","5","6","7","8","777","888"], variable = exclusion)
   //QC_09 exclusion valid values
   if (data1[exclusion] != undefined) {
     if (exclusionCheckColumns != false) {
-      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
       0=include, 5=no phenotypic data, 6=other, 7=non-breast carcinoma (e.g. sarcoma), 8=duplicate sample, 888=don't know
-      <br>Blank values are not allowed in this variable?</ul>`
+      <br>Blank values are not allowed in this variable</ul>`
     }
   }
   //QC_09_01 exclusion 
@@ -522,7 +549,8 @@ runQAQC = function (data) {
     data1[ageInt].forEach((k, idx) => {
       if (k == 777) {
         h += `<p style="color:darkblue;font-size: 20px">QC_11_01 check row ${idx+2} : 
-            AgeInt should be between 10 and 100 (excluding 888); 777 is not a valid code. Blank values are not allowed in this variable.</p>`
+            AgeInt should be between 10 and 100 (excluding 888); 
+            777 is not a valid code. Blank values are not allowed in this variable.</p>`
       }
     })
   }
@@ -636,9 +664,9 @@ runQAQC = function (data) {
   let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888,"1","2","3","4","5","6","888"], variable = ethnicityClass)
   if (data1.ethnicityClass != undefined) {
     if (ethnicityClassCheckColumns != false) {
-      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
     1=European, 2=Hispanic American, 3=African, 4=Asian Subcontinent, 5=Sout-East Asian, 6=Other (including 'mixed race'), 888 = don't know.
-       <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+       <br>Blank values are not allowed in this variable.</ul>`
     }
   }
   //  QC_17_01 ethnicityClass
@@ -898,8 +926,7 @@ runQAQC = function (data) {
     if (famHistCheckColumns != false) {
       h += `<ul style="color:red;font-size: 15px"> Valid values include 
       family history of  breast cancer in a first degree relative (0=no, 1=yes), 888 = don't know.
-       <br>Blank values are not allowed?? blanks not in dict or rules for controls 
-       in this variable.</ul>`
+       <br>Blank values are not allowed in this variable.</ul>`
     }
   }
   //QC_27 fhnumber
@@ -908,7 +935,7 @@ runQAQC = function (data) {
     if (fhnumberCheckColumns != false) {
       h += `<ul style="color:red;font-size: 15px"> Valid values include 
          integer = number of affected (breast cancer) first degree relatives, 888 = don't know.
-        <br>Blank values are not allowed?? blanks not in dict or rules for controls in this variable.</ul>`
+        <br>Blank values are not allowed in this variable.</ul>`
     }
   }
   //QC_27 fhscore
@@ -938,28 +965,52 @@ runQAQC = function (data) {
   //(29_valid_values)
   if (data1[DNA_source] != undefined) {
     if (DNA_sourceClassCheckColumns != false) {
-      h += `<ul style="color:red;font-size: 15px"> Valid values include 
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
       1=whole blood, 2=buccal cell, 3=mouthwash/saliva, 4=other, 5=no DNA, 888=DK.
-       <br>Blank values are not allowed?? blanks not in dict or rules in this variable.</ul>`
+       <br>Blank values are not allowed in this variable.</ul>`
     }
   }
+  //QC_30 DNA_source
+  console.log("QC 29 DNA_source")
 
-  //  QC_29_01 DNA_source
-  // if (data1.DNA_source != undefined) {
-  //   data1["DNA_source"].forEach((k, idx) => {
-  //     if (k === 1 && (data1["DNA_source"][idx] != 1 &&
-  //         data1["DNA_source"][idx] != 2 &&
-  //         data1["DNA_source"][idx] != 888
-  //       )) {
-  //       h += `<p style="color:darkblue;font-size: 20px">QC_29_01 check row ${idx+2} : 
-  //       If ethnicityClass=1, then EthnicitySubClass should be 1, 2, 3, 4, 5, or 888.</ul>`
-  //     }
-  //   })
-  // }
-  // Check for errors (return false) from checkcolumns function, if true.. alert ERROR!
-
-
+  //(29_valid_values)
+  let DNA_sourceOtClassCheckColumns = checkColumnsTxt(variable = DNA_sourceOt)
+  if (data1[DNA_sourceOt] != undefined) {
+    if (DNA_sourceOtClassCheckColumns != false) {
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include text. details of how DNA is collected if DNA_source = 4 ('other').
+       <br>Blank values are allowed in this variable.</ul>`
+    }
+  }
+  console.log("QC 30 DNA_sourceOt")
+    //QC_30_01 DNA_sourceOt
+  if (data1.DNA_sourceOt != undefined) {
+    data1[DNA_sourceOt].forEach((k, idx) => {
+      if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[DNA_source][idx]== 4 )) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_30_01 check row ${idx+2} : 
+      If DNA_source = 4 ('other'), provide details of how DNA is collected.</p>`
+      }
+    })
+  }
+  console.log("QC 31 studyTypeOt")
+//(31_valid_values) StudyTypeOt
+    let studyTypeOtCheckColumns = checkColumnsTxt(variable = studyTypeOt)
+    if (data1[studyTypeOt] != undefined) {
+      if (studyTypeOtCheckColumns != false) {
+        h += `<ul style="color:darkblue;font-size: 15px"> Valid values include text. details of studyType.
+         <br>Blank values are allowed in this variable.</ul>`
+      }
+    }
+  //QC_31_01 StudyTypeOt
+if (data1.studyTypeOt != undefined) {
+  data1[studyTypeOt].forEach((k, idx) => {
+    if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[studyType][idx]== 2 )) {
+      h += `<p style="color:darkblue;font-size: 20px">QC_31_01 check row ${idx+2} : 
+    If DNA_source = 2 ('other'), provide details of study type.</p>`
+    }
+  })
+}
   const checkColumnsList = [studyCheckColumns, statusCheckColumns, erCheckColumns,
+    DNA_sourceClassCheckColumns, DNA_sourceOtClassCheckColumns, studyTypeOt,
     contrTypeCheckColumns, matchidCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
     exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns,
     famHistCheckColumns, ageCheckColumnsNum

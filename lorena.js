@@ -59,7 +59,7 @@ runQAQC = function (data) {
   //   }
   // })
   //tryfor study**********
-//define variables from input column names////////////////////////////
+  //define variables from input column names////////////////////////////
   let uniqueID = String(Object.keys(data1).map(key =>
     key.match(/^UniqueID$/gi)).filter(key =>
     key != undefined))
@@ -90,9 +90,9 @@ runQAQC = function (data) {
   let studyType = String(Object.keys(data1).map(key =>
     key.match(/^studyType$/gi)).filter(key =>
     key != undefined))
-    let studyTypeOt = String(Object.keys(data1).map(key =>
-      key.match(/^studyTypeOt$/gi)).filter(key =>
-      key != undefined))
+  let studyTypeOt = String(Object.keys(data1).map(key =>
+    key.match(/^studyTypeOt$/gi)).filter(key =>
+    key != undefined))
   let exclusion = String(Object.keys(data1).map(key =>
     key.match(/^exclusion$/gi)).filter(key =>
     key != undefined))
@@ -151,7 +151,7 @@ runQAQC = function (data) {
     key.match(/^fhscore$/gi)).filter(key =>
     key != undefined))
   let ER_statusIndex = String(Object.keys(data1).map(key =>
-    key.match(/^ER_statusIndex$/gi)).filter(key =>//add space regex***?
+    key.match(/^ER_statusIndex$/gi)).filter(key => //add space regex***?
     key != undefined))
   //////////////////////////////////////////////////////////
   function difference(a1, a2) {
@@ -160,7 +160,7 @@ runQAQC = function (data) {
       return !a2Set.has(x);
     })
   }
-  console.log(upCol.length)
+  console.log(upCol.length, "columns processed")
   let failedUpCol = difference(upCol, acceptedCol)
 
   if (failedUpCol.length > 0) {
@@ -177,7 +177,7 @@ runQAQC = function (data) {
   function isNumberBetween(value, min, max) {
     return value >= min && value <= max
   }
-///\s/g.test("M ") test for blank spaces
+  ///\s/g.test("M ") test for blank spaces
   function isValueOneOf(value, validValues) {
     for (validIdx = 0; validIdx < validValues.length; validIdx++) {
       if (validValues[validIdx] === value) {
@@ -228,7 +228,7 @@ runQAQC = function (data) {
           if ((isEmpty(data1[k][i])) === true) {
             badCount.push(" blank ")
             badPosition.push(" " + (Number(i) + 2) + " ")
-          } else if ((data1[k][i] != num) && (/\d/.test(data1[k][i])==false)) {
+          } else if ((data1[k][i] != num) && (/\d/.test(data1[k][i]) == false)) {
             badCount.push(" " + (data1[k][i]) + " ")
             badPosition.push(" " + (Number(i) + 2) + " ")
           } else {}
@@ -244,6 +244,7 @@ runQAQC = function (data) {
       return false
     }
   }
+
   function checkColumnsTxt(variable) {
     badCount = []
     badPosition = []
@@ -253,7 +254,7 @@ runQAQC = function (data) {
           if (!/[a-z]/gi.test(data1[k][i]) === true && isEmpty(data1[k][i]) === false) {
             badCount.push(" " + (data1[k][i]) + " ")
             badPosition.push(" " + (Number(i) + 2) + " ")
-          } 
+          }
         }
       }
     })
@@ -306,7 +307,7 @@ runQAQC = function (data) {
           } else if (!(isValueOneOf(data1[k][i], validValuesList)) && (/\s/g.test(data1[k][i]) == true)) {
             badCount.push(" " + (data1[k][i]) + "(+whitespace) ");
             badPosition.push(" " + (Number(i) + 2) + " ");
-    
+
           } else if ((isValueOneOf(value = (data1[k][i]), validValues = validValuesList)) === false) {
             badCount.push(" " + (data1[k][i]) + " ");
             badPosition.push(" " + (Number(i) + 2) + " ");
@@ -325,9 +326,10 @@ runQAQC = function (data) {
   }
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
-  //QC_01_01 check personID for unique values
+  //QC_01_01 check uniqueID for unique values
+  console.log("QC 01 uniqueID")
   if (data1.uniqueID != undefined) {
-    let uniqueIDCheckColumns = data1["UniqueID"].filter((e, i, a) => a.indexOf(e) !== i)
+    let uniqueIDCheckColumns = data1[uniqueID].filter((e, i, a) => a.indexOf(e) !== i)
   }
   if (data1.uniqueID != undefined) {
     if (uniqueIDCheckColumns.length > 0) {
@@ -337,6 +339,7 @@ runQAQC = function (data) {
     }
   }
   //QC_02_01 check personID for unique values
+  console.log("QC 02 personID")
   if (data1.uniqueID != undefined) {
     let personIDCheckColumns = data1["PersonID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
   }
@@ -347,17 +350,16 @@ runQAQC = function (data) {
     }
   }
   //QC_03_01 check study for empty rows
+  console.log("QC 03 study")
   let studyCheckColumns = checkColumnsEmpty(study)
   if (data1[study] != undefined) {
     if (studyCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px">Blank values are not allowed in this variable.</ul>`
     }
   }
-  console.log("study",studyCheckColumns)
-
   //QC_04_01 start contrType
-  let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888,"1","2","3","4","5","6","777","888"], variable = contrType)
-  console.log("contrType",contrType)
+  console.log("QC 04 contrType")
+  let contrTypeCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 777, 888, "1", "2", "3", "4", "5", "6", "777", "888"], variable = contrType)
   //(04_valid_values)
   if (data1[contrType] != undefined) {
     if (contrTypeCheckColumns != false) {
@@ -420,6 +422,7 @@ runQAQC = function (data) {
     })
   }
   //QC_05 status
+  console.log("QC 05 status")
   let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9, "0", "1", "2", "3", "9"], variable = status)
   //QC_05 status valid values
   if (data1.status != undefined) {
@@ -430,7 +433,8 @@ runQAQC = function (data) {
     }
   }
   //QC_06 matchId
-  let matchidCheckColumns = checkColumns(validValuesList = [777, 888,"777","888"], variable = matchid)
+  console.log("QC 06 matchId")
+  let matchidCheckColumns = checkColumns(validValuesList = [777, 888, "777", "888"], variable = matchid)
   //QC_06 matchid valid values
   if (data1.matchid != undefined) {
     if (matchidCheckColumns != false) {
@@ -469,7 +473,8 @@ runQAQC = function (data) {
   //QC_07_03 subStudy ?
 
   //QC_08 studyType    (new else row added? in case all valid)
-  let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888,"0","1","2","777","888"], variable = studyType)
+  console.log("QC 08 studyType")
+  let studyTypeCheckColumns = checkColumns(validValuesList = [0, 1, 2, 777, 888, "0", "1", "2", "777", "888"], variable = studyType)
   //QC_08 studyType valid values
   if (data1.studyType != undefined) {
     if (studyTypeCheckColumns != false) {
@@ -490,7 +495,7 @@ runQAQC = function (data) {
 
   //QC_09 exclusion
   console.log("QC 09 exclusion")
-  let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888,"0","5","6","7","8","777","888"], variable = exclusion)
+  let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888, "0", "5", "6", "7", "8", "777", "888"], variable = exclusion)
   //QC_09 exclusion valid values
   if (data1[exclusion] != undefined) {
     if (exclusionCheckColumns != false) {
@@ -537,6 +542,7 @@ runQAQC = function (data) {
     })
   }
   //QC_11 ageInt 
+  console.log("QC 11 ageInt")
   let ageCheckColumnsNum = checkColumnsNum(variable = ageInt, min = 12, max = 100)
   if (data1.ageInt != undefined) {
     if (ageCheckColumnsNum != false) {
@@ -554,7 +560,6 @@ runQAQC = function (data) {
       }
     })
   }
-  console.log("QC 11 ageInt")
   //QC_11_02 ageInt 
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
@@ -564,7 +569,6 @@ runQAQC = function (data) {
       }
     })
   }
-
   //QC_11_03 ageInt 
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
@@ -602,7 +606,7 @@ runQAQC = function (data) {
     })
   }
   //QC_13_01 refMonth 
-
+  console.log("QC 13 refMonth")
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
       if ((k > 12 || k < 1) && k != 888) {
@@ -612,8 +616,6 @@ runQAQC = function (data) {
     })
   }
   //QC_13_02 refMonth 
-  console.log("QC 13 02 refMonth")
-
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
       if ((k == undefined) && (data1[status][idx] == 1) && (data1[AgeDiagIndex][idx] != undefined)) {
@@ -635,14 +637,46 @@ runQAQC = function (data) {
   //QC_13_04 refMonth 
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
-      if (k == undefined) {
+      if ((k > 12 || k < 1) && k != 888) {
         h += `<p style="color:darkblue;font-size: 20px">QC_13_04 check row ${idx+2} : 
       If refmonth is missing, update with 888.</p>`
       }
     })
   }
+  //QC_14_01 refYear 
+  console.log("QC 14 refYear")
+  if (data1.refYear != undefined) {
+    data1[refYear].forEach((k, idx) => {
+      if (/^(19[8-9]\d|20[0-4]\d|2014)$/.test(k) == false) {
+        console.log(k)
+        h += `<p style="color:darkblue;font-size: 20px">QC_14_01 check row ${idx+2} : 
+          refYear should be between 1980 and 2014.</p>`
+      }
+    })
+  }
+  //QC_14_03 refYear 
+  if (data1.refYear != undefined) {
+    data1[refYear].forEach((k, idx) => {
+      if (k == undefined && data1[status][idx] == 0) {
+        console.log(k)
+        h += `<p style="color:darkblue;font-size: 20px">QC_14_03 check row ${idx+2} : 
+          For controls, if refYear is missing but intDate is avaialbe, update refYear with year(intDate).</p>`
+      }
+    })
+  }
+    //QC_14_05 refYear 
+    if (data1.refYear != undefined) {
+      data1[refYear].forEach((k, idx) => {
+        if (k == undefined) {
+          console.log(k)
+          h += `<p style="color:darkblue;font-size: 20px">QC_14_05 check row ${idx+2} : 
+          If refyear is missing, update with 888.</p>`
+        }
+      })
+    }
   // QC_16 sex (M, F, U)
-  let sexCheckColumns = checkColumns(validValuesList = ["M","F","U"], variable = sex)
+  console.log("QC 16 sex")
+  let sexCheckColumns = checkColumns(validValuesList = ["M", "F", "U"], variable = sex)
   if (data1[sex] != undefined) {
     if (sexCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
@@ -661,7 +695,7 @@ runQAQC = function (data) {
   }
   //QC_17 ethnicityClass
   console.log("QC 17 ethnicityClass")
-  let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888,"1","2","3","4","5","6","888"], variable = ethnicityClass)
+  let ethnicityClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888, "1", "2", "3", "4", "5", "6", "888"], variable = ethnicityClass)
   if (data1.ethnicityClass != undefined) {
     if (ethnicityClassCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
@@ -816,8 +850,9 @@ runQAQC = function (data) {
     })
   }
   //QC_18 ethnicitySubClass
+  console.log("QC 18 ethnicitySubClass")
   let ethnicitySubClassCheckColumns = checkColumns(
-    validValuesList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 888,"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","888"], variable = ethnicitySubClass)
+    validValuesList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 888, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "888"], variable = ethnicitySubClass)
   if (data1.ethnicitySubClass != undefined) {
     if (ethnicitySubClassCheckColumns != false) {
       h += `<ul style="color:red;font-size: 15px"> Valid values include 
@@ -856,6 +891,7 @@ runQAQC = function (data) {
   }
   //  QC_18_03 ethnicitySubClass check 04 and 05 as duplicates
   //QC_19 ethnOt
+  console.log("QC 19 ethnOt")
   let ethnOtCheckColumns = checkColumnsEmpty(ethnOt)
   //(QC_19 ethnOt_valid_values)
   if (data1[ethnOt] != undefined) {
@@ -884,7 +920,8 @@ runQAQC = function (data) {
     })
   }
   //QC_22 raceM (covers QC_02_02)
-  let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888,"1","2","3","4","5","6","888"], variable = raceM)
+  console.log("QC 22 raceM")
+  let raceMCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888, "1", "2", "3", "4", "5", "6", "888"], variable = raceM)
   if (data1[raceM] != undefined) {
     if (raceMCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid raceM values 
@@ -902,8 +939,7 @@ runQAQC = function (data) {
   }
   //QC_23 raceF
   console.log("QC 23 raceF")
-
-  let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888,"1","2","3","4","5","6","888"], variable = raceF)
+  let raceFCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 6, 888, "1", "2", "3", "4", "5", "6", "888"], variable = raceF)
   if (data1[raceF] != undefined) {
     if (raceFCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid raceF values 
@@ -919,8 +955,8 @@ runQAQC = function (data) {
       }
     })
   }
-
   //QC_25 famHist
+  console.log("QC 25 famHist")
   let famHistCheckColumns = checkColumns(validValuesList = [0, 1, 888, "0", "1", "888"], variable = famHist)
   if (data1[famHist] != undefined) {
     if (famHistCheckColumns != false) {
@@ -930,6 +966,7 @@ runQAQC = function (data) {
     }
   }
   //QC_27 fhnumber
+  console.log("QC 27 fhnumber")
   let fhnumberCheckColumns = checkColumnsInt(variable = fhnumber, num = 888) // add way to read str like checkcolumns
   if (data1[fhnumber] != undefined) {
     if (fhnumberCheckColumns != false) {
@@ -948,8 +985,9 @@ runQAQC = function (data) {
        <br>Blank values are not allowed in this variable.</ul>`
     }
   }
-  //QC_28 ER_status
-  let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888,"0","1","888"], variable = ER_statusIndex)
+  //QC_28 ER_statusIndex
+  console.log("QC 28 ER_statusIndex")
+  let erCheckColumns = checkColumns(validValuesList = [undefined, 0, 1, 888, "0", "1", "888"], variable = ER_statusIndex)
   //(28_valid_values)
   if (data1[ER_statusIndex] != undefined) {
     if (erCheckColumns != false) {
@@ -960,57 +998,54 @@ runQAQC = function (data) {
   }
   //QC_29 DNA_source
   console.log("QC 29 DNA_source")
-
-  let DNA_sourceClassCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 888,"1","2","3","4","5","888"], variable = DNA_source)
+  let DNA_sourceCheckColumns = checkColumns(validValuesList = [1, 2, 3, 4, 5, 888, "1", "2", "3", "4", "5", "888"], variable = DNA_source)
   //(29_valid_values)
   if (data1[DNA_source] != undefined) {
-    if (DNA_sourceClassCheckColumns != false) {
+    if (DNA_sourceCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 
       1=whole blood, 2=buccal cell, 3=mouthwash/saliva, 4=other, 5=no DNA, 888=DK.
        <br>Blank values are not allowed in this variable.</ul>`
     }
   }
-  //QC_30 DNA_source
-  console.log("QC 29 DNA_source")
-
-  //(29_valid_values)
-  let DNA_sourceOtClassCheckColumns = checkColumnsTxt(variable = DNA_sourceOt)
+  //QC_30 DNA_sourceOt
+  console.log("QC 30 DNA_sourceOt")
+  //(30_valid_values)
+  let DNA_sourceOtCheckColumns = checkColumnsTxt(variable = DNA_sourceOt)
   if (data1[DNA_sourceOt] != undefined) {
-    if (DNA_sourceOtClassCheckColumns != false) {
+    if (DNA_sourceOtCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include text. details of how DNA is collected if DNA_source = 4 ('other').
        <br>Blank values are allowed in this variable.</ul>`
     }
   }
-  console.log("QC 30 DNA_sourceOt")
-    //QC_30_01 DNA_sourceOt
+  //QC_30_01 DNA_sourceOt
   if (data1.DNA_sourceOt != undefined) {
     data1[DNA_sourceOt].forEach((k, idx) => {
-      if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[DNA_source][idx]== 4 )) {
+      if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[DNA_source][idx] == 4)) {
         h += `<p style="color:darkblue;font-size: 20px">QC_30_01 check row ${idx+2} : 
       If DNA_source = 4 ('other'), provide details of how DNA is collected.</p>`
       }
     })
   }
+  //QC 31 (valid_values) StudyTypeOt
   console.log("QC 31 studyTypeOt")
-//(31_valid_values) StudyTypeOt
-    let studyTypeOtCheckColumns = checkColumnsTxt(variable = studyTypeOt)
-    if (data1[studyTypeOt] != undefined) {
-      if (studyTypeOtCheckColumns != false) {
-        h += `<ul style="color:darkblue;font-size: 15px"> Valid values include text. details of studyType.
+  let studyTypeOtCheckColumns = checkColumnsTxt(variable = studyTypeOt)
+  if (data1[studyTypeOt] != undefined) {
+    if (studyTypeOtCheckColumns != false) {
+      h += `<ul style="color:darkblue;font-size: 15px"> Valid values include text. details of studyType.
          <br>Blank values are allowed in this variable.</ul>`
-      }
     }
+  }
   //QC_31_01 StudyTypeOt
-if (data1.studyTypeOt != undefined) {
-  data1[studyTypeOt].forEach((k, idx) => {
-    if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[studyType][idx]== 2 )) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_31_01 check row ${idx+2} : 
+  if (data1.studyTypeOt != undefined) {
+    data1[studyTypeOt].forEach((k, idx) => {
+      if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[studyType][idx] == 2)) {
+        h += `<p style="color:darkblue;font-size: 20px">QC_31_01 check row ${idx+2} : 
     If DNA_source = 2 ('other'), provide details of study type.</p>`
-    }
-  })
-}
+      }
+    })
+  }
   const checkColumnsList = [studyCheckColumns, statusCheckColumns, erCheckColumns,
-    DNA_sourceClassCheckColumns, DNA_sourceOtClassCheckColumns, studyTypeOt,
+    DNA_sourceCheckColumns, DNA_sourceOtCheckColumns, studyTypeOt,
     contrTypeCheckColumns, matchidCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
     exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns,
     famHistCheckColumns, ageCheckColumnsNum

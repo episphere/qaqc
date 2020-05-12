@@ -189,27 +189,23 @@ runQAQC = function (data) {
 
 
   if (missingCol.length > 0) {
-    h += `<p style= "color:darkblue;font-size: 20px">Warning: missing columns! Note, that the variable names do not have to 
-    match letter casing shown in the data dictionary  (capitalized/lower-case, e.g. UniqueID vs uniqueid) to submit data. 
-    Please confirm the absence of the following ${missingCol.length} column name(s).</p>`
+    h += `<p style= "color:darkblue;font-size: 20px">Warning: Expected variable not found! Please confirm your submitted data includes a 
+    column for all of the requested variables. The following ${missingCol.length} variable(s) was/were not found:</p>`
     h += `<ul style= "color:darkblue;font-size: 20px"> ${missingCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 15px">Variable options include: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
 
   if (extraCol.length > 0) {
-    h += `<p style= "color:darkblue;font-size: 20px">Warning: extra columns! Note, that the variable names do not have to 
-    match letter casing shown in the data dictionary  (capitalized/lower-case, e.g. UniqueID vs uniqueid) to submit data. 
-    Please confirm accuracy of the following ${extraCol.length} column variable name(s).</p>`
+    h += `<p style= "color:darkblue;font-size: 20px">Warning: Unrequested variable(s) found! Please confirm your submitted data does not include variables 
+    that have not been requested. The following ${extraCol.length} unrequested variable(s) was/were not found:</p>`
     h += `<ul style= "color:darkblue;font-size: 20px"> ${extraCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 15px">Variable options include: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
   if (misspelledCol.length > 0) {
-    let misspelledCol_str = "The following " + misspelledCol.length + " variables have valid column names with unmatched letter casing."
-    h += `<p style= "color:darkblue;font-size: 20px">Warning: 
-     case-sensitive! Note, that the variable names do not have to match letter casing shown in the data dictionary 
-    (capitalized/lower-case, e.g. UniqueID vs uniqueid) to submit data. ${misspelledCol_str}</p>` //${upCol.join(", ")}
+    h += `<p style= "color:darkblue;font-size: 20px">Warning: Case-sensitive! ${misspelledCol.length} variable names found that do not match variable casing (lower case / upper case)
+     in the Confluence data dictionary. No action is required from the data submitter.</p>` 
     h += `<ul style= "color:darkblue;font-size: 20px"> ${misspelledCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 15px">Variable options include: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
 
   ////////for age use this function

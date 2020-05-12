@@ -3,7 +3,7 @@ console.log(`lorena.js ran at ${Date()}`)
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 
-  let h = `<p style= "color:darkblue; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
+  let h = `<p style= "color:darkblue; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows corresponding to subjects</p>`
   h += `<p></p>`
 
   //check which variables have not been uploaded
@@ -15,7 +15,7 @@ runQAQC = function (data) {
   //   var key="/"+key+"/gi"
   //   upCol.push(key)
   // }
-  const allCol = ["uniqueID", "personID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchid", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
+  const allCol = ["uniqueID", "personID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchId", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
   for (var [key, value] of Object.entries(qaqc.data)) {
     upCol.push(key)
   }
@@ -81,8 +81,8 @@ runQAQC = function (data) {
   let DNA_sourceOt = String(Object.keys(data1).map(key =>
     key.match(/^DNA_sourceOt$/gi)).filter(key =>
     key != undefined))
-  let matchid = String(Object.keys(data1).map(key =>
-    key.match(/^matchid$/gi)).filter(key =>
+  let matchId = String(Object.keys(data1).map(key =>
+    key.match(/^matchId$/gi)).filter(key =>
     key != undefined))
   let subStudy = String(Object.keys(data1).map(key =>
     key.match(/^subStudy$/gi)).filter(key =>
@@ -161,15 +161,55 @@ runQAQC = function (data) {
     })
   }
   console.log(upCol.length, "columns processed")
-  let failedUpCol = difference(upCol, acceptedCol)
+  //All uploaded columns with rewritten names   (allcol= valid names)                                                
+  let allCol2 = [uniqueID, personID, study, contrType, status, DNA_source, DNA_sourceOt, matchId,
+    subStudy, studyType, studyTypeOt, exclusion, ageInt, intDate, intDate_known, intDay,
+    intMonth, intYear, refMonth, refYear, AgeDiagIndex, sex, ethnicityClass,
+    ethnicitySubClass, ethnOt, raceM, raceF, famHist, fhnumber, fhscore, ER_statusIndex
+  ]
 
-  if (failedUpCol.length > 0) {
-    let failed_str = "Please check spelling (case-sensistive) or remove excess columns from the following " + failedUpCol.length + " column(s)."
-    h += `<p style= "color:darkblue;font-size: 20px">Warning! ${failed_str}</p>` //${upCol.join(", ")}
-    h += `<ul style= "color:darkblue;font-size: 20px"> ${failedUpCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 15px">Please choose from the following variable options: <br>${allCol.join(", ")}</ul>`
-  } else {
-    var failed_str = ""
+
+  let extraCol = difference(upCol, allCol2)
+  let upColMinusExtraCol = difference(upCol, extraCol) //part one of extra
+  let misspelledCol = difference(upColMinusExtraCol, allCol) //part two of extra
+
+  let missing = []
+  upCol.forEach(uploadedCol => {
+    var regex = new RegExp("^" + uploadedCol + "$", 'gi');
+    let filt = allCol.filter(key => key.match(regex))
+    if (filt.length > 0) {
+      missing.push(String(filt))
+    }
+  })
+  console.log(allCol)
+  console.log(missing)
+
+  let missingCol = difference(allCol, missing)
+  console.log(missingCol) //let failedUpCol = difference(upCol, acceptedCol)
+
+
+  if (missingCol.length > 0) {
+    h += `<p style= "color:darkblue;font-size: 20px">Warning: missing columns! Note, that the variable names do not have to 
+    match letter casing shown in the data dictionary  (capitalized/lower-case, e.g. UniqueID vs uniqueid) to submit data. 
+    Please confirm the absence of the following ${missingCol.length} column name(s).</p>`
+    h += `<ul style= "color:darkblue;font-size: 20px"> ${missingCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Variable options include: <br>${allCol.join(", ")}</ul>`
+  }
+
+  if (extraCol.length > 0) {
+    h += `<p style= "color:darkblue;font-size: 20px">Warning: extra columns! Note, that the variable names do not have to 
+    match letter casing shown in the data dictionary  (capitalized/lower-case, e.g. UniqueID vs uniqueid) to submit data. 
+    Please confirm accuracy of the following ${extraCol.length} column variable name(s).</p>`
+    h += `<ul style= "color:darkblue;font-size: 20px"> ${extraCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Variable options include: <br>${allCol.join(", ")}</ul>`
+  }
+  if (misspelledCol.length > 0) {
+    let misspelledCol_str = "The following " + misspelledCol.length + " variables have valid column names with unmatched letter casing."
+    h += `<p style= "color:darkblue;font-size: 20px">Warning: 
+     case-sensitive! Note, that the variable names do not have to match letter casing shown in the data dictionary 
+    (capitalized/lower-case, e.g. UniqueID vs uniqueid) to submit data. ${misspelledCol_str}</p>` //${upCol.join(", ")}
+    h += `<ul style= "color:darkblue;font-size: 20px"> ${misspelledCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 15px">Variable options include: <br>${allCol.join(", ")}</ul>`
   }
 
   ////////for age use this function
@@ -211,7 +251,7 @@ runQAQC = function (data) {
     let badSetStatus = new Set(badCount)
     let arrBadCount = Array.from(badSetStatus)
     if (arrBadCount.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
      <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -238,7 +278,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
      <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -261,7 +301,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
      <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -287,7 +327,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
     <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -318,7 +358,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in ${variable} column.</p>
+      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
        <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -327,28 +367,28 @@ runQAQC = function (data) {
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
   //QC_01_01 check uniqueID for unique values
-  console.log("QC 01 uniqueID")
-  if (data1.uniqueID != undefined) {
-    let uniqueIDCheckColumns = data1[uniqueID].filter((e, i, a) => a.indexOf(e) !== i)
-  }
-  if (data1.uniqueID != undefined) {
-    if (uniqueIDCheckColumns.length > 0) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether uniqueID is unique within each study.
-      <br>Duplicate(s) found: ${uniqueIDCheckColumns}. Blank values are not allowed in this variable? PersonID 
-      should be  a concatenation of Study Acronym, "-", and PersonID, a few studies have created a new UniiqueID, which is also ok.</p>`
-    }
-  }
+  // console.log("QC 01 uniqueID")
+  // let uniqueIDCheckColumns=[]
+  // if (data1[uniqueID] != undefined) {  //also gets the duplicate blank rows. Should be filled in by confluence data managers
+  //   uniqueIDCheckColumns.push(data1[uniqueID].filter((e, i, a) => a.indexOf(e) !== i))
+  // }
+  //   if (uniqueIDCheckColumns.length > 0) {
+  //     h += `<p style="color:darkblue;font-size: 20px">QC_01_01. Duplicate(s) found: ${uniqueIDCheckColumns}.
+  //           <br>Check whether uniqueID is unique within each study.
+  //     UniqueID should be  a concatenation of Study Acronym, "-", and PersonID, a few studies have created a new UniqueID, which is also ok.</p>`
+  //   }
+
   //QC_02_01 check personID for unique values
   console.log("QC 02 personID")
-  if (data1.uniqueID != undefined) {
-    let personIDCheckColumns = data1["PersonID"].filter((e, i, a) => a.indexOf(e) !== i) // fix to person ID?
+  let personIDCheckColumns = []
+  if (data1[personID] != undefined) {
+    personIDCheckColumns.push(data1[personID].filter((e, i, a) => a.indexOf(e) !== i))
   }
-  if (data1.personID != undefined) {
-    if (personIDCheckColumns.length > 0) {
-      h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Check whether PersonID is unique within each study.
-      <br>Duplicate(s) found: ${personIDCheckColumns}. Blank values are not allowed in this variable.</p>`
-    }
+  if (personIDCheckColumns.length > 0) {
+    h += `<p style="color:darkblue;font-size: 20px">QC_02_01 Duplicate(s) found: ${personIDCheckColumns}.
+      <br>Check whether PersonID is unique within each study. Blank values are not allowed in this variable.</p>`
   }
+
   //QC_03_01 check study for empty rows
   console.log("QC 03 study")
   let studyCheckColumns = checkColumnsEmpty(study)
@@ -434,20 +474,20 @@ runQAQC = function (data) {
   }
   //QC_06 matchId
   console.log("QC 06 matchId")
-  let matchidCheckColumns = checkColumns(validValuesList = [777, 888, "777", "888"], variable = matchid)
-  //QC_06 matchid valid values
-  if (data1.matchid != undefined) {
-    if (matchidCheckColumns != false) {
+  let matchIdCheckColumns = checkColumns(validValuesList = [777, 888, "777", "888"], variable = matchId)
+  //QC_06 matchId valid values
+  if (data1.matchId != undefined) {
+    if (matchIdCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 15px"> Valid values include 777=NA, 888=DK. 
       <br>Blank values are not allowed in this variable.</ul>`
     }
   }
-  //QC_06_02 matchid 
-  if (data1.matchid != undefined) {
-    data1[matchid].forEach((k, idx) => {
+  //QC_06_02 matchId 
+  if (data1.matchId != undefined) {
+    data1[matchId].forEach((k, idx) => {
       if (k === undefined) {
         h += `<p style="color:darkblue;font-size: 20px">QC_06_02 check row ${idx+2} : 
-          If matchid is missing (not an individually matched study), update matchid with 777.</p>`
+          If matchId is missing (not an individually matched study), update matchId with 777.</p>`
       }
     })
   }
@@ -657,23 +697,23 @@ runQAQC = function (data) {
   //QC_14_03 refYear 
   if (data1.refYear != undefined) {
     data1[refYear].forEach((k, idx) => {
-      if (k == undefined && data1[status][idx] == 0) {
+      if (k == undefined && data1[status][idx] == 0 && data1[intDate][idx] != undefined) {
         console.log(k)
         h += `<p style="color:darkblue;font-size: 20px">QC_14_03 check row ${idx+2} : 
           For controls, if refYear is missing but intDate is avaialbe, update refYear with year(intDate).</p>`
       }
     })
   }
-    //QC_14_05 refYear 
-    if (data1.refYear != undefined) {
-      data1[refYear].forEach((k, idx) => {
-        if (k == undefined) {
-          console.log(k)
-          h += `<p style="color:darkblue;font-size: 20px">QC_14_05 check row ${idx+2} : 
+  //QC_14_05 refYear 
+  if (data1.refYear != undefined) {
+    data1[refYear].forEach((k, idx) => {
+      if (k == undefined) {
+        console.log(k)
+        h += `<p style="color:darkblue;font-size: 20px">QC_14_05 check row ${idx+2} : 
           If refyear is missing, update with 888.</p>`
-        }
-      })
-    }
+      }
+    })
+  }
   // QC_16 sex (M, F, U)
   console.log("QC 16 sex")
   let sexCheckColumns = checkColumns(validValuesList = ["M", "F", "U"], variable = sex)
@@ -688,7 +728,7 @@ runQAQC = function (data) {
     data1[sex].forEach((k, idx) => {
       if (k === undefined || k.length == 0) {
         h += `<p style="color:darkblue;font-size: 20px">QC_16_01 check row ${idx+2} : 
-        If missing, please provide sex code for this person, or if completely not
+        If sex is missing, please provide sex code for this person, or if completely not
          known update with U.</p>`
       }
     })
@@ -1046,13 +1086,13 @@ runQAQC = function (data) {
   }
   const checkColumnsList = [studyCheckColumns, statusCheckColumns, erCheckColumns,
     DNA_sourceCheckColumns, DNA_sourceOtCheckColumns, studyTypeOt,
-    contrTypeCheckColumns, matchidCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
+    contrTypeCheckColumns, matchIdCheckColumns, subStudyCheckColumns, studyTypeCheckColumns,
     exclusionCheckColumns, ethnicityClassCheckColumns, raceMCheckColumns, raceFCheckColumns,
     famHistCheckColumns, ageCheckColumnsNum
   ]
 
   for (i = 0; i < checkColumnsList.length; i++) {
-    if (checkColumnsList[i] != false || failedUpCol.length > 0) {
+    if (checkColumnsList[i] != false || extraCol.length > 0) {
       alert("Invalid columns or rows found! Please see error report for details.");
       break;
     }

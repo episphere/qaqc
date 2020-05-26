@@ -3,20 +3,20 @@ console.log(`lorena.js ran at ${Date()}`)
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 
-  let h = `<p style= "color:darkblue; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows corresponding to subjects</p>`
+  let h = `<p style= "color:darkblue; font-weight:bold">File: table with ${Object.keys(data).length} columns x ${data[Object.keys(data)[0]].length} rows corresponding to subjects</p>`
   h += `<p></p>`
 
   //check which variables have not been uploaded
   //https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-  const data1 = qaqc.data
-  const data2 = qaqc.dataArray
+  const data1 = data
+
   let upCol = [] //columns uploaded
   // for (var [key, value] of Object.entries(qaqc.data)) {
   //   var key="/"+key+"/gi"
   //   upCol.push(key)
   // }
   const allCol = ["uniqueID", "personID", "study", "contrType", "status", "DNA_source", "DNA_sourceOt", "matchId", "subStudy", "studyType", "studyTypeOt", "exclusion", "ageInt", "intDate", "intDate_known", "intDay", "intMonth", "intYear", "refMonth", "refYear", "AgeDiagIndex", "sex", "ethnicityClass", "ethnicitySubClass", "ethnOt", "raceM", "raceF", "famHist", "fhnumber", "fhscore", "ER_statusIndex"]
-  for (var [key, value] of Object.entries(qaqc.data)) {
+  for (var [key, value] of Object.entries(data)) {
     upCol.push(key)
   }
 
@@ -1103,6 +1103,6 @@ runQAQC = function (data) {
     }
   }
 
-  h += qaqc.saveFile(JSON.stringify(data1))
+  // h += qaqc.saveFile(JSON.stringify(data1))
   return h
 }

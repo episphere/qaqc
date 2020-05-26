@@ -16,7 +16,7 @@ runQAQC=function(data){
     h+='<table id="downSetTable">'
     h+='<tr><th style="color:blue">Constraints</th><th></th></tr>'
     upset.data.parms.forEach((s,i)=>{
-        h+=`<tr><td style="color:green">${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); </td><td>&#9898;</td></tr>`
+        h+=`<tr><td style="color:green">${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>) </td><td>&#9898;</td></tr>`
     })
     h+='</table>'
     /////////////////

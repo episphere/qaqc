@@ -189,22 +189,22 @@ runQAQC = function (data) {
 
 
   if (missingCol.length > 0) {
-    h += `<p style= "color:darkblue;font-size: 20px">Warning: Expected variable not found! Please confirm your submitted data includes a 
+    h += `<p style= "color:darkblue;font-size: 12px">Warning: Expected variable not found! Please confirm your submitted data includes a 
     column for all of the requested variables. The following ${missingCol.length} variable(s) was/were not found:</p>`
-    h += `<ul style= "color:darkblue;font-size: 20px"> ${missingCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px"> ${missingCol.join(", ")}</ul>`
     h += `<ul style= "color:darkblue;font-size: 15px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
 
   if (extraCol.length > 0) {
-    h += `<p style= "color:darkblue;font-size: 20px">Warning: Unrequested variable(s) found! Please confirm your submitted data does not include variables 
+    h += `<p style= "color:darkblue;font-size: 12px">Warning: Unrequested variable(s) found! Please confirm your submitted data does not include variables 
     that have not been requested. The following ${extraCol.length} unrequested variable(s) was/were not found:</p>`
-    h += `<ul style= "color:darkblue;font-size: 20px"> ${extraCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px"> ${extraCol.join(", ")}</ul>`
     h += `<ul style= "color:darkblue;font-size: 15px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
   if (misspelledCol.length > 0) {
-    h += `<p style= "color:darkblue;font-size: 20px">Warning: Case-sensitive! ${misspelledCol.length} variable names found that do not match variable casing (lower case / upper case)
+    h += `<p style= "color:darkblue;font-size: 12px">Warning: Case-sensitive! ${misspelledCol.length} variable names found that do not match variable casing (lower case / upper case)
      in the Confluence data dictionary. No action is required from the data submitter.</p>` 
-    h += `<ul style= "color:darkblue;font-size: 20px"> ${misspelledCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px"> ${misspelledCol.join(", ")}</ul>`
     h += `<ul style= "color:darkblue;font-size: 15px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
 
@@ -247,7 +247,7 @@ runQAQC = function (data) {
     let badSetStatus = new Set(badCount)
     let arrBadCount = Array.from(badSetStatus)
     if (arrBadCount.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
+      return h += `<p style="color:darkblue;font-size: 12px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
      <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -274,7 +274,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
+      return h += `<p style="color:darkblue;font-size: 12px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
      <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -297,7 +297,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
+      return h += `<p style="color:darkblue;font-size: 12px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
      <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount}<br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -323,7 +323,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
+      return h += `<p style="color:darkblue;font-size: 12px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
     <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -354,7 +354,7 @@ runQAQC = function (data) {
     let len_bad = badCount.length
     let badSet = Array.from(new Set(badCount))
     if (badSet.length > 0) {
-      return h += `<p style="color:darkblue;font-size: 20px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
+      return h += `<p style="color:darkblue;font-size: 12px">ERROR! ${len_bad} invalid value(s) found in "${variable}" column.</p>
        <ul style="color:darkblue;font-size: 15px">Invalid value(s) : ${badCount} <br> Row position(s) : ${badPosition}</ul>`
     } else {
       return false
@@ -369,7 +369,7 @@ runQAQC = function (data) {
   //   uniqueIDCheckColumns.push(data1[uniqueID].filter((e, i, a) => a.indexOf(e) !== i))
   // }
   //   if (uniqueIDCheckColumns.length > 0) {
-  //     h += `<p style="color:darkblue;font-size: 20px">QC_01_01. Duplicate(s) found: ${uniqueIDCheckColumns}.
+  //     h += `<p style="color:darkblue;font-size: 12px">QC_01_01. Duplicate(s) found: ${uniqueIDCheckColumns}.
   //           <br>Check whether uniqueID is unique within each study.
   //     UniqueID should be  a concatenation of Study Acronym, "-", and PersonID, a few studies have created a new UniqueID, which is also ok.</p>`
   //   }
@@ -381,7 +381,7 @@ runQAQC = function (data) {
     personIDCheckColumns.push(data1[personID].filter((e, i, a) => a.indexOf(e) !== i))
   }
   if (personIDCheckColumns.length > 0) {
-    h += `<p style="color:darkblue;font-size: 20px">ERROR! Duplicate(s) found in "${personID} column: ${personIDCheckColumns}.
+    h += `<p style="color:darkblue;font-size: 12px">ERROR! Duplicate(s) found in "${personID} column: ${personIDCheckColumns}.
       <br>Check whether PersonID is unique within each study. Blank values are not allowed in this variable.</p>`
   }
 
@@ -410,7 +410,7 @@ runQAQC = function (data) {
   if (data1.status != undefined) {
     data1[status].forEach((status, idx) => {
       if (status == 0 && data1["contrType"][idx] == 777) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${contrType}" column : If contrType = 777, then status should NOT be 0.</p>`
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${contrType}" column : If contrType = 777, then status should NOT be 0.</p>`
       }
     })
   }
@@ -421,7 +421,7 @@ runQAQC = function (data) {
       if ((k != 777 && k != 888) &&
         (data1["status"][idx] != 0 && data1["status"][idx] != 9)) {
         console.log("04_02", k, data1["status"][idx])
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${contrType}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${contrType}" column : 
               if contrType ≠ 777 or 888, then status should be 0 or 9.</p>`
       }
     })
@@ -431,7 +431,7 @@ runQAQC = function (data) {
     data1[contrType].forEach((k, idx) => {
       if ((k == undefined) && data1["status"][idx] == 0) {
         console.log("04_04", k, data1["status"][idx])
-        h += `<p style="color:darkblue;font-size: 20px"ERROR! Check row ${idx+2} in "${contrType}" column : 
+        h += `<p style="color:darkblue;font-size: 12px"ERROR! Check row ${idx+2} in "${contrType}" column : 
               if status = 0 and contrtype is missing, update contrType with 888 or the correct contrtype.</p>`
       }
     })
@@ -442,7 +442,7 @@ runQAQC = function (data) {
     data1[contrType].forEach((k, idx) => {
       if ((k == undefined || k == 888) &&
         (data1[status][idx] == 1 || data1[status][idx] == 2 || data1[status][idx] == 3)) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${contrType}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${contrType}" column : 
               if contrType is missing or 888 and status = 1, 2, or 3, update contrType with 777.</p>`
       }
     })
@@ -451,7 +451,7 @@ runQAQC = function (data) {
   if (data1.contrType != undefined) {
     data1[contrType].forEach((k, idx) => {
       if (k == undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${contrType}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${contrType}" column : 
                   contrType should not be left blank,highlight those records to centre 
                   if both controlType and status are missing.</p>`
       }
@@ -482,7 +482,7 @@ runQAQC = function (data) {
   if (data1.matchId != undefined) {
     data1[matchId].forEach((k, idx) => {
       if (k === undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${matchId}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${matchId}" column : 
           If matchId is missing (not an individually matched study), update matchId with 777.</p>`
       }
     })
@@ -500,7 +500,7 @@ runQAQC = function (data) {
   if (data1.subStudy != undefined) {
     data1[subStudy].forEach((k, idx) => {
       if (k === undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${subStudy}" column :  
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${subStudy}" column :  
           If substudy is missing (no substudy) update with 777.</p>`
       }
     })
@@ -523,7 +523,7 @@ runQAQC = function (data) {
   if (data1.studyType != undefined) {
     data1[studyType].forEach((k, idx) => {
       if (k != 777 && data1[status][idx] == 0) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${studyType}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${studyType}" column : 
             If status=0 then StudyType should be 777.</p>`
       }
     })
@@ -553,7 +553,7 @@ runQAQC = function (data) {
   // if (data1.exclusion != undefined) {
   //   data1[exclusion].forEach((k, idx) => {
   //     if (k == 0 && data1[status][idx] == 9) {
-  //       h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${exclusion}" column : 
+  //       h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${exclusion}" column : 
   //         If exclusion=0, status should NOT be 9.</p>`
   //     }
   //   })
@@ -562,7 +562,7 @@ runQAQC = function (data) {
   // if (data1.exclusion != undefined) {
   //   data1[exclusion].forEach((k, idx) => {
   //     if ((k == 5 || k == 6 || k == 7 || k == 8 || k == 888) && data1[status][idx] != 9) {
-  //       h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${exclusion}" column : 
+  //       h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${exclusion}" column : 
   //       If exclusion≠0, status should be 9.</p>`
   //     }
   //   })
@@ -572,7 +572,7 @@ runQAQC = function (data) {
   //   data1[exclusion].forEach((k, idx) => {
   //     if ((data1[status][idx] == 0 || data1[status][idx] == 1 || data1[status][idx] == 2 ||
   //         data1[status][idx] == 3) && k === undefined) {
-  //       h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${exclusion}" column : 
+  //       h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${exclusion}" column : 
   //       If status=(0,1,2,3) and exclusion is missing, update exclusion with 0.</p>`
   //     }
   //   })
@@ -581,7 +581,7 @@ runQAQC = function (data) {
   // if (data1.exclusion != undefined) {
   //   data1[exclusion].forEach((k, idx) => {
   //     if (data1[status][idx] == 9 && k === undefined) {
-  //       h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${exclusion}" column :
+  //       h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${exclusion}" column :
   //         If status=9 and exclusion is missing, update with 888.</p>`
   //     }
   //   })
@@ -599,7 +599,7 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
       if (k == 777) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ageInt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ageInt}" column :
             AgeInt should be between 10 and 100 (excluding 888); 
             777 is not a valid code. Blank values are not allowed in this variable.</p>`
       }
@@ -609,7 +609,7 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
       if (k == undefined && (data1[AgeDiagIndex][idx] == 888 || data1[AgeDiagIndex][idx] == undefined)) { //agediag== 888 or null, is null blank?
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ageInt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ageInt}" column :
           When AgeInt is missing, if AgeDiagIndex = null or 888, update AgeInt with 888.</p>`
       }
     })
@@ -618,7 +618,7 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
       if (k == undefined && (data1[AgeDiagIndex][idx] != undefined)) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ageInt}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ageInt}" column : 
           If AgeInt is missing and AgeDiagIndex is not null, update AgeInt with AgeDiagIndex.</p>`
       }
     })
@@ -627,7 +627,7 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
       if ((data1[AgeDiagIndex][idx] != 777) && (data1[AgeDiagIndex][idx] != undefined) && (data1[status] == 0)) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ageInt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ageInt}" column :
               If there are AgeDiagIndex data for controls, check with study if this is meant to be ageInt data.</p>`
       }
     })
@@ -636,7 +636,7 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
       if (k == undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ageInt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ageInt}" column :
         AgeInt should not be null.</p>`
       }
     })
@@ -645,7 +645,7 @@ runQAQC = function (data) {
   if (data1.ageInt != undefined) {
     data1[ageInt].forEach((k, idx) => {
       if (k < 18) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ageInt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ageInt}" column :
         AgeInt should not be < 18.</p>`
       }
     })
@@ -655,7 +655,7 @@ runQAQC = function (data) {
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
       if ((k > 12 || k < 1) && k != 888) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refMonth}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refMonth}" column :
           Month should be between 1 and 12 or 888.</p>`
       }
     })
@@ -664,7 +664,7 @@ runQAQC = function (data) {
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
       if ((k == undefined) && (data1[status][idx] == 1) && (data1[AgeDiagIndex][idx] != undefined)) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refMonth}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refMonth}" column :
           If refmonth is missing and dateDiag in case is available, update refmonth with mont(dateDiag).</p>`
       }
     })
@@ -674,7 +674,7 @@ runQAQC = function (data) {
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
       if ((k == undefined) && (data1[intDate][idx] != undefined) && data1[status][idx] == 0) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refMonth}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refMonth}" column :
       For controls, if refMonth is missing but intDate is available, update refMonth with month(intDate).</p>`
       }
     })
@@ -683,7 +683,7 @@ runQAQC = function (data) {
   if (data1.refMonth != undefined) {
     data1[refMonth].forEach((k, idx) => {
       if ((k > 12 || k < 1) && k != 888) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refMonth}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refMonth}" column :
       If refmonth is missing, update with 888.</p>`
       }
     })
@@ -694,7 +694,7 @@ runQAQC = function (data) {
     data1[refYear].forEach((k, idx) => {
       if (/^(19[8-9]\d|20[0-4]\d|2014)$/.test(k) == false) {
         console.log(k)
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refYear}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refYear}" column :
           refYear should be between 1980 and 2014.</p>`
       }
     })
@@ -704,7 +704,7 @@ runQAQC = function (data) {
     data1[refYear].forEach((k, idx) => {
       if (k == undefined && data1[status][idx] == 0 && data1[intDate][idx] != undefined) {
         console.log(k)
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refYear}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refYear}" column :
           For controls, if refYear is missing but intDate is avaialbe, update refYear with year(intDate).</p>`
       }
     })
@@ -714,7 +714,7 @@ runQAQC = function (data) {
     data1[refYear].forEach((k, idx) => {
       if (k == undefined) {
         console.log(k)
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${refYear}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${refYear}" column :
           If refyear is missing, update with 888.</p>`
       }
     })
@@ -732,7 +732,7 @@ runQAQC = function (data) {
   if (data1[sex] != undefined) {
     data1[sex].forEach((k, idx) => {
       if (k === undefined || k.length == 0) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${sex}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${sex}" column :
         If sex is missing, please provide sex code for this person, or if completely not
          known update with U.</p>`
       }
@@ -758,7 +758,7 @@ runQAQC = function (data) {
           data1[ethnicitySubClass][idx] != 5 &&
           data1[ethnicitySubClass][idx] != 888
         )) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass=1, then EthnicitySubClass should be 1, 2, 3, 4, 5, or 888.</p>`
       }
     })
@@ -767,8 +767,8 @@ runQAQC = function (data) {
   if (data1.ethnicityClass != undefined) {
     data1[ethnicityClass].forEach((k, idx) => {
       if (k === 2 && (data1[ethnicitySubClass][idx] != 6)) {
-        h += `<p style="color:red;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
-        If ethnicityClass=2, then EthnicitySubClass=6 ADD 888?.</p>`
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        If ethnicityClass=2, then EthnicitySubClass=6 ADD 888.</p>`
       }
     })
   }
@@ -780,7 +780,7 @@ runQAQC = function (data) {
         (data1[ethnicitySubClass][idx] != 9) &&
         (data1[ethnicitySubClass][idx] != 888)
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass=3, check whether EthnicitySubClass=7, 8, 9, or 888.</p>`
       }
     })
@@ -793,7 +793,7 @@ runQAQC = function (data) {
         (data1[ethnicitySubClass][idx] != 12) &&
         (data1[ethnicitySubClass][idx] != 888)
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass=4, then EthnicitySubClass=10, 11, 12, or 888.</p>`
       }
     })
@@ -806,7 +806,7 @@ runQAQC = function (data) {
         (data1[ethnicitySubClass][idx] != 15) &&
         (data1[ethnicitySubClass][idx] != 888)
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass=5, then EthnicitySubClass=13, 14, 15, or 888.</p>`
       }
     })
@@ -816,7 +816,7 @@ runQAQC = function (data) {
     data1[ethnicityClass].forEach((k, idx) => {
       if (k === 6 && ((data1[ethnicitySubClass][idx] != 16) ||
           (data1[ethnOt][idx] != 777))) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass=6, then EthnicitySubClass=16, ethnOt≠777.</p>`
       }
     })
@@ -826,7 +826,7 @@ runQAQC = function (data) {
     data1[ethnicityClass].forEach((k, idx) => {
       if (k === 888 && ((data1[ethnicitySubClass][idx] != 888) ||
           (data1[ethnOt][idx] != 888))) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass=888, then EthnicitySubClass=888 and ethnOt=888.</p>`
       }
     })
@@ -839,7 +839,7 @@ runQAQC = function (data) {
         ((data1[ethnOt][idx] == 888) ||
           (data1[ethnOt][idx] == undefined))
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass ≠ 6 and ethnicityClass ≠ 888 and ethnicithSubClass ≠ 16 
         and ethnot = 888 or missing, then update ethnot with 777.</p>`
       }
@@ -853,7 +853,7 @@ runQAQC = function (data) {
         data1[ethnicitySubClass][idx] != 888
       ) {
         let k = "(blank value)"
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass is missing and ethnicitySubClass is not 777 or 888, work out 
         ethnicityClass based on ethnicitySubClass.</p>`
       }
@@ -866,7 +866,7 @@ runQAQC = function (data) {
         data1[ethnOt][idx] != undefined &&
         data1[ethnOt][idx] != 888
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
         If ethnicityClass = 6, details should be put in ethnot; if details not known, ethnOt = 888.</p>`
       }
     })
@@ -878,7 +878,7 @@ runQAQC = function (data) {
         (data1[ethnicitySubClass][idx] != 888 ||
           data1[ethnOt][idx] != 888)
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
       If ethnicityClass is 888= don't know, update ethnicitySubClass and ethOt with 888.</p>`
       }
     })
@@ -889,7 +889,7 @@ runQAQC = function (data) {
       if (k != 888 && k != 1 && k != 2 && k != 3 && k != 4 &&
         k != 5 && k != 6
       ) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicityClass}" column :
       Check if ethnicityClass is in the range of 1-6 or 888.</p>`
       }
     })
@@ -909,7 +909,7 @@ runQAQC = function (data) {
   if (data1.ethnicitySubClass != undefined) {
     data1[ethnicitySubClass].forEach((k, idx) => {
       if (k === undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicitySubClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicitySubClass}" column :
           If ethnicitySubClass is missing, update ethnicitySubClass with 888.</p>`
       }
     })
@@ -918,7 +918,7 @@ runQAQC = function (data) {
   if (data1.ethnicitySubClass != undefined) {
     data1[ethnicitySubClass].forEach((k, idx) => {
       if (k != undefined && data1[ethnicityClass][idx] === undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicitySubClass}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicitySubClass}" column :
               If ethnicitySubClass is NOT null and ethnicityClass is null, update 
               ethnicityClass based on the EthnicitySubClass.</p>`
       }
@@ -928,7 +928,7 @@ runQAQC = function (data) {
   if (data1.ethnicitySubClass != undefined) {
     data1[ethnicitySubClass].forEach((k, idx) => {
       if (k == 16 && data1[ethnOt][idx] != 888) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnicitySubClass}" column : 
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnicitySubClass}" column : 
               If ethnicitySubClass = 16, details should be given in ethnOt, if 
               details not known, ethnOt = 888.</p>`
       }
@@ -949,7 +949,7 @@ runQAQC = function (data) {
   if (data1.ethnicitySubClass != undefined) {
     data1[ethnOt].forEach((k, idx) => {
       if (k != 888 && data1[ethnicityClass][idx] == 888) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnOt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnOt}" column :
               If ethnicityClass = 888 then ethnOt should be 888.</p>`
       }
     })
@@ -959,7 +959,7 @@ runQAQC = function (data) {
     data1[ethnOt].forEach((k, idx) => {
       if (k != 888 && k != 777 && k != undefined && isNaN(k) == false) { //nan false checks for num? add a way to check for non text
         //isNaN(num)         // returns true if the variable does NOT contain a valid number
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${ethnOt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${ethnOt}" column :
             ethnOt should be text, 777= NA or 888=DK. Other numeric data are not allowed. Numeric data are not allowed.</p>`
       }
     })
@@ -977,7 +977,7 @@ runQAQC = function (data) {
   if (data1[raceM] != undefined) {
     data1[raceM].forEach((k, idx) => {
       if (k === undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${raceM}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${raceM}" column :
       if raceM is missing, update it with 888. Blanks are not allowed in this column.</p>`
       }
     })
@@ -995,7 +995,7 @@ runQAQC = function (data) {
   if (data1.raceF != undefined) {
     data1[raceF].forEach((k, idx) => {
       if (k === undefined) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${raceF}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${raceF}" column :
       if raceF is missing, update it with 888. Blanks are not allowed in this column.</p>`
       }
     })
@@ -1066,7 +1066,7 @@ runQAQC = function (data) {
   if (data1.DNA_sourceOt != undefined) {
     data1[DNA_sourceOt].forEach((k, idx) => {
       if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[DNA_source][idx] == 4)) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${DNA_sourceOt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${DNA_sourceOt}" column :
       If DNA_source = 4 ('other'), provide details of how DNA is collected.</p>`
       }
     })
@@ -1084,7 +1084,7 @@ runQAQC = function (data) {
   if (data1.studyTypeOt != undefined) {
     data1[studyTypeOt].forEach((k, idx) => {
       if ((k === undefined || /[a-z]/g.test(k) == false) && (data1[studyType][idx] == 2)) {
-        h += `<p style="color:darkblue;font-size: 20px">ERROR! Check row ${idx+2} in "${studyTypeOt}" column :
+        h += `<p style="color:darkblue;font-size: 12px">ERROR! Check row ${idx+2} in "${studyTypeOt}" column :
     If DNA_source = 2 ('other'), provide details of study type.</p>`
       }
     })

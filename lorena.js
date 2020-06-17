@@ -531,64 +531,56 @@ runQAQC = function (data) {
   }
   //QC_09 exclusion
   console.log("QC 09 exclusion")
-  let exclusionCheckColumns = checkColumns(validValuesList = [0,"0",undefined], variable = exclusion)
+  let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888, "0", "5", "6", "7", "8", "777", "888"], variable = exclusion)
   //QC_09 exclusion valid values
   if (data1[exclusion] != undefined) {
     if (exclusionCheckColumns != false) {
-  if (data1[exclusion] != undefined) {
-      h += `<ul style="color:darkblue;font-size: 12px"> Valid "exclusion" values include 0 or empty values.
-      <br>Blank values are allowed in this variable</ul>`
+      h += `<ul style="color:darkblue;font-size: 12px"> Valid values include 
+      0=include, 5=no phenotypic data, 6=other, 7=non-breast carcinoma (e.g. sarcoma), 8=duplicate sample, 888=don't know
+      <br>Blank values are not allowed in this variable</ul>`
     }
   }
-}
-  // //QC_09 exclusion
-  // console.log("QC 09 exclusion")
-  // let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888, "0", "5", "6", "7", "8", "777", "888"], variable = exclusion)
-  // //QC_09 exclusion valid values
-  // if (data1[exclusion] != undefined) {
-  //   if (exclusionCheckColumns != false) {
-  //     h += `<ul style="color:darkblue;font-size: 12px"> Valid values include 
-  //     0=include, 5=no phenotypic data, 6=other, 7=non-breast carcinoma (e.g. sarcoma), 8=duplicate sample, 888=don't know
-  //     <br>Blank values are not allowed in this variable</ul>`
-  //   }
-  // }
-  // //QC_09_01 exclusion 
-  // if (data1.exclusion != undefined) {
-  //   data1[exclusion].forEach((k, idx) => {
-  //     if (k == 0 && data1[status][idx] == 9) {
-  //       h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row ${idx+2} in "${exclusion}" column : </p>` h+=`<ul style="color:darkblue;font-size: 12px"> 
-  //         If exclusion=0, status should NOT be 9.</p>`
-  //     }
-  //   })
-  // }
-  // //QC_09_02 exclusion 
-  // if (data1.exclusion != undefined) {
-  //   data1[exclusion].forEach((k, idx) => {
-  //     if ((k == 5 || k == 6 || k == 7 || k == 8 || k == 888) && data1[status][idx] != 9) {
-  //       h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row ${idx+2} in "${exclusion}" column : </p>` h+=`<ul style="color:darkblue;font-size: 12px"> 
-  //       If exclusion≠0, status should be 9.</p>`
-  //     }
-  //   })
-  // }
-  // //QC_09_03 exclusion 
-  // if (data1.exclusion != undefined) {
-  //   data1[exclusion].forEach((k, idx) => {
-  //     if ((data1[status][idx] == 0 || data1[status][idx] == 1 || data1[status][idx] == 2 ||
-  //         data1[status][idx] == 3) && k === undefined) {
-  //       h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row ${idx+2} in "${exclusion}" column : </p>` h+=`<ul style="color:darkblue;font-size: 12px"> 
-  //       If status=(0,1,2,3) and exclusion is missing, update exclusion with 0.</p>`
-  //     }
-  //   })
-  // }
-  // //QC_09_04 exclusion 
-  // if (data1.exclusion != undefined) {
-  //   data1[exclusion].forEach((k, idx) => {
-  //     if (data1[status][idx] == 9 && k === undefined) {
-  //       h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row ${idx+2} in "${exclusion}" column : </p>` h+=`<ul style="color:darkblue;font-size: 12px">
-  //         If status=9 and exclusion is missing, update with 888.</p>`
-  //     }
-  //   })
-  // }
+  //QC_09_01 exclusion 
+  if (data1.exclusion != undefined) {
+    for(let [idx,k] of data1[exclusion].entries()) {
+      if (k == 0 && data1[status][idx] == 9) {
+        h += `<p style="color:darkblue;font-size: 12px">
+        Consistency error! Check "${exclusion}" column : </p>` 
+        h+=`<ul style="color:darkblue;font-size: 12px"> 
+          If exclusion=0, status should NOT be 9.</p>`
+      }break;
+    }
+  }
+  //QC_09_02 exclusion 
+  if (data1.exclusion != undefined) {
+    for(let [idx,k] of data1[exclusion].entries()) {
+      if ((k == 5 || k == 6 || k == 7 || k == 8 || k == 888) && data1[status][idx] != 9) {
+        h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${exclusion}" column : </p>` 
+        h+=`<ul style="color:darkblue;font-size: 12px">If exclusion≠0, status should be 9.</p>`
+      }break;
+    }
+  }
+  //QC_09_03 exclusion 
+  if (data1.exclusion != undefined) {
+    for(let [idx,k] of data1[exclusion].entries()) {
+      if ((data1[status][idx] == 0 || data1[status][idx] == 1 || data1[status][idx] == 2 ||
+          data1[status][idx] == 3) && k === undefined) {
+        h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row "${exclusion}" column : </p>` 
+        h+=`<ul style="color:darkblue;font-size: 12px"> 
+        If status=(0,1,2,3) and exclusion is missing, update exclusion with 0.</p>`
+      }break;
+    }
+  }
+  //QC_09_04 exclusion 
+  if (data1.exclusion != undefined) {
+    for(let [idx,k] of data1[exclusion].entries()) {
+      if (data1[status][idx] == 9 && k === undefined) {
+        h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${exclusion}" column : </p>` 
+        h+=`<ul style="color:darkblue;font-size: 12px">
+          If status=9 and exclusion is missing, update with 888.</p>`
+      }break;
+    }
+  }
   //QC_11 ageInt 
   console.log("QC 11 ageInt")
   let ageCheckColumnsNum = checkColumnsNum(variable = ageInt, min = 12, max = 100)

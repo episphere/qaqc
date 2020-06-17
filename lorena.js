@@ -540,6 +540,7 @@ runQAQC = function (data) {
       <br>Blank values are allowed in this variable</ul>`
     }
   }
+}
   // //QC_09 exclusion
   // console.log("QC 09 exclusion")
   // let exclusionCheckColumns = checkColumns(validValuesList = [0, 5, 6, 7, 8, 888, "0", "5", "6", "7", "8", "777", "888"], variable = exclusion)
@@ -1108,5 +1109,3 @@ runQAQC = function (data) {
   }
   return h
 }
-}
-

@@ -2,19 +2,36 @@
 
 runQAQC=function(data){
     console.log(`upset.js runQAQC function ran at ${Date()}`)
-    let h=`<table align="left"><tr><td vAlign="bottom" style="white-space:nowrap">`
+    let h=''
+    
     h+=`<p>Data: ${Object.keys(data).length}x${qaqc.data[Object.keys(data)[0]].length}, demo:<a href="https://www.youtube.com/watch?v=Asi0jMGz3fQ" target="_blank" style="background-color:yellow">YouTube</a></p>`
+    // new table
+    
     h+='<p style="color:blue">Studies: <br><span style="color:brown">'
-    upset.getStudies()
-    upset.data.studies.forEach(s=>{
-        h+=`<input type='checkbox' id="${s}_check" onchange="upset.count()" checked=true>${s.slice(6)}; `
-    })
+        upset.getStudies()
+        upset.data.studies.forEach(s=>{
+            h+=`<input type='checkbox' id="${s}_check" onchange="upset.count()" checked=true>${s.slice(6)}; `
+        })
     h+='</span></p>'
-    // table
+    h+='<table id="downSetTable">'
+    h+='<tr><th style="color:blue">Constraints</th><th></th></tr>'
+    upset.data.parms.forEach((s,i)=>{
+        h+=`<tr><td style="color:green">${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>) </td><td>&#9898;</td></tr>`
+    })
+    h+='</table>'
+    /////////////////
+    h+='<hr>'
+    // old table
+
+    h+=`<table align="left"><tr><td vAlign="bottom" style="white-space:nowrap">`
+    
+
     h+='<p style="color:blue">Constraints: <span style="color:green">'
+    /*
     upset.data.parms.forEach((s,i)=>{
         h+=`<br>${i+1}.<input type='checkbox' id="${s}_parm" onchange="upset.check('${s}');upset.count()">${s} (<span id="${s}_count" style="color:gray"></span>); `
     })
+    */
     h+='</span></p>'
     h+='</td><td vAlign="bottom" width=100><div id="constrainedPlotly"></div></td><td vAlign="bottom" align="left"><div id="constrainingPlotly"></div></td></tr>'
     h+='<tr><td vAlign="top" style="white-space:nowrap">'
@@ -194,7 +211,8 @@ upset.constrainedPlotly=_=>{
     setTimeout(upset.table,1000)
 }
 
-upset.table=(div='upsetTableDiv')=>{
+upset.table=()=>''
+upset.table_old=(div='upsetTableDiv')=>{
     if(typeof(div)=='string'){
         div=document.getElementById(div)
     }
@@ -246,4 +264,14 @@ upset.table=(div='upsetTableDiv')=>{
     h+='</table>'
     div.innerHTML=h
     return div
+}
+
+upset.downsetPlot=function(div=''){
+    debugger
+}
+
+
+upset.clean=_=>{
+    document.querySelectorAll('tr')[0].hidden=true
+    document.querySelectorAll('tr')[1].children[1].hidden=true
 }

@@ -444,7 +444,7 @@ runQAQC = function (data) {
       }break;
     }
   }
-  //QC_04_06 contrType ?? check in qc rules
+  //QC_04_06 contrType ?? check in qc rules.
   if (data1.contrType != undefined) {
     for(let [idx,k] of data1[contrType].entries()) {
       if (k == undefined) {

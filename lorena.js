@@ -407,9 +407,9 @@ runQAQC = function (data) {
     }
   }
   //QC_04_01 contrType
-  if (data1.status != undefined) {
+  if (data1.status != undefined && data1.contrType != undefined) {
     for(let [idx,k] of data1[status].entries()) {
-      if (k == 0 && data1[contrType][idx] == 777) {
+      if ((k == 0) && (data1[contrType][idx] == 777)) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${contrType}" column : </p>`
         h += `<ul style="color:darkblue;font-size: 12px">If contrType = 777, then status should NOT be 0.</ul>`
       }break;
@@ -616,7 +616,7 @@ runQAQC = function (data) {
     }
   }
   //QC_11_04 ageInt 
-  if (data1.ageInt != undefined) {
+  if (data1.ageInt != undefined &&  data1.AgeDiagIndex != undefined) {
     for(let [idx,k] of data1[ageInt].entries()) {
       if ((data1[AgeDiagIndex][idx] != 777) && (data1[AgeDiagIndex][idx] != undefined) && (data1[status] == 0)) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${ageInt}" column : </p>` 
@@ -740,9 +740,9 @@ runQAQC = function (data) {
     }
   }
   //  QC_17_01 ethnicityClass
-  if (data1.ethnicityClass != undefined) {
+  if (data1.ethnicityClass != undefined & data.ethnicitySubClass != undefined) {
     for(let [idx,k] of data1[ethnicityClass].entries()) {
-      if (k === 1 && (data1[ethnicitySubClass][idx] != 1 &&
+      if (k == 1 && (data1[ethnicitySubClass][idx] != 1 &&
           data1[ethnicitySubClass][idx] != 2 &&
           data1[ethnicitySubClass][idx] != 3 &&
           data1[ethnicitySubClass][idx] != 4 &&
@@ -823,7 +823,7 @@ runQAQC = function (data) {
     }
   }
   //  QC_17_08 ethnicityClass
-  if (data1.ethnicityClass != undefined) {
+  if (data1.ethnicityClass != undefined && data.ethnicitySubClass != undefined) {
     for(let [idx,k] of data1[ethnicityClass].entries()) {
       if (k != 6 && k != 888 &&
         data1[ethnicitySubClass][idx] != 16 &&

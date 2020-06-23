@@ -3,10 +3,7 @@ console.log(`lorena.js ran at ${Date()}`)
 runQAQC = function (data) {
   console.log(`lorena.js runQAQC function ran at ${Date()}`)
 
-
-  let h = `<p style= "color:darkblue;font-size:12px;font-weight:bold">File: table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows corresponding to subjects</p>`
-
-
+  let h = `<p style= "color:darkblue;font-size:12px;font-weight:bold">File: table with ${Object.keys(data).length} columns x ${data[Object.keys(data)[0]].length} rows corresponding to subjects</p>`
   h += `<p></p>`
 
   //check which variables have not been uploaded
@@ -602,7 +599,7 @@ runQAQC = function (data) {
   }
   //QC_11_02 ageInt 
   if (data1.ageInt != undefined) {
-    for(let [idx,k] of array.entries(data1[ageInt])) {
+    for(let [idx,k] of data1[ageInt].entries()) {
       if (k == undefined && (data1[AgeDiagIndex][idx] == 888 || data1[AgeDiagIndex][idx] == undefined)) { //agediag== 888 or null, is null blank?
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${ageInt}" column : </p>` 
         h+=`<ul style="color:darkblue;font-size: 12px">When AgeInt is missing, if AgeDiagIndex = null or 888, update AgeInt with 888.</ul>`

@@ -417,7 +417,7 @@ runQAQC = function (data) {
   }
   //QC_04_02 contrType
   //(2) if contrType ≠ 777 or 888, then status should be 0 or 9
-  if (data1.contrType != undefined) {
+  if (data1.contrType != undefined && data1.status != undefined) {
     for(let [idx,k] of data1[contrType].entries()) {
       if ((k != 777) && (k != 888) && (data1[status][idx] != 0) || (data1[status][idx] != 9)){
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${contrType}" column : </p>`
@@ -426,7 +426,7 @@ runQAQC = function (data) {
     }
 }
   //QC_04_04 contrType  (03 deleted in rules version 2)?
-  if (data1.contrType != undefined) {
+  if (data1.contrType != undefined && data1.status != undefined) {
       for(let [idx,k] of data1[contrType].entries()) {
         if ((k == undefined) && (data1[status][idx] == 0)){
         h += `<p style="color:darkblue;font-size: 12px"Consistency error! Check "${contrType}" column : </p>`
@@ -435,7 +435,7 @@ runQAQC = function (data) {
     }
   }
   //QC_04_05 contrType
-  if (data1.contrType != undefined) {
+  if (data1.contrType != undefined && data1.status != undefined) {
     for(let [idx,k] of data1[contrType].entries()) {
       if ((k == undefined || k == 888) &&
         (data1[status][idx] == 1 || data1[status][idx] == 2 || data1[status][idx] == 3)) {
@@ -489,7 +489,7 @@ runQAQC = function (data) {
   console.log("QC 07 subStudy")
   let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = subStudy)
   //QC_07 subStudy valid values
-  if (data1.subStudy != undefined) {
+  if (data1.subStudy != undefined ) {
     if (subStudyCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 12px"> Valid "subStudy" values include 777=NA, 888=don't know. Blank values are not allowed in this variable.</ul>`
     }
@@ -518,7 +518,7 @@ runQAQC = function (data) {
     }
   }
   //QC_08_01 studyType 
-  if (data1.studyType != undefined) {
+  if (data1.studyType != undefined && data1.status != undefined) {
     for(let [idx,k] of data1[studyType].entries()) {
       if (k != 777 && data1[status][idx] == 0) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${studyType}" column : </p>` 
@@ -569,7 +569,7 @@ runQAQC = function (data) {
     }
   }
   //QC_09_04 exclusion 
-  if (data1.exclusion != undefined) {
+  if (data1.exclusion != undefined && data1.status != undefined) {
     for(let [idx,k] of data1[exclusion].entries()) {
       if (data1[status][idx] == 9 && k === undefined) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${exclusion}" column : </p>` 
@@ -653,7 +653,7 @@ runQAQC = function (data) {
     }
   }
   //QC_13_02 refMonth 
-  if (data1.refMonth != undefined) {
+  if (data1.refMonth != undefined  && data1.status != undefined && data1.AgeDiagIndex != undefined) {
     for(let [idx,k] of data1[refMonth].entries()) {
       if ((k == undefined) && (data1[status][idx] == 1) && (data1[AgeDiagIndex][idx] != undefined)) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row ${idx+2} in "${refMonth}" column : </p>` 
@@ -662,7 +662,7 @@ runQAQC = function (data) {
     }
   }
   //QC_13_03 refMonth 
-  if (data1.refMonth != undefined) {
+  if (data1.refMonth != undefined && data1.intDate != undefined && data1.status != undefined) {
     for(let [idx,k] of data1[refMonth].entries()) {
       if ((k == undefined) && (data1[intDate][idx] != undefined) && data1[status][idx] == 0) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check row ${idx+2} in "${refMonth}" column : </p>`
@@ -691,7 +691,7 @@ runQAQC = function (data) {
     }
   }
   //QC_14_03 refYear 
-  if (data1.refYear != undefined) {
+  if (data1.refYear != undefined && data1.status != undefined && data1.intDate != undefined) {
     for(let [idx,k] of data1[refMonth].entries()) {
       if (k == undefined && data1[status][idx] == 0 && data1[intDate][idx] != undefined) {
         console.log(k)
@@ -702,7 +702,7 @@ runQAQC = function (data) {
   }
   //QC_14_05 refYear 
   if (data1.refYear != undefined) {
-    for(let [idx,k] of data1[refMonth].entries()) {
+    for(let [idx,k] of data1[refYear].entries()) {
       if (k == undefined) {
         console.log(k)
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${refYear}" column : </p>` 
@@ -740,7 +740,7 @@ runQAQC = function (data) {
     }
   }
   //  QC_17_01 ethnicityClass
-  if (data1.ethnicityClass != undefined & data.ethnicitySubClass != undefined) {
+  if (data1.ethnicityClass != undefined & data1.ethnicitySubClass != undefined) {
     for(let [idx,k] of data1[ethnicityClass].entries()) {
       if (k == 1 && (data1[ethnicitySubClass][idx] != 1 &&
           data1[ethnicitySubClass][idx] != 2 &&
@@ -823,7 +823,7 @@ runQAQC = function (data) {
     }
   }
   //  QC_17_08 ethnicityClass
-  if (data1.ethnicityClass != undefined && data.ethnicitySubClass != undefined) {
+  if (data1.ethnicityClass != undefined && data1.ethnicitySubClass != undefined) {
     for(let [idx,k] of data1[ethnicityClass].entries()) {
       if (k != 6 && k != 888 &&
         data1[ethnicitySubClass][idx] != 16 &&

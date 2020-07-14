@@ -197,7 +197,7 @@ runQAQC = function (data) {
 
   if (extraCol.length > 0) {
     h += `<p style= "color:darkblue;font-size: 12px">Column warning: Unrequested variable(s) found! Please confirm your submitted data does not include variables 
-    that have not been requested. The following ${extraCol.length} unrequested variable(s) was/were not found:</p>`
+    that have not been requested. The following ${extraCol.length} unrequested variable(s) was/were found:</p>`
     h += `<ul style= "color:darkblue;font-size: 12px"> ${extraCol.join(", ")}</ul>`
     h += `<ul style= "color:darkblue;font-size: 12px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }

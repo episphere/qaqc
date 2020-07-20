@@ -343,25 +343,16 @@ runQAQC = function (data) {
   }
 
   //////////////check each column for invalid values ////////////////////////////////////////////////////////
-  //QC_01_01 check uniqueID for unique values
-  // console.log("QC 01 uniqueID")
-  // let uniqueIDCheckColumns=[]
-  // if (data1[uniqueID] != undefined) {  //also gets the duplicate blank rows. Should be filled in by confluence data managers
-  //   uniqueIDCheckColumns.push(data1[uniqueID].filter((e, i, a) => a.indexOf(e) !== i))
-  // }
-  //   if (uniqueIDCheckColumns.length > 0) {
-  //     h += `<p style="color:darkblue;font-size: 12px">QC_01_01. Duplicate(s) found: ${uniqueIDCheckColumns}.
-  //           <br>Check whether uniqueID is unique within each study.
-  //     UniqueID should be  a concatenation of Study Acronym, "-", and PersonID, a few studies have created a new UniqueID, which is also ok.</p>`
-  //   }
-
   //QC_02_01 check personID for unique values
   console.log("QC 02 personID")
   let personIDCheckColumns = []
   if (data1[personID] != undefined) {
-    personIDCheckColumns.push(data1[personID].filter((e, i, a) => a.indexOf(e) !== i))
+    let num = data1[personID].filter((e, i, a) => a.indexOf(e) !== i)
+  personIDCheckColumns.push(num)
+  }else{ personIDCheckColumns.push(0)
   }
-  if (personIDCheckColumns.length > 0) {
+    
+  if (personIDCheckColumns != 0) {
     h += `<p style="color:darkblue;font-size: 12px">Duplicates error! Duplicate(s) found in "${personID} column: ${personIDCheckColumns}.
       <br>Check whether PersonID is unique within each study. Blank values are not allowed in this variable.</p>`
   }

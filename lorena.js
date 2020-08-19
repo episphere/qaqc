@@ -301,7 +301,7 @@ runQAQC = function (data) {
 
   let fhscore = ""
   if (data1[fhscore] == undefined) {
-    fhscore + -String(Object.keys(data1).map(key =>
+    fhscore += String(Object.keys(data1).map(key =>
       key.match(/^fhscore$/gi)).filter(key =>
       key != undefined))
   } 
@@ -331,20 +331,22 @@ runQAQC = function (data) {
 
   //check which variables have not been uploaded
   //https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-
+// All the columns that should be present
   const allCol = [uniqueID, personID, study, contrType, status, DNA_source, DNA_sourceOt, matchId,
     subStudy, studyType, studyTypeOt, exclusion, ageInt, intDate, intDate_known, intDay,
     intMonth, intYear, refMonth, refYear, AgeDiagIndex, sex, ethnicityClass,
     ethnicitySubClass, ethnOt, raceM, raceF, famHist, fhnumber, fhscore, ER_statusIndex,
     ConfluenceChip]
-
-  let upCol = [] //columns uploaded
+// All columns that are uploaded
+  let upCol = [] 
   for (var [key, value] of Object.entries(data1)) {
     upCol.push(key)
   }
-console.log("uploaded cols",upCol)
+
+console.log(upCol.length, "columns processed")
+console.log("uploaded columns:",upCol)
   // check if column names match the data dictionary
-  let acceptedCol = upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
+  //let acceptedCol = upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
   //https://stackoverflow.com/questions/47008384/es6-filter-an-array-with-regex
   //https://stackoverflow.com/questions/42035717/js-filter-object-array-for-partial-matches
   //https://stackoverflow.com/questions/46771410/javascript-regex-how-to-filter-characters-that-are-not-part-of-regex
@@ -355,12 +357,9 @@ console.log("uploaded cols",upCol)
       return !a2Set.has(x);
     })
   }
-  console.log(upCol.length, "columns processed")
-
+// unrequested columns
   let extraCol = difference(upCol, allCol)
-  let upColMinusExtraCol = difference(upCol, extraCol) //part one of extra
-  let misspelledCol = difference(upColMinusExtraCol, allCol) //part two of extra
-
+// missing columns
   let missing = []
   upCol.forEach(uploadedCol => {
     var regex = new RegExp("^" + uploadedCol + "$", 'gi');
@@ -369,32 +368,26 @@ console.log("uploaded cols",upCol)
       missing.push(String(filt))
     }
   })
-  console.log("all columns:",allCol)
-  console.log("missing cols",missing)
-
   let missingCol = difference(allCol, missing)
-  console.log(missingCol) //let failedUpCol = difference(upCol, acceptedCol)
-
+  ////////////////////////////////
+  console.log("All required columns:",allCol)
+  console.log("Missing columns:",missingCol) //let failedUpCol = difference(upCol, acceptedCol)
+  console.log("Unrequested columns:",extraCol)
 
   if (missingCol.length > 0) {
     h += `<p style= "color:darkblue;font-size: 12px">Column warning: Expected variable(s) not found! Please confirm your submitted data includes a 
     column for all of the requested variables. The following ${missingCol.length} variable(s) was/were not found:</p>`
     h += `<ul style= "color:darkblue;font-size: 12px"> ${missingCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 12px">Variable options should include: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px">Columns should include the following 32 variables: <br>${allCol.join(", ")}</ul>`
   }
 
   if (extraCol.length > 0) {
     h += `<p style= "color:darkblue;font-size: 12px">Column warning: Unrequested variable(s) found! Please confirm your submitted data does not include variables 
     that have not been requested. The following ${extraCol.length} unrequested variable(s) was/were found:</p>`
     h += `<ul style= "color:darkblue;font-size: 12px"> ${extraCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 12px">Variable options should include: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px">Columns should include the following 32 variables: <br>${allCol.join(", ")}</ul>`
   }
-  if (misspelledCol.length > 0) {
-    h += `<p style= "color:darkblue;font-size: 12px">Column warning: Case-sensitive! ${misspelledCol.length} variable names found that do not match variable casing (lower case / upper case)
-     in the Confluence data dictionary. No action is required from the data submitter.</p>`
-    h += `<ul style= "color:darkblue;font-size: 12px"> ${misspelledCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 12px">Variable options should include: <br>${allCol.join(", ")}</ul>`
-  }
+
 
   ////////for age use this function
   //https://stackoverflow.com/questions/36507932/how-to-evaluate-if-statements-with-a-lot-of-and-conditions

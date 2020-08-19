@@ -9,289 +9,323 @@ runQAQC = function (data) {
   //define variables from input column names (case insensitive using regex)////////////////////////////
 
   let uniqueID = ""
-  if (data1[uniqueID] != undefined) {
-    let uniqueID = String(Object.keys(data1).map(key =>
+  if (data1[uniqueID] == undefined) {
+    uniqueID += String(Object.keys(data1).map(key =>
       key.match(/^UniqueID$/gi)).filter(key =>
       key != undefined))
-  } else {
+  } 
+  if( uniqueID =="") {
     uniqueID += "uniqueID"
   }
 
   let personID = ""
-  if (data1[personID] != undefined) {
-    let personID = String(Object.keys(data1).map(key =>
+  if (data1[personID] == undefined) {
+    personID += String(Object.keys(data1).map(key =>
       key.match(/^PersonID$/gi)).filter(key =>
       key != undefined))
-  } else {
+  } 
+  
+  if(  personID=="") {
     personID += "personID"
   }
 
   let study = ""
-  if (data1[study] != undefined) {
-    let study = String(Object.keys(data1).map(key =>
+  if (data1[study] == undefined) {
+    study += String(Object.keys(data1).map(key =>
       key.match(/^study$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( study =="") {
     study += "study"
   }
 
   let contrType = ""
-  if (data1[contrType] != undefined) {
-    let contrType = String(Object.keys(data1).map(key =>
+  if (data1[contrType] == undefined){
+     contrType += String(Object.keys(data1).map(key =>    
       key.match(/^contrType$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( contrType =="") {
     contrType += "contrType"
   }
 
   let status = ""
-  if (data1[status] != undefined) {
-    let status = String(Object.keys(data1).map(key =>
+  if (data1[status] == undefined){
+     status += String(Object.keys(data1).map(key =>    
       key.match(/^status$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( status =="") {
     status += "status"
   }
 
   let DNA_source = ""
-  if (data1[DNA_source] != undefined) {
-    let DNA_source = String(Object.keys(data1).map(key =>
+  if (data1[DNA_source] == undefined){
+     DNA_source += String(Object.keys(data1).map(key =>    
       key.match(/^DNA_source$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( DNA_source =="") {
     DNA_source += "DNA_source"
   }
 
   let DNA_sourceOt = ""
-  if (data1[DNA_sourceOt] != undefined) {
-    let DNA_sourceOt = String(Object.keys(data1).map(key =>
+  if (data1[DNA_sourceOt] == undefined){
+     DNA_sourceOt += String(Object.keys(data1).map(key =>    
       key.match(/^DNA_sourceOt$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( DNA_sourceOt =="") {
     DNA_sourceOt += "DNA_sourceOt"
   }
 
   let matchId = ""
-  if (data1[matchId] != undefined) {
-    let matchId = String(Object.keys(data1).map(key =>
+  if (data1[matchId] == undefined){
+     matchId += String(Object.keys(data1).map(key =>    
       key.match(/^matchId$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( matchId =="") {
     matchId += "matchId"
   }
 
   let subStudy = ""
-  if (data1[subStudy] != undefined) {
-    let subStudy = String(Object.keys(data1).map(key =>
+  if (data1[subStudy] == undefined){
+     subStudy += String(Object.keys(data1).map(key =>    
       key.match(/^subStudy$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( subStudy =="") {
     subStudy += "subStudy"
   }
 
   let studyType = ""
-  if (data1[studyType] != undefined) {
-    let studyType = String(Object.keys(data1).map(key =>
+  if (data1[studyType] == undefined){
+     studyType += String(Object.keys(data1).map(key =>    
       key.match(/^studyType$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( studyType =="") {
     studyType += "studyType"
   }
 
   let studyTypeOt = ""
-  if (data1[studyTypeOt] != undefined) {
-    let studyTypeOt = String(Object.keys(data1).map(key =>
+  if (data1[studyTypeOt] == undefined){
+     studyTypeOt += String(Object.keys(data1).map(key =>    
       key.match(/^studyTypeOt$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(  studyTypeOt=="") {
     studyTypeOt += "studyTypeOt"
   }
 
   let exclusion = ""
-  if (data1[exclusion] != undefined) {
-    let exclusion = String(Object.keys(data1).map(key =>
+  if (data1[exclusion] == undefined){
+     exclusion += String(Object.keys(data1).map(key =>    
       key.match(/^exclusion$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( exclusion =="") {
     exclusion += "exclusion"
   }
 
   let ageInt = ""
-  if (data1[ageInt] != undefined) {
-    let ageInt = String(Object.keys(data1).map(key =>
+  if (data1[ageInt] == undefined){
+     ageInt += String(Object.keys(data1).map(key =>    
       key.match(/^ageInt$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( ageInt =="") {
     ageInt += "ageInt"
   }
 
   let intDate = ""
-  if (data1[intDate] != undefined) {
-    let intDate = String(Object.keys(data1).map(key =>
+  if (data1[intDate] == undefined){
+     intDate += String(Object.keys(data1).map(key =>    
       key.match(/^intDate$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( intDate =="") {
     intDate += "intDate"
   }
 
   let intDate_known = ""
-  if (data1[intDate_known] != undefined) {
-    let intDate_known = String(Object.keys(data1).map(key =>
+  if (data1[intDate_known] == undefined){
+     intDate_known += String(Object.keys(data1).map(key =>    
       key.match(/^intDate_known$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( intDate_known =="") {
     intDate_known += "intDate_known"
   }
 
   let intDay = ""
-  if (data1[intDay] != undefined) {
-    let intDay = String(Object.keys(data1).map(key =>
+  if (data1[intDay] == undefined){
+     intDay += String(Object.keys(data1).map(key =>    
       key.match(/^intDay$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(intDay  =="") {
     intDay += "intDay"
   }
 
   let intMonth = ""
-  if (data1[intMonth] != undefined) {
-    let intMonth = String(Object.keys(data1).map(key =>
+  if (data1[intMonth] == undefined){
+     intMonth += String(Object.keys(data1).map(key =>    
       key.match(/^intMonth$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(intMonth  =="") {
     intMonth += "intMonth"
   }
 
   let intYear = ""
-  if (data1[intYear] != undefined) {
-    let intYear = String(Object.keys(data1).map(key =>
+  if (data1[intYear] == undefined){
+     intYear += String(Object.keys(data1).map(key =>    
       key.match(/^intYear$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(intYear  =="") {
     intYear += "intYear"
   }
 
   let refMonth = ""
-  if (data1[refMonth] != undefined) {
-    let refMonth = String(Object.keys(data1).map(key =>
+  if (data1[refMonth] == undefined){
+     refMonth += String(Object.keys(data1).map(key =>    
       key.match(/^refMonth$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(refMonth  =="") {
     refMonth += "refMonth"
   }
 
   let refYear = ""
-  if (data1[refYear] != undefined) {
-    let refYear = String(Object.keys(data1).map(key =>
+  if (data1[refYear] == undefined){
+     refYear += String(Object.keys(data1).map(key =>    
       key.match(/^refYear$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(refYear  =="") {
     refYear += "refYear"
   }
 
   let AgeDiagIndex = ""
-  if (data1[AgeDiagIndex] != undefined) {
-    let AgeDiagIndex = String(Object.keys(data1).map(key =>
+  if (data1[AgeDiagIndex] == undefined){
+     AgeDiagIndex += String(Object.keys(data1).map(key =>    
       key.match(/^AgeDiagIndex$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(AgeDiagIndex  =="") {
     AgeDiagIndex += "AgeDiagIndex"
   }
 
   let sex = ""
-  if (data1[sex] != undefined) {
-    let sex = String(Object.keys(data1).map(key =>
+  if (data1[sex] == undefined){
+     sex += String(Object.keys(data1).map(key =>    
       key.match(/^sex$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(sex  =="") {
     sex += "sex"
   }
-
+////////fix all like this?
   let ethnicityClass = ""
-  if (data1[ethnicityClass] != undefined) {
-    let ethnicityClass = String(Object.keys(data1).map(key =>
+  if (data1[ethnicityClass] == undefined) {
+    ethnicityClass += String(Object.keys(data1).map(key =>
       key.match(/^ethnicityClass$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(ethnicityClass  =="") {
     ethnicityClass += "ethnicityClass"
   }
 
   let ethnicitySubClass = ""
-  if (data1[ethnicitySubClass] != undefined) {
-    let ethnicitySubClass = String(Object.keys(data1).map(key =>
+  if (data1[ethnicitySubClass] == undefined) {
+    ethnicitySubClass += String(Object.keys(data1).map(key =>    
       key.match(/^ethnicitySubClass$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(  ethnicitySubClass=="") {
     ethnicitySubClass += "ethnicitySubClass"
   }
 
   let ethnOt = ""
-  if (data1[ethnOt] != undefined) {
-    let ethnOt = String(Object.keys(data1).map(key =>
+  if (data1[ethnOt] == undefined) {
+    ethnOt += String(Object.keys(data1).map(key =>    
       key.match(/^ethnOt$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if( ethnOt =="") {
     ethnOt += "ethnOt"
   }
 
   let raceM = ""
-  if (data1[raceM] != undefined) {
-    let raceM = String(Object.keys(data1).map(key =>
+  if (data1[raceM] == undefined) {
+    raceM += String(Object.keys(data1).map(key =>    
       key.match(/^raceM$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+   if(  raceM=="") {
     raceM += "raceM"
   }
 
   let raceF = ""
-  if (data1[raceF] != undefined) {
-    let raceF = String(Object.keys(data1).map(key =>
+  if (data1[raceF] == undefined) {
+    raceF += String(Object.keys(data1).map(key =>    
       key.match(/^raceF$/gi)).filter(key =>
       key != undefined))
-  } else {
+  } 
+  if (raceF==""){
     raceF += "raceF"
   }
 
   let famHist = ""
-  if (data1[famHist] != undefined) {
-    let famHist = String(Object.keys(data1).map(key =>
+  if (data1[famHist] == undefined) {
+    famHist += String(Object.keys(data1).map(key =>    
       key.match(/^famHist$/gi)).filter(key =>
       key != undefined))
-  } else {
+  } 
+  if (famHist==""){
     famHist += "famHist"
   }
 
   let fhnumber = ""
-  if (data1[fhnumber] != undefined) {
-    let fhnumber = String(Object.keys(data1).map(key =>
+  if (data1[fhnumber] == undefined) {
+    fhnumber += String(Object.keys(data1).map(key =>    
       key.match(/^fhnumber$/gi)).filter(key =>
       key != undefined))
-  } else {
+  }
+  if (fhnumber=="") {
     fhnumber += "fhnumber"
   }
 
   let fhscore = ""
-  if (data1[fhscore] != undefined) {
+  if (data1[fhscore] == undefined) {
     fhscore + -String(Object.keys(data1).map(key =>
       key.match(/^fhscore$/gi)).filter(key =>
       key != undefined))
-  } else {
+  } 
+  if (fhscore==""){
     fhscore += "fhscore"
   }
 
   let ER_statusIndex = ""
-  if (data1["ER_statusIndex"] != undefined) {
+  if (data1["ER_statusIndex"] == undefined) {
     ER_statusIndex += String(Object.keys(data1).map(key =>
-      key.match(/^ER_statusIndex$/gi)).filter(key => //add space regex***?
+      key.match(/^ER_statusIndex$/gi)).filter(key => 
       key != undefined))
-  } else {
+  } 
+  if (ER_statusIndex== "") {
     ER_statusIndex += "ER_statusIndex"
   }
+
   let ConfluenceChip = ""
-  if (data1["ConfluenceChip"] != undefined) {
-    ConfluenceChip += (String(Object.keys(data1).map(key =>
-      key.match(/^ConfluenceChip$/gi)).filter(key => //add space regex***?
-      key != undefined)))
-  } else {
+  if (data1[ConfluenceChip] == undefined) {
+    ConfluenceChip += String(Object.keys(data1).map(key =>
+      key.match(/^ConfluenceChip$/gi)).filter(key => 
+      key != undefined))
+  } 
+  if (ConfluenceChip== ""){
     ConfluenceChip += "ConfluenceChip"
   }
 
@@ -302,19 +336,13 @@ runQAQC = function (data) {
     subStudy, studyType, studyTypeOt, exclusion, ageInt, intDate, intDate_known, intDay,
     intMonth, intYear, refMonth, refYear, AgeDiagIndex, sex, ethnicityClass,
     ethnicitySubClass, ethnOt, raceM, raceF, famHist, fhnumber, fhscore, ER_statusIndex,
-    ConfluenceChip
-  ]
-  const allCol2 = [uniqueID, personID, study, contrType, status, DNA_source, DNA_sourceOt, matchId,
-    subStudy, studyType, studyTypeOt, exclusion, ageInt, intDate, intDate_known, intDay,
-    intMonth, intYear, refMonth, refYear, AgeDiagIndex, sex, ethnicityClass,
-    ethnicitySubClass, ethnOt, raceM, raceF, famHist, fhnumber, fhscore, ER_statusIndex,
-    ConfluenceChip
-  ]
+    ConfluenceChip]
+
   let upCol = [] //columns uploaded
   for (var [key, value] of Object.entries(data1)) {
     upCol.push(key)
   }
-
+console.log("uploaded cols",upCol)
   // check if column names match the data dictionary
   let acceptedCol = upCol.filter(x => allCol.includes(x)) // accepted columns with proper names, need to loop through these for checks - Lorena
   //https://stackoverflow.com/questions/47008384/es6-filter-an-array-with-regex
@@ -341,8 +369,8 @@ runQAQC = function (data) {
       missing.push(String(filt))
     }
   })
-  console.log(allCol)
-  console.log(missing)
+  console.log("all columns:",allCol)
+  console.log("missing cols",missing)
 
   let missingCol = difference(allCol, missing)
   console.log(missingCol) //let failedUpCol = difference(upCol, acceptedCol)
@@ -1132,8 +1160,8 @@ runQAQC = function (data) {
   }
   //  QC_19_01 ethnOt
   if (data1.ethnOt != undefined) {
-    for (let [idx, k] of data1[ethnOt].entries()) {
-      if (k != 888 && data1[ethnicityClass][idx] == 888) {
+    for (let [idx, k] of data1["ethnOt"].entries()) {
+      if ((k != 888) && (data1[ethnicityClass][idx] == 888)) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${ethnOt}" column : </p>`
         h += `<ul style="color:darkblue;font-size: 12px">If ethnicityClass = 888 then ethnOt should be 888.</ul>`
       }

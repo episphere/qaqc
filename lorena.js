@@ -378,14 +378,14 @@ console.log("uploaded columns:",upCol)
     h += `<p style= "color:darkblue;font-size: 12px">Column warning: Expected variable(s) not found! Please confirm your submitted data includes a 
     column for all of the requested variables. The following ${missingCol.length} variable(s) was/were not found:</p>`
     h += `<ul style= "color:darkblue;font-size: 12px"> ${missingCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 12px">Columns should include the following 32 variables: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
 
   if (extraCol.length > 0) {
     h += `<p style= "color:darkblue;font-size: 12px">Column warning: Unrequested variable(s) found! Please confirm your submitted data does not include variables 
     that have not been requested. The following ${extraCol.length} unrequested variable(s) was/were found:</p>`
     h += `<ul style= "color:darkblue;font-size: 12px"> ${extraCol.join(", ")}</ul>`
-    h += `<ul style= "color:darkblue;font-size: 12px">Columns should include the following 32 variables: <br>${allCol.join(", ")}</ul>`
+    h += `<ul style= "color:darkblue;font-size: 12px">Variable options should include: <br>${allCol.join(", ")}</ul>`
   }
 
 

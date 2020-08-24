@@ -635,13 +635,13 @@ console.log("uploaded columns:",upCol)
   }
   //QC_05 status
   console.log("QC 05 status")
-  let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, 9, "0", "1", "2", "3", "9"], variable = status)
+  let statusCheckColumns = checkColumns(validValuesList = [0, 1, 2, 3, "0", "1", "2", "3"], variable = status)
   //QC_05 status valid values
   if (data1.status != undefined) {
     if (statusCheckColumns != false) {
       h += `<ul style="color:darkblue;font-size: 12px"> Valid "status" values include 
-      0=control, 1=invasive case, 2=in-situ case, 3=case unknown invasiveness, 9=excluded sample. 
-      <br>Blank, 777 and 888 values are not allowed in this variable.</ul>`
+      0=control, 1=invasive case, 2=in-situ case and 3=case unknown invasiveness. 
+      <br>Blank, 9 (excluded samples), 777 and 888 values are not allowed in this variable. </ul>`
     }
   }
   //QC_06 matchId

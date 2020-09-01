@@ -460,7 +460,7 @@ console.log("uploaded columns:",upCol)
       return false
     }
   }
-
+//Check for text values
   function checkColumnsTxt(variable) {
     badCount = []
     badPosition = []
@@ -483,14 +483,37 @@ console.log("uploaded columns:",upCol)
       return false
     }
   }
-  //use isNumber between function from above in checkCol function 
+  //Check for text values without printing
+  function checkColumnsTxt2(variable) {
+    badCount = []
+    badPosition = []
+    Object.keys(data1).forEach(k => {
+      if (k == variable) {
+        for (i = 0; i < data1[k].length; i++) {
+          if (!/[a-z]/gi.test(data1[k][i]) === true && isEmpty(data1[k][i]) === false) {
+            badCount.push(" " + (data1[k][i]) + " ")
+            badPosition.push(" " + (Number(i) + 2) + " ")
+          }
+        }
+      }
+    })
+    let len_bad = badCount.length
+    let badSet = Array.from(new Set(badCount))
+    if (badSet.length > 0) {
+     // return h += `<p style="color:darkblue;font-size: 12px">Validity error! ${len_bad} invalid value(s) found in "${variable}" column.</p>
+     //<ul style="color:darkblue;font-size: 12px">Invalid value(s) : ${badSet}</ul>`
+    } else {
+      return false
+    }
+  }
+  //use isNumber between function from above in checkCol function to check for a num betweeen min and max or 888
   function checkColumnsNum(variable, min, max) {
     badCount = []
     badPosition = []
     Object.keys(data1).forEach(k => {
       if (k == variable) {
         for (i = 0; i < data1[k].length; i++) {
-          if (!isNumberBetween(data1[k][i], min, max)) {
+          if ((!isNumberBetween(data1[k][i], min, max)) && (data1[k][i] != 888)) {
             badCount.push(" " + (data1[k][i]) + " ")
             badPosition.push(" " + (Number(i) + 2) + " ")
           } else if (isEmpty(data1[k][i])) {
@@ -667,11 +690,11 @@ console.log("uploaded columns:",upCol)
   }
   //QC_07 subStudy
   console.log("QC 07 subStudy")
-  let subStudyCheckColumns = checkColumns(validValuesList = [777, 888], variable = subStudy)
+  let subStudyCheckColumns = checkColumnsEmpty(variable= subStudy)
   //QC_07 subStudy valid values
   if (data1.subStudy != undefined) {
     if (subStudyCheckColumns != false) {
-      h += `<ul style="color:darkblue;font-size: 12px"> Valid "subStudy" values include 777=NA, 888=don't know. Blank values are not allowed in this variable.</ul>`
+      h += `<ul style="color:darkblue;font-size: 12px"> Valid "subStudy" values include text, 777=NA, 888=don't know. Blank values are not allowed in this variable.</ul>`
     }
   }
   //QC_07_01 subStudy 
@@ -679,7 +702,7 @@ console.log("uploaded columns:",upCol)
     for (let [idx, k] of data1[subStudy].entries()) {
       if (k === undefined) {
         h += `<p style="color:darkblue;font-size: 12px">Consistency error! Check "${subStudy}" column : </p>`
-        h += `<ul style="color:darkblue;font-size: 12px">If substudy is missing (no substudy) update with 777.</ul>`
+        h += `<ul style="color:darkblue;font-size: 12px">If subStudy is missing (no subStudy) update with 777.</ul>`
       }
       break;
     }
@@ -770,7 +793,7 @@ console.log("uploaded columns:",upCol)
   if (data1.ageInt != undefined) {
     if (ageCheckColumnsNum != false) {
       h += `<ul style="color:darkblue;font-size: 12px"> Valid "ageInt" values 
-      should be between 10 and 100.</ul>`
+      should be between 10 and 100 or 888 for unknown.</ul>`
     }
   }
   //QC_11_01 ageInt 

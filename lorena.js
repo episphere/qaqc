@@ -319,14 +319,14 @@ runQAQC = function (data) {
     ER_statusIndex += "ER_statusIndex"
   }
 
-  let ConfluenceChip = ""
-  if (data1[ConfluenceChip] == undefined) {
-    ConfluenceChip += String(Object.keys(data1).map(key =>
-      key.match(/^ConfluenceChip$/gi)).filter(key => 
+  let Genotyping_chip = ""
+  if (data1[Genotyping_chip] == undefined) {
+    Genotyping_chip += String(Object.keys(data1).map(key =>
+      key.match(/^Genotyping_chip$/gi)).filter(key => 
       key != undefined))
   } 
-  if (ConfluenceChip== ""){
-    ConfluenceChip += "ConfluenceChip"
+  if (Genotyping_chip== ""){
+    Genotyping_chip += "Genotyping_chip"
   }
 
   //check which variables have not been uploaded
@@ -336,7 +336,7 @@ runQAQC = function (data) {
     subStudy, studyType, studyTypeOt, exclusion, ageInt, intDate, intDate_known, intDay,
     intMonth, intYear, refMonth, refYear, AgeDiagIndex, sex, ethnicityClass,
     ethnicitySubClass, ethnOt, raceM, raceF, famHist, fhnumber, fhscore, ER_statusIndex,
-    ConfluenceChip]
+    Genotyping_chip]
 // All columns that are uploaded
   let upCol = [] 
   for (var [key, value] of Object.entries(data1)) {

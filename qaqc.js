@@ -276,3 +276,28 @@ qaqc.getParms=function(){
     //debugger
 }
 qaqc.getParms()
+
+
+var projectNumber = 'bigquery-public-data';
+      var clientId = '169492101294-9pbmj5rve44p0s84npesq2m5hifc7qhi.apps.googleusercontent.com';
+      var config = {
+        'client_id': clientId,
+        'scope': 'https://www.googleapis.com/auth/bigquery'
+      };
+
+function auth() {
+  gapi.auth.authorize(config, function() {
+      gapi.client.load('bigquery', 'v2');
+      $('#client_initiated').html('BigQuery client authorized');
+      $('#auth_button').fadeOut();
+      $('#dataset_button').fadeIn();
+  });
+}
+function listDatasets() {
+        var request = gapi.client.bigquery.datasets.list({
+          'projectId':projectNumber
+        });
+        request.execute(function(response) {
+            $('#result_box').html(JSON.stringify(response.result.datasets, null));
+        });
+      }

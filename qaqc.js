@@ -36,13 +36,15 @@ qaqc.load=el=>{
             loadQAQC.innerHTML=h;
             setTimeout(function(){readButton.click()},100)
         break
-	case 'loadBQ':
+		    
+        case 'loadBQ':
             h=`<pre id="fileInfo">upload file from BigQuery</pre>
             <button id="auth_button" onclick="auth();">Authorize</button>
             <div id="client_initiated"></div>
             <button id="dataset_button" style="display:none;" onclick="listDatasets();">Show datasets</button>
             <div id="result_box"></div>`
             loadQAQC.innerHTML=h;
+	break
         case 'loadURL':
             h=`URL: <input id="inputURL"> <i id="loadFileFromURL" style="font-size:xx-large;color:green;cursor:pointer;vertical-align:bottom" class="fa fa-cloud-download" data-toggle="tooltip" data-placement="left" title="Load file from url" onclick="qaqc.loadURL()"></i> <i style="cursor:pointer" class="fa fa-external-link" data-toggle="tooltip" data-placement="left" title="open file in new tab"
  onclick="window.open(document.getElementById('inputURL').value)"></i>`

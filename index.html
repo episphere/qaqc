@@ -6,6 +6,10 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src='https://apis.google.com/js/client.js'></script>
+    
     <link href="qaqc.css" rel="stylesheet">
 </head>
 <body onload="setTimeout(_=>qaqc.ui('qaqcDiv'),0)"> <!-- the timeout is completely not needed, it is used here to match the expectation that a tool is being loaded -->
@@ -25,6 +29,7 @@
         <li><input type="radio" name="run" class="runScript"> parmType.js - inferring type of each parameter</li>
         <li><input type="radio" name="run" class="runScript"> lorena.js - QAQC</li>
         <li><input type="radio" name="run" class="runScript"> lorena2.js - Summary statistics</li>
+        <li><input type="radio" name="run" class="runScript"> connect.js - transpose data</li>
         <li><input type="radio" name="run" class="runScript"> upset.js - simplified upset plot</li>
         <li><input type="radio" name="run" class="runScript"> downset.js - cohort assembly</li>
         <li><input type="radio" name="run" class="runScript"> midset.js - cohort assembly by Bhaumik</li>

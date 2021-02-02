@@ -4,7 +4,7 @@ qaqc.ui=(target='qaqcDiv')=>{
     if(typeof(target)=='string'){
         target=document.getElementById(target)
     }
-    let h='<p style="color:navy">Load a <button id="loadFile" onclick="qaqc.load(this)">file</button>, <button id="loadURL" onclick="qaqc.load(this)">URL</button>, <button id="loadBox" onclick="qaqc.load(this)">Box id</button>, or <button id="loadTxt" onclick="qaqc.load(this)">paste data as text</button></p>'
+    let h='<p style="color:navy">Load a <button id="loadFile" onclick="qaqc.load(this)">file</button>, <button id="loadBQ" onclick="qaqc.load(this)">BQtable</button>, <button id="loadURL" onclick="qaqc.load(this)">URL</button>, <button id="loadBox" onclick="qaqc.load(this)">Box id</button>, or <button id="loadTxt" onclick="qaqc.load(this)">paste data as text</button></p>'
     h +='<div id="loadQAQC" style="color:blue"></div>'
     target.innerHTML=h
 }

@@ -237,7 +237,7 @@ qaqc.getParms=function(){
             loadURL.click()
             inputURL.value=qaqc.parms.url
             loadFileFromURL.click()
-        },1000)
+        },3000)
     }
     if(qaqc.parms.script){
         setTimeout(_=>{

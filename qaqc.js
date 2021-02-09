@@ -236,8 +236,10 @@ qaqc.getParms=function(){
             let loadURL=document.getElementById('loadURL')
             loadURL.click()
             inputURL.value=qaqc.parms.url
-            loadFileFromURL.click()
-        },3000)
+            setTimeout(function(){
+              loadFileFromURL.click()
+            },500)          
+        },2000)
     }
     if(qaqc.parms.script){
         setTimeout(_=>{

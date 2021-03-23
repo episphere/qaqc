@@ -49,6 +49,17 @@
         <h3>Privacy</h3>
         <p class="info"> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures, particulalry data wrangling, can migrate to where the data is without exposing the source data. </p>
     </div>
+    
+                
+        <div id="observablehq-0ee3af29"></div>
+<p>Credit: <a href="https://observablehq.com/@episphere/plco">PLCO by Jonas Almeida</a></p>
+
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+import define from "https://api.observablehq.com/@episphere/plco.js?v=3";
+new Runtime().module(define, Inspector.into("#observablehq-0ee3af29"));
+</script>    
+    
     <script>
         document.querySelectorAll('.runScript').forEach(el=>{
             el.value=el.parentElement.textContent.match(/^\s*\S+\s*/g)[0].replace(/\s/g,'')

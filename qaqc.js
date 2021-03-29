@@ -37,8 +37,22 @@ qaqc.load=el=>{
             setTimeout(function(){readButton.click()},100)
         break
 		    
-        case 'loadBQ':
-            h=`<pre id="fileInfo">upload file from BigQuery</pre>
+             case 'loadBQ':
+            h=`
+            <pre id="fileInfo">upload file from BigQuery</pre>
+            <form id="formResponse" method="post">
+            <label>projectID: </label>
+            <input type="text" id="projectID_input" name="projectID_input"><br><br>
+            <button type="submit">Submit</button><br><br>
+            <label>clientID: </label>
+            <input type="text" id="clientID_input" name="clientID_input"><br><br>
+            <button type="submit">Submit</button><br><br>
+            <label>query: </label>
+            <input type="text" id="query_input" name="query_input"><br><br>
+            <button type="submit">Submit</button><br><br>
+            </form>
+            
+            
             <button id="auth_button" onclick="auth();">Authorize</button>
             <div id="client_initiated"></div>
             <button id="dataset_button" style="display:none;" onclick="listDatasets();">Show datasets</button>

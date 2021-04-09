@@ -19,6 +19,13 @@ runQAQC=function(data){
 
     // CONVERT qaqc.dataTXT TO ARRAY
 
+
+    var valid= `check1 =levels(factor(connectData$"X${b}"))%!in%X${b} \n Site_invalid = levels(factor(connectData$"X${b}"))[check1]`
+    var date = `X471593703 = connectData$"X${b}" \n check2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", X${b})`
+
+
+
+
     'use strict';
 
     function csvToArray(text) {

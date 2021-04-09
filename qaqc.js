@@ -38,6 +38,7 @@ qaqc.load=el=>{
         break
 		    
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
             case 'loadBQ':
 =======
@@ -46,6 +47,9 @@ qaqc.load=el=>{
 =======
              case 'loadBQ':
 >>>>>>> parent of 8f912ec (fixing BQtable with Lorena)
+=======
+            case 'loadBQ':
+>>>>>>> parent of 2060d6e (add connect QC script)
             h=`
             <pre id="fileInfo">upload file from BigQuery</pre>
             <form id="formResponse" method="post">
@@ -183,29 +187,12 @@ qaqc.saveFile=(txt,fileName)=>{
         let h=`filename:<input value="file${Date.now().toString().slice(3)}.json">
               <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.data))}'),this.parentElement.querySelector('input').value)" >Save as JSON Object</button>
               <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" >Save as JSON Array</button>`
-                            
               //<button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.data))}'),this.parentElement.querySelector('input').value)" >Save as JSON Object</button>
-              //<button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>
+              //<button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
         return h
     }
 }
 
-qaqc.saveQC=(txt,fileName)=>{
-    if(fileName){
-        const bb = new Blob([txt]);
-        const url = URL.createObjectURL(bb);
-        let a = document.createElement('a');
-        a.href=url;
-        a.download=fileName;
-        a.click();
-        //return a
-    }else{
-        let h=`filename:<input value="file${Date.now().toString().slice(3)}.json">
-              <button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" >Save as txt</button>`
-              
-         return h
-    }
-}
 qaqc.csvJSON= (csv)=>{
 
   var lines=csv.split("\n");
@@ -471,6 +458,7 @@ const a = document.getElementById('formResponse')
         });
     }
 }
+<<<<<<< HEAD
 
 const a = document.getElementById('formResponse')
         var newValue;
@@ -621,3 +609,5 @@ const a = document.getElementById('formResponse')
                 console.log("datasets: ", datasets)
             });
         }
+=======
+>>>>>>> parent of 2060d6e (add connect QC script)

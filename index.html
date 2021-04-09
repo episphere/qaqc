@@ -1,7 +1,7 @@
 <html>
 <head>
     <script src="qaqc.js"></script>
-    <script src="../epibox/epibox.js"></script>
+    <script src="https://episphere.github.io/epibox/epibox.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap.native@2.0.27/dist/bootstrap-native-v4.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -9,7 +9,13 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src='https://apis.google.com/js/client.js'></script>
+<<<<<<< Updated upstream
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     
+=======
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+>>>>>>> Stashed changes
     <link href="qaqc.css" rel="stylesheet">
 </head>
 <body onload="setTimeout(_=>qaqc.ui('qaqcDiv'),0)"> <!-- the timeout is completely not needed, it is used here to match the expectation that a tool is being loaded -->
@@ -30,6 +36,7 @@
         <li><input type="radio" name="run" class="runScript"> lorena.js - QAQC</li>
         <li><input type="radio" name="run" class="runScript"> lorena2.js - Summary statistics</li>
         <li><input type="radio" name="run" class="runScript"> connect.js - transpose data</li>
+        <li><input type="radio" name="run" class="runScript"> connectQC.js - make QC scripts</li>
         <li><input type="radio" name="run" class="runScript"> GWAS_explorer.js - plot gwas data</li>
 
         <!--
@@ -38,8 +45,23 @@
         <li><input type="radio" name="run" class="runScript"> midset.js - cohort assembly by Bhaumik</li>
         -->
 
+<<<<<<< Updated upstream
             
             
+=======
+        <!-- added plco plot 
+
+        <div id="observablehq-0ee3af29"></div>
+        <p>Credit: <a href="https://observablehq.com/@episphere/plco">PLCO by Jonas Almeida</a></p>
+
+        <script type="module">
+        import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+        import define from "https://api.observablehq.com/@episphere/plco.js?v=3";
+        new Runtime().module(define, Inspector.into("#observablehq-0ee3af29"));
+        </script>-->  
+
+
+>>>>>>> Stashed changes
         <li>...</li>
         </ol>
         <hr>
@@ -78,3 +100,10 @@
  
 </body>
 </html>
+
+
+
+
+
+
+

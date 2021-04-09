@@ -37,11 +37,15 @@ qaqc.load=el=>{
             setTimeout(function(){readButton.click()},100)
         break
 		    
+<<<<<<< HEAD
 <<<<<<< Updated upstream
             case 'loadBQ':
 =======
         case 'loadBQ':
 >>>>>>> Stashed changes
+=======
+             case 'loadBQ':
+>>>>>>> parent of 8f912ec (fixing BQtable with Lorena)
             h=`
             <pre id="fileInfo">upload file from BigQuery</pre>
             <form id="formResponse" method="post">
@@ -62,8 +66,7 @@ qaqc.load=el=>{
             <button id="dataset_button" style="display:none;" onclick="listDatasets();">Show datasets</button>
             <div id="result_box"></div>`
             loadQAQC.innerHTML=h;
-            qaqc.bigQueryInit();
-	    break
+	break
         case 'loadURL':
             h=`URL: <input id="inputURL"> <i id="loadFileFromURL" style="font-size:xx-large;color:green;cursor:pointer;vertical-align:bottom" class="fa fa-cloud-download" data-toggle="tooltip" data-placement="left" title="Load file from url" onclick="qaqc.loadURL()"></i> <i style="cursor:pointer" class="fa fa-external-link" data-toggle="tooltip" data-placement="left" title="open file in new tab"
  onclick="window.open(document.getElementById('inputURL').value)"></i>`
@@ -275,7 +278,7 @@ qaqc.getParms=function(){
             setTimeout(function(){
               loadFileFromURL.click()
             },500)          
-        },5000)
+        },2000)
     }
     if(qaqc.parms.script){
         setTimeout(_=>{
@@ -316,146 +319,146 @@ qaqc.getParms=function(){
 qaqc.getParms()
 
 // bigquery
-<<<<<<< Updated upstream
 
-qaqc.bigQueryInit=function(){
-    const a = document.getElementById('formResponse')
-    var newValue;
-    var clientId;
-    var query;
+const a = document.getElementById('formResponse')
+        var newValue;
+        var clientId;
+        var query;
 
-    a.addEventListener('submit', e => {
-        e.preventDefault()
-        newValue = document.getElementById('projectID_input').value;
-        clientId = document.getElementById('clientID_input').value;
-        query = document.getElementById('query_input').value;
-    })
+        a.addEventListener('submit', e => {
+            e.preventDefault()
+            newValue = document.getElementById('projectID_input').value;
+            clientId = document.getElementById('clientID_input').value;
+            query = document.getElementById('query_input').value;
+        })
+//(fixing BQtable with Lorena)
 
-    var config = {
-        'client_id': clientId,
-        'scope': 'https://www.googleapis.com/auth/bigquery'
-    };
+        var config = {
+            'client_id': clientId,
+            'scope': 'https://www.googleapis.com/auth/bigquery'
+        };
 // client side access to google bigquery https://download.huihoo.com/google/gdgdevkit/DVD1/developers.google.com/bigquery/authorization.html
-    function auth() {
-        gapi.auth.authorize(config, function () {
-            gapi.client.load('bigquery', 'v2');
-            $('#client_initiated').html('BigQuery client authorized');
-            $('#auth_button').fadeOut();
-            $('#dataset_button').fadeIn();
-            $('#query_button').fadeIn();
-        });
-    }
-    //////////////////////////////////////////////////////////////////////////
-    function convertBQToMySQLResults(schema, rows) {
-        var resultRows = []
+        function auth() {
+            gapi.auth.authorize(config, function () {
+                gapi.client.load('bigquery', 'v2');
+                $('#client_initiated').html('BigQuery client authorized');
+                $('#auth_button').fadeOut();
+                $('#dataset_button').fadeIn();
+                $('#query_button').fadeIn();
+            });
+        }
+        //////////////////////////////////////////////////////////////////////////
+        function convertBQToMySQLResults(schema, rows) {
+            var resultRows = []
 
-        function recurse(schemaCur, rowsCur, colName) {
-            if (Array.isArray(schemaCur) && !Array.isArray(result[colName])) {
-                for (var i = 0, l = schemaCur.length; i < l; i++) {
-                    if (colName === "")
-                        recurse(schemaCur[i], rowsCur.f[i], colName + schemaCur[i].name)
-                    else
-                        recurse(schemaCur[i], rowsCur.f[i], colName + "." + schemaCur[i].name)
+            function recurse(schemaCur, rowsCur, colName) {
+                if (Array.isArray(schemaCur) && !Array.isArray(result[colName])) {
+                    for (var i = 0, l = schemaCur.length; i < l; i++) {
+                        if (colName === "")
+                            recurse(schemaCur[i], rowsCur.f[i], colName + schemaCur[i].name)
+                        else
+                            recurse(schemaCur[i], rowsCur.f[i], colName + "." + schemaCur[i].name)
+                    }
                 }
-            }
 
-            if (schemaCur.type && schemaCur.type === "RECORD") {
-                if (schemaCur.mode !== "REPEATED") {
-                    var valIndex = 0
-                    for (var p in schemaCur.fields) {
-                        if (rowsCur.v === null) {
-                            recurse(schemaCur.fields[p], rowsCur, colName + "." + schemaCur.fields[p].name)
+                if (schemaCur.type && schemaCur.type === "RECORD") {
+                    if (schemaCur.mode !== "REPEATED") {
+                        var valIndex = 0
+                        for (var p in schemaCur.fields) {
+                            if (rowsCur.v === null) {
+                                recurse(schemaCur.fields[p], rowsCur, colName + "." + schemaCur.fields[p].name)
+                            } else {
+                                recurse(schemaCur.fields[p], rowsCur.v.f[valIndex], colName + "." + schemaCur.fields[p]
+                                    .name)
+                            }
+
+                            valIndex++
+                        }
+                    }
+
+                    if (schemaCur.mode === "REPEATED") {
+                        result[colName] = []
+                        for (var x in rowsCur.v) {
+                            recurse(schemaCur.fields, rowsCur.v[x], colName)
+                        }
+                    }
+                } else {
+                    if (schemaCur.mode === "REPEATED") {
+                        if (rowsCur.v !== null) {
+                            result[colName] = rowsCur.v.map((value, index) => {
+                                return value.v
+                            })
                         } else {
-                            recurse(schemaCur.fields[p], rowsCur.v.f[valIndex], colName + "." + schemaCur.fields[p]
-                                .name)
+                            result[colName] = [null]
                         }
 
-                        valIndex++
-                    }
-                }
-
-                if (schemaCur.mode === "REPEATED") {
-                    result[colName] = []
-                    for (var x in rowsCur.v) {
-                        recurse(schemaCur.fields, rowsCur.v[x], colName)
-                    }
-                }
-            } else {
-                if (schemaCur.mode === "REPEATED") {
-                    if (rowsCur.v !== null) {
-                        result[colName] = rowsCur.v.map((value, index) => {
-                            return value.v
-                        })
+                    } else if (Array.isArray(result[colName])) {
+                        let nextRow = {}
+                        for (var j in schemaCur) {
+                            nextRow[colName + "." + schemaCur[j].name] = rowsCur.v.f[j].v
+                        }
+                        result[colName].push(nextRow)
                     } else {
-                        result[colName] = [null]
+                        if (colName !== "")
+                            result[colName] = rowsCur.v
                     }
-
-                } else if (Array.isArray(result[colName])) {
-                    let nextRow = {}
-                    for (var j in schemaCur) {
-                        nextRow[colName + "." + schemaCur[j].name] = rowsCur.v.f[j].v
-                    }
-                    result[colName].push(nextRow)
-                } else {
-                    if (colName !== "")
-                        result[colName] = rowsCur.v
                 }
             }
+
+            for (var r = 0, rowsCount = rows.length; r < rowsCount; r++) {
+                var result = {};
+                recurse(schema, rows[r], "")
+                resultRows.push(result)
+            }
+
+            return resultRows
         }
 
-        for (var r = 0, rowsCount = rows.length; r < rowsCount; r++) {
-            var result = {};
-            recurse(schema, rows[r], "")
-            resultRows.push(result)
-        }
+       var objArray=[] //data
+       var items = {}
+        // Query function
+        function runQuery(projectNumber) {
+            var request = gapi.client.bigquery.jobs.query({
+                'projectId': projectNumber,
+                'timeoutMs': '30000',
+                'query': query //'SELECT * FROM [bigquery-public-data:samples.github_timeline]'
+            });
+            request.execute(function (response) {
+                //$('#result_box').html(JSON.stringify(output, null)); // JSON original format with v, f
 
-        return resultRows
-    }
+                // transfrom results from big query with v's and f's to JSON
+                items = convertBQToMySQLResults(response.schema.fields, response.rows)
+                // convert JSON to csv format and save. https://stackoverflow.com/questions/8847766/how-to-convert-json-to-csv-format-and-store-in-a-variable
+                const replacer = (key, value) => value === null ? '' :
+                    value // specify how you want to handle null values here
+                const header = Object.keys(items[0])
+                const csv = [
+                    header.join(',').replace(/d_/g, ""), // header row first, remove extra characters: "d_"
+                    ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer))
+                        .join(','))
+                ].join('\r\n')
 
-   var objArray=[] //data
-   var items = {}
-    // Query function
-    function runQuery(projectNumber) {
-        var request = gapi.client.bigquery.jobs.query({
-            'projectId': projectNumber,
-            'timeoutMs': '30000',
-            'query': query //'SELECT * FROM [bigquery-public-data:samples.github_timeline]'
-        });
-        request.execute(function (response) {
-            //$('#result_box').html(JSON.stringify(output, null)); // JSON original format with v, f
-
-            // transfrom results from big query with v's and f's to JSON
-            items = convertBQToMySQLResults(response.schema.fields, response.rows)
-            // convert JSON to csv format and save. https://stackoverflow.com/questions/8847766/how-to-convert-json-to-csv-format-and-store-in-a-variable
-            const replacer = (key, value) => value === null ? '' :
-                value // specify how you want to handle null values here
-            const header = Object.keys(items[0])
-            const csv = [
-                header.join(',').replace(/d_/g, ""), // header row first, remove extra characters: "d_"
-                ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer))
-                    .join(','))
-            ].join('\r\n')
-
-            // save items and csv version globally
-            for ([key,val] of Object.entries(items)){
-                for ([key2,val2] of Object.entries(items[key])){
-                    objArray.push(val2)
-                    break
+                // save items and csv version globally
+                for ([key,val] of Object.entries(items)){
+                    for ([key2,val2] of Object.entries(items[key])){
+                        objArray.push(val2)
+                        break
+                        }
                     }
-                }
-        // view csv data in browser and console
-            $('#result_box').html(csv);
+            // view csv data in browser and console
+                $('#result_box').html(csv);
+                
+            // download as csv https://stackoverflow.com/questions/17836273/export-javascript-data-to-csv-file-without-server-interaction
+                var a = document.createElement('a');
+                a.href = 'data:attachment/csv,' + encodeURIComponent(csv);
+                a.target = '_blank';
+                a.download = 'myFile.csv';
+                document.body.appendChild(a);
+                a.click();
+            });
+            
+        }
 
-        // download as csv https://stackoverflow.com/questions/17836273/export-javascript-data-to-csv-file-without-server-interaction
-            var a = document.createElement('a');
-            a.href = 'data:attachment/csv,' + encodeURIComponent(csv);
-            a.target = '_blank';
-            a.download = 'myFile.csv';
-            document.body.appendChild(a);
-            a.click();
-        });
-
-    }
 
     function listDatasets(projectNumber) {
         var request = gapi.client.bigquery.datasets.list({
@@ -468,7 +471,7 @@ qaqc.bigQueryInit=function(){
         });
     }
 }
-=======
+
 const a = document.getElementById('formResponse')
         var newValue;
         var clientId;
@@ -607,6 +610,7 @@ const a = document.getElementById('formResponse')
             
         }
 
+//(fixing BQtable with Lorena)
         function listDatasets(projectNumber) {
             var request = gapi.client.bigquery.datasets.list({
                 'projectId': projectNumber
@@ -617,4 +621,3 @@ const a = document.getElementById('formResponse')
                 console.log("datasets: ", datasets)
             });
         }
->>>>>>> Stashed changes

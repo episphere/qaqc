@@ -37,19 +37,8 @@ qaqc.load=el=>{
             setTimeout(function(){readButton.click()},100)
         break
 		    
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
+
             case 'loadBQ':
-=======
-        case 'loadBQ':
->>>>>>> Stashed changes
-=======
-             case 'loadBQ':
->>>>>>> parent of 8f912ec (fixing BQtable with Lorena)
-=======
-            case 'loadBQ':
->>>>>>> parent of 2060d6e (add connect QC script)
             h=`
             <pre id="fileInfo">upload file from BigQuery</pre>
             <form id="formResponse" method="post">
@@ -457,8 +446,8 @@ const a = document.getElementById('formResponse')
             console.log("datasets: ", datasets)
         });
     }
-}
-<<<<<<< HEAD
+
+
 
 const a = document.getElementById('formResponse')
         var newValue;
@@ -609,5 +598,4 @@ const a = document.getElementById('formResponse')
                 console.log("datasets: ", datasets)
             });
         }
-=======
->>>>>>> parent of 2060d6e (add connect QC script)
+

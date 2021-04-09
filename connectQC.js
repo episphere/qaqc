@@ -21,7 +21,6 @@ runQAQC=function(data){
 
 
 
-
     'use strict';
 
     function csvToArray(text) {

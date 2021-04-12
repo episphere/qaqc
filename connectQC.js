@@ -51,10 +51,14 @@ runQAQC = function (data) {
         // run loops to append checks to script
         console.log(test[1][i])
         if (test[1][i] == "valid") {
+            // valid value
             var valid = `######## QC ${conceptID} \r\n# valid value check\n${conceptID}= c(${test[2][i]})\nQCcheck1 =levels(factor(connectData$"${conceptID}"))%!in%${conceptID} \nSite_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\n`
-
+            //date
         } else if (test[1][i] == "date") {
             var valid = `######## QC ${conceptID} \r\n# valid date check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID})\r\n`
+            //date time
+        } else if (test[1][i] == "dateTime") {
+            var valid = `######## QC ${conceptID} \r\n# valid dateTime check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\n`
 
         } else {
             valid = "######## other QCtype\n"
@@ -68,9 +72,20 @@ runQAQC = function (data) {
     //var script = loop(test[0].length-1)
     console.log("script", script);
 
+    var loadData = `# CONNECT QC RULES
+    # PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITES
+    # VERSION: 1.0
+    # LAST UPDATED: APRIL 5TH, 2021
+    # AUTHOR: LORENA SANDOVAL 
+    # EMAIL: SANDOVALL2@NIH.GOV
+                        
+# set working directory
+setwd("C:/Users/sandovall2/Downloads")\r\n
+`
+
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth\nbox_auth(client_id = "627lww8un9twnoa8f9rjvldf7kb56q1m" , client_secret = "gSKdYKLd65aQpZGrq9x4QVUNnn5C8qqm")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     // save qc script as txt
-    var full_script = script + saveToBox
+    var full_script = loadData + script + saveToBox
     h += qaqc.saveQC(full_script)
 
 

@@ -83,7 +83,9 @@ runQAQC = function (data) {
 setwd("C:/Users/sandovall2/Downloads")\r\n
 `
 
-    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth\nbox_auth(client_id = "627lww8un9twnoa8f9rjvldf7kb56q1m" , client_secret = "gSKdYKLd65aQpZGrq9x4QVUNnn5C8qqm")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
+    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
+    
+    
     // save qc script as txt
     var full_script = loadData + script + saveToBox
     h += qaqc.saveQC(full_script)

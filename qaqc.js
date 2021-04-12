@@ -4,7 +4,7 @@ qaqc.ui=(target='qaqcDiv')=>{
     if(typeof(target)=='string'){
         target=document.getElementById(target)
     }
-    let h='<p style="color:navy">Load a <button id="loadFile" onclick="qaqc.load(this)">file</button>, <button id="loadURL" onclick="qaqc.load(this)">URL</button>, <button id="loadBox" onclick="qaqc.load(this)">Box id</button>, or <button id="loadTxt" onclick="qaqc.load(this)">paste data as text</button></p>'
+    let h='<p style="color:navy">Load a <button id="loadFile" onclick="qaqc.load(this)">file</button>,<button id="loadBQ" onclick="qaqc.load(this)">BQtable</button>, <button id="loadURL" onclick="qaqc.load(this)">URL</button>, <button id="loadBox" onclick="qaqc.load(this)">Box id</button>, or <button id="loadTxt" onclick="qaqc.load(this)">paste data as text</button></p>'
     h +='<div id="loadQAQC" style="color:blue"></div>'
     target.innerHTML=h
 }
@@ -183,6 +183,24 @@ qaqc.saveFile = (txt, fileName) => {
         //<button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.data))}'),this.parentElement.querySelector('input').value)" >Save as JSON Object</button>
         //<button onclick="qaqc.saveFile(decodeURIComponent('${encodeURIComponent(JSON.stringify(qaqc.dataArray,null,3))}'),this.parentElement.querySelector('input').value)" txt="${txt}">Save as JSON Array</button>`
         return h
+    }
+}
+
+qaqc.saveQC = (txt, fileName) => {
+    if (fileName) {
+        const bb = new Blob([txt]);
+        const url = URL.createObjectURL(bb);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        //return a
+    } else {
+             let h = `filename:<input value="QC_script_${Date.now().toString().slice(3)}.txt">
+             <button onclick="qaqc.saveQC(decodeURIComponent('${encodeURIComponent(txt)}'),this.parentElement.querySelector('input').value)" >Save QC script</button>`
+
+              //<button onclick="qaqc.saveQC(decodeURIComponent('${txt}'),this.parentElement.querySelector('input1').value)" >Save QC script as txt</button>`
+            return h
     }
 }
 
@@ -481,7 +499,7 @@ function auth() {
         $('#query_button').fadeIn();
     });
 }
-//////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// BIGQUERY
 function convertBQToMySQLResults(schema, rows) {
     var resultRows = []
 

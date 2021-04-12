@@ -1,5 +1,3 @@
-const { Console } = require("console")
-
 console.log(`connectQC.js loaded at ${Date()}`)
 
 runQAQC=function(data){
@@ -10,19 +8,12 @@ runQAQC=function(data){
         h+=`<li style="color:blue">${k} (${qaqc.data[k].length} x ${typeof(qaqc.data[k][0])=='string' ? 'string' : 'number'})</li>`
     })
     h+='</p>'
-    h+=qaqc.saveFile(JSON.stringify(qaqc.data))
-    //debugger
-    // ...
-
-    // CONVERT qaqc.dataTXT TO ARRAY
-
-    var valid= `check1 =levels(factor(connectData$"X${b}"))%!in%X${b} \n Site_invalid = levels(factor(connectData$"X${b}"))[check1]`
-    var date = `X471593703 = connectData$"X${b}" \n check2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", X${b})`
 
 
+   
 
+    //  function to convert input text to output array
     'use strict';
-
     function csvToArray(text) {
         let p = '', row = [''], ret = [row], i = 0, r = 0, s = !0, l;
         for (l of text) {
@@ -38,11 +29,35 @@ runQAQC=function(data){
         }
         return ret;
     };
+    txt = (csvToArray(qaqc.dataTxt));
+    test = txt[0].map((_, colIndex) => txt.map(row => row[colIndex]));
+    console.log("data", test)
 
-    test = csvToArray(qaqc.dataTXT)
-    console.log(test)
+ // define checks - date, valid, pending, etc
+
+ var conceptID = test[0][1]
+ var valid= `######## QC ${conceptID} \nQCcheck1 =levels(factor(connectData$"X${conceptID}"))%!in%${conceptID} \nSite_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\n`
+ var date = `######## QC ${conceptID} \n${conceptID} = connectData$"${conceptID}" \n check2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID})\r\n`
+
+    // run loops
+var loop = function(len){   
+    var l = 0
+        x = valid +"\n" 
+    while(l<len){   
+        x += valid +"\n"    
+        l++;    
+      }    
+    return x };   
+
+var script = loop(test[0].length-1)
+    console.log("script",script);  
+
+ // save qc script as txt
+    h+=qaqc.saveQC(script)
+
 
 
     return h
 }
+   
 

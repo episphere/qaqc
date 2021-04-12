@@ -54,7 +54,7 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID} \r\n# valid value check\n${conceptID}= c(${test[2][i]})\nQCcheck1 =levels(factor(connectData$"${conceptID}"))%!in%${conceptID} \nSite_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\n`
 
         } else if (test[1][i] == "date") {
-            var valid = `######## QC ${conceptID} \r\n# date value check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID})\r\n`
+            var valid = `######## QC ${conceptID} \r\n# valid date check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID})\r\n`
 
         } else {
             valid = "######## other QCtype\n"
@@ -68,7 +68,7 @@ runQAQC = function (data) {
     //var script = loop(test[0].length-1)
     console.log("script", script);
 
-    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth(client_id = "627lww8un9twnoa8f9rjvldf7kb56q1m" , client_secret = "gSKdYKLd65aQpZGrq9x4QVUNnn5C8qqm")\nbox_write(106289683820, file=combined, pb = options()$boxr.progress,description = NULL)\r\n`
+    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth\nbox_auth(client_id = "627lww8un9twnoa8f9rjvldf7kb56q1m" , client_secret = "gSKdYKLd65aQpZGrq9x4QVUNnn5C8qqm")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     // save qc script as txt
     var full_script = script + saveToBox
     h += qaqc.saveQC(full_script)

@@ -60,17 +60,17 @@ runQAQC = function (data) {
         } else if (test[1][i] == "dateTime") {
             var valid = `######## QC ${conceptID} \r\n# valid dateTime check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\n`
 
+        } else if (test[1][i] == "crossValid") {
+            var valid = `######## QC ${conceptID} \r\n# crossValid check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\n`
+
         } else {
-            valid = "######## other QCtype\n"
+            valid = ""
         }
 
         script += valid + "\n"
         l++;
     }
-
-
-    //var script = loop(test[0].length-1)
-    console.log("script", script);
+// BUILD THE HEADER, SCRIPT AND FOOTER
 
     var loadData = `# CONNECT QC RULES
     # PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITES

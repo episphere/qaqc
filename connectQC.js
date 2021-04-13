@@ -70,7 +70,7 @@ runQAQC = function (data) {
                                          //r\n# crossValid check\n${conceptID} = connectData$"${conceptID}" \ncheck15_2 = which(connectData$"${conceptID2}" == "${crossif}"")\r\n${conceptID}_cross_null = which(is.na(connectData$"${conceptID}"[check15_2]))\r\ndf[${i},1]<-paste("${conceptID}_cross_null",check15_2)\r\n`
            // pending 
         } else if (test[1][i] == "pending") {
-             var valid = `######## QC ${conceptID} \r\n`# pending value check
+             var valid = `######## QC ${conceptID} \r\n`// pending value check
 
         } else {
             valid = ""

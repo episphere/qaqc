@@ -65,7 +65,7 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID} \r\n# valid dateTime check\n${conceptID} = connectData$"${conceptID}" \n${conceptID}_date = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\ndf[${i},1]<-paste("${conceptID}_date",${conceptID}_date)\r\n`
             //cross valid
         } else if (test[1][i] == "crossValid") {
-            var valid = `######## QC ${conceptID} \r\n# valid value check\n${conceptID2}= c(${test[4][i]})\nQCcheck1 =levels(factor(connectData$"${conceptID}"))%!in%${conceptID2} \n${conceptID}_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\ndf[${i},1]<-paste("${conceptID}_invalid",${conceptID}_invalid)\r\n`
+            var valid = `######## QC ${conceptID} \r\n# cross valid value check\n${conceptID2}= c(${test[4][i]})\nQCcheck1 =levels(factor(connectData$"${conceptID}"))%!in%${conceptID2} \n${conceptID}_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\ndf[${i},1]<-paste("${conceptID}_invalid",${conceptID}_invalid)\r\n`
                                                 // checked for NA only!
                                          //r\n# crossValid check\n${conceptID} = connectData$"${conceptID}" \ncheck15_2 = which(connectData$"${conceptID2}" == "${crossif}"")\r\n${conceptID}_cross_null = which(is.na(connectData$"${conceptID}"[check15_2]))\r\ndf[${i},1]<-paste("${conceptID}_cross_null",check15_2)\r\n`
            // pending 

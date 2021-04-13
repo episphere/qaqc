@@ -45,23 +45,28 @@ runQAQC = function (data) {
     var l = 0
     script = ""
     var i;
+    var lengthQC = test[0].length-1 
     for (i = 1; i < test[0].length; i++) {
         var conceptID = test[0][i]
+        var conceptID2 = test[3][i]
+        var crossif = test[4][i]
+        var crossthen = test[5][i]
 
         // run loops to append checks to script
         console.log(test[1][i])
         if (test[1][i] == "valid") {
             // valid value
-            var valid = `######## QC ${conceptID} \r\n# valid value check\n${conceptID}= c(${test[2][i]})\nQCcheck1 =levels(factor(connectData$"${conceptID}"))%!in%${conceptID} \nSite_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\n`
+            var valid = `######## QC ${conceptID} \r\n# valid value check\n${conceptID}= c(${test[2][i]})\nQCcheck1 =levels(factor(connectData$"${conceptID}"))%!in%${conceptID} \nSite_invalid = levels(factor(connectData$"${conceptID}"))[check1]\r\ndf[${i},1]<-paste("QC",Site_invalid)\r\n`
             //date
         } else if (test[1][i] == "date") {
-            var valid = `######## QC ${conceptID} \r\n# valid date check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID})\r\n`
+            var valid = `######## QC ${conceptID} \r\n# valid date check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID})\r\ndf[${i},1]<-paste("check2",check2)\r\n`
             //date time
         } else if (test[1][i] == "dateTime") {
-            var valid = `######## QC ${conceptID} \r\n# valid dateTime check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\n`
-
+            var valid = `######## QC ${conceptID} \r\n# valid dateTime check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\ndf[${i},1]<-paste("check2",check2)\r\n`
+            //cross valid
         } else if (test[1][i] == "crossValid") {
-            var valid = `######## QC ${conceptID} \r\n# crossValid check\n${conceptID} = connectData$"${conceptID}" \ncheck2 = !grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID})\r\n`
+            var valid = `######## QC ${conceptID} \r\n# crossValid check\n${conceptID} = connectData$"${conceptID}" \ncheck15_2 = which(connectData$"${conceptID2}" == "${crossif}"")\r\n${conceptID}_cross_null = which(is.na(connectData$"${conceptID}"[check15_2]))\r\ndf[${i},1]<-paste("${conceptID}_cross_null",check15_2)\r\n`
+
 
         } else {
             valid = ""
@@ -82,12 +87,13 @@ runQAQC = function (data) {
 # set working directory
 setwd("C:/Users/sandovall2/Downloads")\r\n
 `
+    var makeDF = "df = data.frame()\r\n"
 
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     
     
     // save qc script as txt
-    var full_script = loadData + script + saveToBox
+    var full_script = loadData +  makeDF + script + saveToBox
     h += qaqc.saveQC(full_script)
 
 

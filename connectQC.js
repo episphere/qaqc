@@ -122,7 +122,7 @@ setwd("C:/Users/sandovall2/Downloads")\r\nconnectData = read.csv("participants_0
     
     
     // save qc script as txt
-    var full_script = loadData + "\n" +  makeDF + script + filterDF + saveToBox
+    var full_script = loadData + "\n" +  makeDF + script + filterDF + "\n" + saveToBox
     h += qaqc.saveQC(full_script)
 
     return h

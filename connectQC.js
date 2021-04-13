@@ -89,9 +89,9 @@ runQAQC = function (data) {
     # EMAIL: SANDOVALL2@NIH.GOV
                         
 # set working directory
-setwd("C:/Users/sandovall2/Downloads")\r\n
-`
-    var makeDF = `df = data.frame()\r\n`
+setwd("C:/Users/sandovall2/Downloads")\r\nconnectData = read.csv("participants_04132021.csv")\r\n`
+
+    var makeDF = `# make qc dataframe\ndf = data.frame()\r\n`
 
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     
@@ -99,8 +99,6 @@ setwd("C:/Users/sandovall2/Downloads")\r\n
     // save qc script as txt
     var full_script = loadData +  makeDF + script + saveToBox
     h += qaqc.saveQC(full_script)
-
-
 
     return h
 }

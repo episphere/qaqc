@@ -84,9 +84,9 @@ runQAQC = function (data) {
             
             //cross valid
         } else if (test[1][i] == "crossValid") {
-            var valid = `######## QC ${conceptID}
-            # cross valid value check
-            ${conceptID2}= c(${test[4][i]})
+            var valid = `######## QC ${conceptID}\r\n
+            # cross valid value check\r\n
+            ${conceptID2}= c(${test[4][i]})\r\n
             QCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID2})\n${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]
             df[${i},1]<-paste0("${conceptID}_invalid")\r\ndf[${i},2]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
                                                 // checked for NA only!
@@ -99,7 +99,7 @@ runQAQC = function (data) {
             valid = ""
         }
 
-        script += valid + "\n"
+        script += valid + "\r\n"
         l++;
     }
 // BUILD THE HEADER, SCRIPT AND FOOTER
@@ -115,12 +115,14 @@ runQAQC = function (data) {
 setwd("C:/Users/sandovall2/Downloads")\r\nconnectData = read.csv("participants_04132021.csv")\r\n`
 
     var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=2))\r\nnames(df) = c("QC checks","values")\r\n`
-
+    
+    var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks") |df$"QC checks" != "")\r\n`
+    
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth()\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     
     
     // save qc script as txt
-    var full_script = loadData + "\n" +  makeDF + script + saveToBox
+    var full_script = loadData + "\n" +  makeDF + script + filterDF + saveToBox
     h += qaqc.saveQC(full_script)
 
     return h

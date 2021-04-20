@@ -51,48 +51,33 @@ runQAQC = function (data) {
         var conceptID2 = test[3][i]
         var crossif = test[4][i]
         var crossthen = test[5][i]
-
+        var valid1 = test[2][i]
+        var type = test[1][i]
         // run loops to append checks to script
-        console.log(test[1][i])
-        if (test[1][i] == "valid") {
             // valid value
-            var valid = `######## QC ${conceptID}
-            # valid value check\n${conceptID}= c(${test[2][i]})
-            QCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})
-            ${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]
-            df[${i},1]<-paste0("${conceptID}_invalid")\r\ndf[${i},2]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
+        if (type == "valid") {
+            var valid = `######## QC ${conceptID}\n# valid value check\r\n${conceptID}= c(${valid1})\nQCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})\n${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]\r\ndf[${i},1]<-paste0("${conceptID}_invalid")\ndf[${i},2]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
             
+            // valid length
+         } else if (type == "char()") {
+            var valid = `######## QC ${conceptID}\n# valid length check\r\nlength= ${valid1}\nQCcheck1 =connectData$${conceptID}\ndf1 <- gsub(" ", "", QCcheck1, fixed = TRUE) #remove spaces\ndf2=strsplit(df1, ",")\nlengths = unique(sapply(df2,nchar))\n${conceptID}_invalid_char_length = list_lengths[list_lengths != ${valid1}]\ndf[${i},1]<-paste0("${conceptID}_invalid_char_length")\ndf[${i},2]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\r\n`
+
             //date
-        } else if (test[1][i] == "date") {
-            var valid = `######## QC ${conceptID}
-            # valid date check
-            ${conceptID} = connectData$"${conceptID}"
-            ${conceptID}_date_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID}))
-            ${conceptID}_date2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_date_invalid]))
-            df[${i},1]<-paste0("${conceptID}_date")
-            df[${i},2]<-paste0(${conceptID}_date2_invalid, collapse=", ")\r\n`
+        } else if (type == "date") {
+            var valid = `######## QC ${conceptID}\n# valid date check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_date_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID}))\n${conceptID}_date2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_date_invalid]))\r\n
+            df[${i},1]<-paste0("${conceptID}_date")\ndf[${i},2]<-paste0(${conceptID}_date2_invalid, collapse=", ")\r\n`
             
             //date time
-        } else if (test[1][i] == "dateTime") {
-            var valid = `######## QC ${conceptID}
-            # valid dateTime check
-            ${conceptID} = connectData$"${conceptID}"
-            ${conceptID}_dateTime_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID}))
-            ${conceptID}_dateTime2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_dateTime_invalid]))
-            df[${i},1]<-paste0("${conceptID}_dateTime_invalid")
-            df[${i},2]<-paste0(${conceptID}_dateTime2_invalid, collapse=", ")\r\n`
+        } else if (type == "dateTime") {
+            var valid = `######## QC ${conceptID}\n# valid dateTime check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_dateTime_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID}))\n${conceptID}_dateTime2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_dateTime_invalid]))\n
+            df[${i},1]<-paste0("${conceptID}_dateTime_invalid")\ndf[${i},2]<-paste0(${conceptID}_dateTime2_invalid, collapse=", ")\r\n`
             
-            //cross valid
-        } else if (test[1][i] == "crossValid") {
-            var valid = `######## QC ${conceptID}\r\n
-            # cross valid value check\r\n
-            ${conceptID2}= c(${test[4][i]})\r\n
-            QCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID2})\n${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]
-            df[${i},1]<-paste0("${conceptID}_invalid")\r\ndf[${i},2]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
-                                                // checked for NA only!
-                                         //r\n# crossValid check\n${conceptID} = connectData$"${conceptID}" \ncheck15_2 = which(connectData$"${conceptID2}" == "${crossif}"")\r\n${conceptID}_cross_null = which(is.na(connectData$"${conceptID}"[check15_2]))\r\ndf[${i},1]<-paste("${conceptID}_cross_null",check15_2)\r\n`
+            //cross valid 
+        } else if (type == "crossValid") {
+            var valid = `######## QC ${conceptID}\n# cross valid value check\r\n${conceptID}_a = c(${valid1})\n${conceptID}_b = c(${crossthen})\r\naa = which(connectData$"${conceptID2}" == ${crossif})\nmylist1 =  paste0(rep("connectData$${conceptID} != "), c(${crossif}), sep =" || ")\n# make many or statements\nmylist2 = str_c(mylist1, sep = "", collapse ="")\nmylist3 = str_sub(mylist2, end =-5) #remove extra " ||" at the end of string\nbb = which(eval(parse(text=mylist3))) # remove quotes to make logical expression\nQCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n${conceptID}_invalid_cross_a = addNA(connectData$"${conceptID}"[QCcheck1])\nQCcheck2 =which(connectData$"${conceptID}"[bb]%!in%${conceptID}_b)\n${conceptID}_invalid_cross_b = addNA(connectData$"${conceptID}"[QCcheck2])\ndf[${i},1]<-paste0("${conceptID}_${conceptID2}_crossinvalid")\ndf[${i},2]<-paste0(${conceptID}_invalid_cross_a, collapse=", ")\ndf[${i},3]<-paste0(${conceptID}_invalid_cross_b, collapse=", ")\r\n`
+                                             
            // pending 
-        } else if (test[1][i] == "pending") {
+        } else if (type == "pending") {
              var valid = `######## QC ${conceptID} \r\n`// pending value check
 
         } else {
@@ -112,17 +97,15 @@ runQAQC = function (data) {
     # EMAIL: SANDOVALL2@NIH.GOV
                         
 # set working directory
-setwd("C:/Users/sandovall2/Downloads")\r\nconnectData = read.csv("participants_04132021.csv")\r\n`
+setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_recruitment_data")\r\nconnectData = read.csv("recruitment_04162021.csv")\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n`
 
-    var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=2))\r\nnames(df) = c("QC checks","values")\r\n`
-    
+    var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=3))\nnames(df) = c("QC checks","invalid values CID1", "invalid values CID1")\r\n`
     var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks") |df$"QC checks" != "")\r\n`
-    
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth()\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     
     
     // save qc script as txt
-    var full_script = loadData + "\n" +  makeDF + script + filterDF + "\n" + saveToBox
+    var full_script = loadData + "\n" +  makeDF + "\n" + script + filterDF + "\n" + saveToBox
     h += qaqc.saveQC(full_script)
 
     return h

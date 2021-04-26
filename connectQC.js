@@ -77,8 +77,9 @@ runQAQC = function (data) {
 
             //cross valid 
         } else if (type == "crossValid") {
-            var valid = `######## QC ${conceptID}\n# cross valid value check\r\n
-            ${conceptID}_a = c(${valid1})\n${conceptID}_b = c(${crossthen})\r\n
+            var valid = `######## QC ${conceptID}\n# cross valid value check\n
+            ${conceptID}_a = c(${valid1})\n
+            ${conceptID}_b = c(${crossthen})\n
             mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
             mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
@@ -91,15 +92,17 @@ runQAQC = function (data) {
             ${conceptID}_invalid_cross_a = addNA(connectData$"${conceptID}"[QCcheck1])\n
             QCcheck2 =which(connectData$"${conceptID}"[bb]%!in%${conceptID}_b)\n
             ${conceptID}_invalid_cross_b = addNA(connectData$"${conceptID}"[QCcheck2])\n
-            df[${i},1]<-paste0("${conceptID}_${conceptID2}_crossinvalid")\n
+            df[${i},1]<-paste0("${conceptID}_${conceptID2}_crossinvalid_values")\n
             df[${i},2]<-paste0(${conceptID}_b, collapse=", ")\n
             df[${i},3]<-paste0(${conceptID}_invalid_cross_a, collapse=", ")\n
-            df[${i},4]<-paste0(${conceptID}_invalid_cross_b, collapse=", ")\r\n`
+            df[${i},4]<-paste0(${conceptID}_invalid_cross_b, collapse=", ")\n`
+            var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
 
             //cross valid #2 (3 levels deep)
         } else if (type == "crossValid2") {
-            var valid = `######## QC ${conceptID}\n# cross valid value check #2\r\n
-            ${conceptID}_b = c(${valid1})# b:if cid2 is not relevant\n${conceptID}_a = c(${crossthen2})#a: if cid2 is relevant\r\n
+            var valid = `######## QC ${conceptID}\n# cross valid value check #2\n
+            ${conceptID}_b = c(${valid1})# b:if cid2 is not relevant\n
+            ${conceptID}_a = c(${crossthen2})#a: if cid2 is relevant\n
             mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
             mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
@@ -120,18 +123,18 @@ runQAQC = function (data) {
             ${conceptID}_invalid_cross2_a = addNA(connectData$"${conceptID}"[QCcheck1])\n
             QCcheck2 =which(connectData$"${conceptID}"[bb]%!in%${conceptID}_b)\n
             ${conceptID}_invalid_cross2_b = addNA(connectData$"${conceptID}"[QCcheck2])\n
-            df[${i},1]<-paste0("${conceptID}_${conceptID2}_${conceptID3}_crossinvalid2")\n
+            df[${i},1]<-paste0("${conceptID}_${conceptID2}_${conceptID3}_crossinvalid_values2")\n
             df[${i},2]<-paste0(${conceptID}_b, collapse=", ")\n
             df[${i},3]<-paste0(unique(${conceptID}_invalid_cross2_b), collapse=", ")\n
-            df[${i},4]<-paste0(unique(${conceptID}_invalid_cross2_a), collapse=", ")\r\n`
+            df[${i},4]<-paste0(unique(${conceptID}_invalid_cross2_a), collapse=", ")\n`
+            var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
+            // valid length
+        } else if (type == "pin") {
+            var valid = `######## QC ${conceptID}\n# missing pin check\r\nmissing_pin_rows = which(is.na(connectData$pin) & !is.na(connectData$studyId) & !is.na(connectData$token) & (connectData$d_512820379==180583933 | connectData$d_512820379==486306141))\ndf[${i},1]<-paste0("missing_pin_rows")\ndf[${i},2]<-paste0(missing_pin_rows, collapse=", ")\r\n`
 
             // valid length
         } else if (type == "token") {
-            var valid = `######## QC ${conceptID}\n# token check\r\nmissing_token_rows = which(!is.na(connectData$studyId) & connectData$d_512820379==180583933 | connectData$d_512820379==854703046 | connectData$d_230663853==353358909)\ndf[${i},1]<-paste0("missing_token_rows")\ndf[${i},2]<-paste0(missing_token_rows, collapse=", ")\r\n`
-
-            // valid length
-        } else if (type == "studyId") {
-            var valid = `######## QC ${conceptID}\n# studyId check\r\nmissing_studyId_rows = which(!is.na(connectData$studyId) & connectData$d_512820379==180583933 | connectData$d_512820379==854703046 | connectData$d_230663853==353358909)\ndf[${i},1]<-paste0("missing_studyId_rows")\ndf[${i},2]<-paste0(missing_studyId_rows, collapse=", ")\r\n`
+            var valid = `######## QC ${conceptID}\n# token check\r\nmissing_token_rows = which(is.na(connectData$token) & !is.na(connectData$studyId) & (connectData$d_512820379==180583933 | connectData$d_512820379==854703046 | connectData$d_230663853==353358909))\ndf[${i},1]<-paste0("missing_token_rows")\ndf[${i},2]<-paste0(missing_token_rows, collapse=", ")\r\n`
 
             // pending 
         } else if (type == "pending") {
@@ -154,7 +157,7 @@ runQAQC = function (data) {
     # EMAIL: SANDOVALL2@NIH.GOV
                         
 # set working directory
-setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_recruitment_data")\r\nconnectData = read.csv("recruitment_04162021.csv")\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n`
+setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_recruitment_data")\r\nconnectData = read.csv("recruitment_04162021.csv",fileEncoding = 'UTF-8-BOM')\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n`
 
     var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=4))\nnames(df) = c("QC checks","values permited under null condition","invalid values in CID1, null condition", "invalid values in CID1, alternative condition")\r\n`
     var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks") |df$"QC checks" != "")\r\n`

@@ -2,14 +2,12 @@ console.log(`connectQC.js loaded at ${Date()}`)
 
 runQAQC = function (data) {
     console.log(`connectQC.js runQAQC function ran at ${Date()}`)
-    let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows</p>`
-    h += '<p style="color:blue">List of variables'
-    Object.keys(qaqc.data).forEach(k => {
-        h += `<li style="color:blue">${k} (${qaqc.data[k].length} x ${typeof(qaqc.data[k][0])=='string' ? 'string' : 'number'})</li>`
-    })
+    let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
+    //h += '<p style="color:blue">List of variables'
+    //Object.keys(qaqc.data).forEach(k => {
+    //    h += `<li style="color:blue">${k} (${qaqc.data[k].length} x ${typeof(qaqc.data[k][0])=='string' ? 'string' : 'number'})</li>`
+    //})
     h += '</p>'
-
-
 
 
     //  function to convert input text to output array
@@ -166,11 +164,28 @@ setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_cod
     var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=3))\nnames(df) = c("QC checks","invalid values CID1", "invalid values CID1")\r\n`
     var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks"))\nwrite.csv(qc_script,"qc_recruitment_errors_0427.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth()\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
-    
-    
-    // save qc script as txt
-    var full_script = loadData + "\n" +  makeDF + "\n" + script + filterDF + "\n" + saveToBox
-    h += qaqc.saveQC(full_script)
+    // END QC SCRIPT
 
+    // LIST INSTRUCTIONS FOR USE 
+    h += `<p style="color:darkblue;font-size: 13px;font-weight:bold" >The loaded rules file should contain 9 columns:</p>`
+
+    h += `<ul style="color:darkblue;font-size: 13px">`
+    h += `<li style="color:darkblue;font-size: 13px">ConceptID1 (which should begin with d_, unless it is a non-numeric conceptID)</li>`
+    h += `<li style="color:darkblue;font-size: 13px">QCtype (which can include char(enter length),num(enter length) valid, crossValid, crossValid2, date, dateTime, or crossValidDateTime)</li>`
+    h += `<li style="color:darkblue;font-size: 13px">range for ConceptID1 values should equal this</li>`
+    h += `<li style="color:darkblue;font-size: 13px">unless ConceptID2 (begin with d_)</li>`
+    h += `<li style="color:darkblue;font-size: 13px">equals this</li>`
+    h += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li>`
+    h += `<il style="color:darkblue;font-size: 13px">and ConceptID3 (begin with d_, if not empty, then column f should be empty)</li>`
+    h += `<li style="color:darkblue;font-size: 13px">equals this</li>`
+    h += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li></ul>`
+
+        // save qc script as txt
+        var full_script = loadData + "\n" +  makeDF + "\n" + script + filterDF + "\n" + saveToBox
+        h += qaqc.saveQC(full_script) 
+        h += `<p></p>`
+        h += `<p style="color:green;font-size: 13px;font-weight:bold" >Saving the QC script above generates code written in R based on the rules specified in the file loaded above.</p>`
+        h += `<p style="color:green;font-size: 13px;font-weight:bold" >The R code produced by the the script, checks for errors in the recruitment table.</p>`
+       
     return h
 }

@@ -144,7 +144,7 @@ runQAQC = function (data) {
             valid = ""
         }
 
-        script += valid + "\r\n"
+        script += valid 
         l++;
     }
     // BUILD THE HEADER, SCRIPT AND FOOTER
@@ -155,17 +155,21 @@ runQAQC = function (data) {
     # LAST UPDATED: APRIL 5TH, 2021
     # AUTHOR: LORENA SANDOVAL 
     # EMAIL: SANDOVALL2@NIH.GOV
-                        
+               
+# install.packages("stringr")
+# install.packages("dplyr")
+library(stringr)
+library(dplyr)
 # set working directory
-setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_recruitment_data")\r\nconnectData = read.csv("recruitment_04162021.csv",fileEncoding = 'UTF-8-BOM')\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n`
+setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_recruitment_data")\r\nconnectData = read.csv("recruitment_04162021.csv")\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n`
 
-    var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=4))\nnames(df) = c("QC checks","values permited under null condition","invalid values in CID1, null condition", "invalid values in CID1, alternative condition")\r\n`
-    var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks") |df$"QC checks" != "")\r\n`
+    var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=3))\nnames(df) = c("QC checks","invalid values CID1", "invalid values CID1")\r\n`
+    var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks"))\nwrite.csv(qc_script,"qc_recruitment_errors_0427.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth()\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
-
-
+    
+    
     // save qc script as txt
-    var full_script = loadData + "\n" + makeDF + "\n" + script + filterDF + "\n" + saveToBox
+    var full_script = loadData + "\n" +  makeDF + "\n" + script + filterDF + "\n" + saveToBox
     h += qaqc.saveQC(full_script)
 
     return h

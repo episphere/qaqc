@@ -57,21 +57,32 @@ runQAQC = function (data) {
         // run loops to append checks to script
         // valid value
         if (type == "valid") {
-            var valid = `######## QC ${conceptID}\n# valid value check\r\n${conceptID}= c(${valid1})\nQCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})\n${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]\r\ndf[${i},1]<-paste0("${conceptID}_invalid")\ndf[${i},3]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
+            var valid = `######## QC ${conceptID}\n# valid value check\r\n${conceptID}= c(${valid1})\nQCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})\n${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]\r\ndf[${i},1]<-paste0("${conceptID}_invalid")\ndf[${i},2]<-paste0("${valid1}")\ndf[${i},3]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
 
             // valid length
         } else if (type == "char()") {
-            var valid = `######## QC ${conceptID}\n# valid length check\r\nlength= ${valid1}\nQCcheck1 =connectData$${conceptID}\ndf1 <- gsub(" ", "", QCcheck1, fixed = TRUE) #remove spaces\ndf2=strsplit(df1, ",")\nlengths = unique(sapply(df2,nchar))\n${conceptID}_invalid_char_length = list_lengths[list_lengths != ${valid1}]\ndf[${i},1]<-paste0("${conceptID}_invalid_char_length")\ndf[${i},2]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\r\n`
+            var valid = `######## QC ${conceptID}\n# valid character length check\r\nlength= ${valid1}\nQCcheck1 =connectData$${conceptID}\ndf1 <- gsub(" ", "", QCcheck1, fixed = TRUE) #remove spaces\ndf2=strsplit(df1, ",")\nlist_lengths = unique(sapply(df2,nchar))\n${conceptID}_invalid_char_length = list_lengths[list_lengths > ${valid1}]\ndf[${i},1]<-paste0("${conceptID}_invalid_char_length")\ndf[${i},2]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\r\n`
+
+        // valid length
+        // } else if (type == "num()") {
+        //     var valid = `######## QC ${conceptID}\n# valid number length check\r\nlength= ${valid1}\n
+        //     QCcheck1 =connectData$${conceptID}\ndf1 <- gsub(" ", "", QCcheck1, fixed = TRUE) #remove spaces\n
+        //     df2=strsplit(df1, ",")\nlist_lengths = unique(sapply(df2,nchar))\n
+        //     ${conceptID}_invalid_char_length = list_lengths[list_lengths > ${valid1}]\n
+        //     df[${i},1]<-paste0("${conceptID}_invalid_num_length")\n
+        //     df[${i},2]<-paste0("length= ${valid1}")\n
+        //     df[${i},3]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\r\n`
+
 
             //date
         } else if (type == "date") {
             var valid = `######## QC ${conceptID}\n# valid date check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_date_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID}))\n${conceptID}_date2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_date_invalid]))\r\n
-            df[${i},1]<-paste0("${conceptID}_date")\ndf[${i},3]<-paste0(${conceptID}_date2_invalid, collapse=", ")\r\n`
+            df[${i},1]<-paste0("${conceptID}_date")\ndf[${i},2]<-paste0("MMDDYYYY")\nndf[${i},3]<-paste0(${conceptID}_date2_invalid, collapse=", ")\r\n`
 
             //date time
         } else if (type == "dateTime") {
             var valid = `######## QC ${conceptID}\n# valid dateTime check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_dateTime_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID}))\n${conceptID}_dateTime2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_dateTime_invalid]))\n
-            df[${i},1]<-paste0("${conceptID}_dateTime_invalid")\ndf[${i},3]<-paste0(${conceptID}_dateTime2_invalid, collapse=", ")\r\n`
+            df[${i},1]<-paste0("${conceptID}_dateTime_invalid")\ndf[${i},2]<-paste0("MMDDYYYY 00:00:00")\ndf[${i},3]<-paste0(${conceptID}_dateTime2_invalid, collapse=", ")\r\n`
 
             //cross valid 
         } else if (type == "crossValid") {
@@ -159,10 +170,10 @@ runQAQC = function (data) {
 library(stringr)
 library(dplyr)
 # set working directory
-setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_recruitment_data")\r\nconnectData = read.csv("recruitment_04162021.csv")\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n`
+setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_site_data")\r\nconnectData = read.csv("HP_Sanford_Kaiser_recruitment_04282021.csv")\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n# function to check for numeric values\r\ntestInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)\nif(test == TRUE){ return(TRUE) } else { return(FALSE) }}\r\n`
 
-    var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=3))\nnames(df) = c("QC checks","invalid values CID1", "invalid values CID1")\r\n`
-    var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"QC checks"))\nwrite.csv(qc_script,"qc_recruitment_errors_0427.csv")\r\n`
+    var makeDF = `# make qc dataframe\ndf = data.frame(matrix(, nrow=${lengthQC}, ncol=4))\nnames(df) = c("QC checks","permissible vlaues in CID1", "invalid values in CID1", "invalid values in CID2")\r\n`
+    var filterDF = `######## filter df to show QC errors\nqc_script = filter(df, !is.na(df$"invalid values in CID1") | !is.na(df$"invalid values in CID2")))\nwrite.csv(qc_script,"qc_recruitment_errors_0427.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth()\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_script, "qc_script_04122021_,dir_id =134691197438)\r\n`
     // END QC SCRIPT
 

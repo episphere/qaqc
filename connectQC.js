@@ -46,6 +46,9 @@ runQAQC = function (data) {
     date = test[3][0]
     site = test[5][0]
     table = test[7][0]
+    data_box_file_id = test[9][0]
+    save_to_box_folder_id = test[11][0]
+
     var lengthQC = test[0].length - 1
     for (i = 2; i < test[0].length; i++) {
         var conceptID = test[0][i]
@@ -107,19 +110,19 @@ runQAQC = function (data) {
 
             // cross valid year check --------------------------------------------------------------------------------------------------
         } else if (type == "crossValidYear") {
-            var valid = `######## QC ${conceptID}\n
-            # valid year check\r\n${conceptID} = connectData$"${conceptID}"\n
-            ${conceptID}_year_invalid = which(!grepl("^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$", ${conceptID}))\n
-            ${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
-           df[${i},1]<-paste0("${conceptID}_year_check")\ndf[${i},2]<-paste0("valid year format:[1-2][0,9][0:9][0:9]")\n
-           ndf[${i},3]<-paste0("invalid year:",${conceptID}_year_invalid, collapse=", ")\r\n`
+        //     var valid = `######## QC ${conceptID}\n
+        //     # valid year check\r\n${conceptID} = connectData$"${conceptID}"\n
+        //     ${conceptID}_year_invalid = which(!grepl("^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$", ${conceptID}))\n
+        //     ${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
+        //    df[${i},1]<-paste0("${conceptID}_year_check")\ndf[${i},2]<-paste0("valid year format:[1-2][0,9][0:9][0:9]")\n
+        //    ndf[${i},3]<-paste0("invalid year:",${conceptID}_year_invalid, collapse=", ")\r\n`
 
         
             var valid = `######## QC ${conceptID}\n# cross valid year check\n
+            year = "^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$"
             ${conceptID}_a = c(${valid1})\n
             ${conceptID}_b = c(${crossthen})\n
-            year = "^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$"
-            mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
+            mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
             mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
             aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
@@ -140,31 +143,46 @@ runQAQC = function (data) {
             df[${i},4]<-paste0("values that should be blank:",${conceptID}_invalid_not_year, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
 
-    //cross valid1 --------------------------------------------------------------------------------------------------
-    } else if (type == "crossValid") {
-        var valid = `######## QC ${conceptID}\n# cross valid value check\n
+    //cross valid1_2 --------------------------------------------------------------------------------------------------
+    } else if (type == "crossValid1_2") {
+        var valid = `######## QC ${conceptID}\n# cross valid value check - only checks values if condition one is met\n
         ${conceptID}_a = c(${valid1})\n
         ${conceptID}_b = c(${crossthen})\n
         mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
         mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
         mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
         aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
-        mylist_b1 =  paste0(rep("connectData$${conceptID2} != "), c(${crossif}), sep =" || ")\n
-        mylist_b2 = str_c(mylist_b1, sep = "", collapse ="") # make many or statements\n
-        mylist_b3 = str_sub(mylist_b2, end =-5) #remove extra " ||" at the end of string\n
-        bb = which(eval(parse(text=mylist_b3))) # remove quotes to make logical expression\n
+        
         QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
         ${conceptID}_invalid_cross_a = addNA(connectData$"${conceptID}"[QCcheck1])\n
         QCcheck2 =which(connectData$"${conceptID}"[bb]%!in%${conceptID}_b)\n
         ${conceptID}_invalid_cross_b = addNA(connectData$"${conceptID}"[QCcheck2])\n
         df[${i},1]<-paste0("${conceptID}_${conceptID2}_crossinvalid_values")\n
         df[${i},2]<-paste0(${conceptID}_b, collapse=", ")\n
-        df[${i},3]<-paste0(${conceptID}_invalid_cross_a, collapse=", ")\n
-        df[${i},4]<-paste0(${conceptID}_invalid_cross_b, collapse=", ")\n`
+        df[${i},3]<-paste0(${conceptID}_invalid_cross_a, collapse=", ")\n`
+        var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
+
+        //cross valid1_3 --------------------------------------------------------------------------------------------------
+    } else if (type == "crossValid1_2") {
+        var valid = `######## QC ${conceptID}\n# cross valid value check - only checks values if condition one is met\n
+        ${conceptID}_a = c(${valid1})\n
+        ${conceptID}_b = c(${crossthen})\n
+        mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
+        mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+        mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+        aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+        
+        QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
+        ${conceptID}_invalid_cross_a = addNA(connectData$"${conceptID}"[QCcheck1])\n
+        QCcheck2 =which(connectData$"${conceptID}"[bb]%!in%${conceptID}_b)\n
+        ${conceptID}_invalid_cross_b = addNA(connectData$"${conceptID}"[QCcheck2])\n
+        df[${i},1]<-paste0("${conceptID}_${conceptID2}_crossinvalid_values")\n
+        df[${i},2]<-paste0(${conceptID}_b, collapse=", ")\n
+        df[${i},3]<-paste0(${conceptID}_invalid_cross_a, collapse=", ")\n`
         var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
             //cross valid --------------------------------------------------------------------------------------------------
         } else if (type == "crossValid") {
-            var valid = `######## QC ${conceptID}\n# cross valid value check\n
+            var valid = `######## QC ${conceptID}\n# cross valid value check - checks values if condition one is met and checks values if condition is not met\n
             ${conceptID}_a = c(${valid1})\n
             ${conceptID}_b = c(${crossthen})\n
             mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
@@ -247,22 +265,30 @@ runQAQC = function (data) {
 # install.packages("dplyr")
 library(stringr)
 library(dplyr)
+box_auth(client_id = "627lww8un9twnoa8f9rjvldf7kb56q1m",client_secret =  "gSKdYKLd65aQpZGrq9x4QVUNnn5C8qqm")
 
-# set working directory
-setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_site_data")\r\nconnectData = read.csv("HP_Sanford_Kaiser_recruitment_04282021.csv")\r\n# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n# function to check for numeric values\r\ntestInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)\nif(test == TRUE){ return(TRUE) } else { return(FALSE) }}\r\n`
+# set working directory to read file locally
+#setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_site_data")
+#connectData = read.csv("HP_Sanford_Kaiser_recruitment_04282021.csv")\n
+# or read file from box using the file id number
+connectData = box_read(807360545808)
+# function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n
+# function to check for numeric values\r\n
+testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)\nif(test == TRUE){ return(TRUE) } else { return(FALSE) }}\r\n`
     var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, ncol=4))\nnames(df) = c("QC checks","permissible vlaues in CID1", "invalid values in CID1", "invalid values in CID2")\r\n`
     var filterDF = `######## filter df to show QC errors\nqc_errors = filter(df, (!is.na(df$"invalid values in CID1") |!is.na(df$"invalid values in CID2")))\nqc_errors = filter(qc_errors, (qc_errors$"invalid values in CID1" != "" | qc_errors$"invalid values in CID2" != ""))\nwrite.csv(qc_errors,"qc_${table}_errors_${date}_${site}.csv")\r\n`
-    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_auth()\nbox_auth(client_id = "xoxo" , client_secret = "xoxo")\nbox_write(qc_errors, "${site}_${table}_qc_errors_${date},dir_id =134691197438)\r\n`
+    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\nbox_write(qc_errors, "${site}_${table}_qc_errors_${date}.csv",dir_id =134691197438)\r\n`
     // END QC SCRIPT
 
     // LIST INSTRUCTIONS FOR USE 
-    h += `<p style="color:darkblue;font-size: 13px">Row1 should include: date in column 4, site in column 6 and table in column 8(separated by underscore, if necessary) ie. date: 05042021, site: Sanford, table: recruitment</p>`
+    h += `<p style="color:darkblue;font-size: 13px;font-weight:bold">Row 1 should include: date in column 4, site in column 6 and table in column 8, data box file id in column 10, "save QC errors to" box folder id in column 12 (separated by underscore, if necessary)</p>`
+    h += `<p style="color:darkblue;font-size: 13px;font-weight:bold">     ie. 05042021, Sanford, recruitment, 1234, 5678</p>`
 
-    h += `<p style="color:darkblue;font-size: 13px;font-weight:bold" >The loaded rules file should contain 9 columns below row one:</p>`
+    h += `<p style="color:darkblue;font-size: 13px;font-weight:bold" >The loaded rules file should contain 9 columns with the following column names in row 2:</p>`
     h += `<ul style="color:darkblue;font-size: 13px">`
 
     h += `<li style="color:darkblue;font-size: 13px">ConceptID1 (which should begin with d_, unless it is a non-numeric conceptID)</li>`
-    h += `<li style="color:darkblue;font-size: 13px">QCtype (which can include char(enter length),num(enter length) valid, crossValid, crossValid2, date, dateTime, or crossValidDateTime)</li>`
+    h += `<li style="color:darkblue;font-size: 13px">QCtype (which can include char(),num() valid, crossValid, crossValid1, crossValid2, crossValidYear, crossValidAge, date, dateTime, year, or crossValidDateTime)</li>`
     h += `<li style="color:darkblue;font-size: 13px">range for ConceptID1 values should equal this</li>`
     h += `<li style="color:darkblue;font-size: 13px">unless ConceptID2 (begin with d_)</li>`
     h += `<li style="color:darkblue;font-size: 13px">equals this</li>`

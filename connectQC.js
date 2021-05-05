@@ -59,12 +59,12 @@ runQAQC = function (data) {
         var type = test[1][i]
         // run loops to append checks to script
 
-        // valid value
+        // valid value--------------------------------------------------------------------------------------------------
         if (type == "valid") {
             var valid = `######## QC ${conceptID}\n# valid value check\r\n${conceptID}= c(${valid1})\nQCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})\n${conceptID}_invalid = addNA(connectData$"${conceptID}")[QCcheck1]\r\ndf[${i},1]<-paste0("${conceptID}_invalid")\ndf[${i},2]<-paste0("${valid1}")\ndf[${i},3]<-paste0(${conceptID}_invalid, collapse=", ")\r\n`
 
        
-        // valid character length
+        // valid character length--------------------------------------------------------------------------------------------------
         } else if (type == "char()") {
             var valid = `######## QC ${conceptID}\n# valid character length check\r\nvalid_length= ${valid1}
             \nvar.is.integer =suppressWarnings(testInteger(connectData$"${conceptID}"))\nvariable =connectData$"${conceptID}"
@@ -73,7 +73,7 @@ runQAQC = function (data) {
             \ndf[${i},1]<-paste0("${conceptID}_invalid_char_length")
             \ndf[${i},2]<-paste0("invalid length(s) found:",${conceptID}_invalid_char_length,"all integer value(s) found:",var.is.integer, collapse=", ")\r\n`
             
-            // valid numeric length
+            // valid numeric length--------------------------------------------------------------------------------------------------
         } else if (type == "num()") {
             var valid = `######## QC ${conceptID}\n# valid numeric length check\r\nvalid_length= ${valid1}
             \nvar.is.integer =suppressWarnings(testInteger(connectData$"${conceptID}"))\nvariable =connectData$"${conceptID}"
@@ -82,30 +82,30 @@ runQAQC = function (data) {
             \ndf[${i},1]<-paste0("${conceptID}_invalid_char_length")
             \ndf[${i},2]<-paste0("invalid length(s) found:",${conceptID}_invalid_num_length,"non integer value(s) found:",!var.is.integer, collapse=", ")\r\n`
 
-            // valid age check
+            // valid age check--------------------------------------------------------------------------------------------------
         } else if (type == "age") {
             var valid = `######## QC ${conceptID}\n# valid age check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_date_invalid = which(!grepl("^[0-9]{1}[1-9]{1}$|^[1-9]{1}$", ${conceptID}))\n${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
             df[${i},1]<-paste0("${conceptID}_age_check")\ndf[${i},2]<-paste0("1-99")\nndf[${i},3]<-paste0("invalid age(s):",${conceptID}_age_invalid, collapse=", ")\r\n`
     
         
-        // valid year check
+        // valid year check--------------------------------------------------------------------------------------------------
         } else if (type == "year") {
             var valid = `######## QC ${conceptID}\n# valid year check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_year_invalid = which(!grepl("^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$", ${conceptID}))\n${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
             df[${i},1]<-paste0("${conceptID}_year_check")\ndf[${i},2]<-paste0("valid year format:[1-2][0,9][0:9][0:9]")\nndf[${i},3]<-paste0("invalid year:",${conceptID}_year_invalid, collapse=", ")\r\n`
 
 
-            //date
+            //date--------------------------------------------------------------------------------------------------
         } else if (type == "date") {
             var valid = `######## QC ${conceptID}\n# valid date check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_date_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9]", ${conceptID}))\n${conceptID}_date2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_date_invalid]))\r\n
             df[${i},1]<-paste0("${conceptID}_date")\ndf[${i},2]<-paste0("MMDDYYYY")\nndf[${i},3]<-paste0(${conceptID}_date2_invalid, collapse=", ")\r\n`
 
-            //date time
+            //date time--------------------------------------------------------------------------------------------------
         } else if (type == "dateTime") {
             var valid = `######## QC ${conceptID}\n# valid dateTime check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_dateTime_invalid = which(!grepl("[0-9]?[1-9]-[0-9]?[1-9]-[1-2][0,9][0-9]?[1-9] [0-9]?[1-9]:[0-9]?[1-9]:[0-9]?[1-9]", ${conceptID}))\n${conceptID}_dateTime2_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_dateTime_invalid]))\n
             df[${i},1]<-paste0("${conceptID}_dateTime_invalid")\ndf[${i},2]<-paste0("MMDDYYYY 00:00:00")\ndf[${i},3]<-paste0(${conceptID}_dateTime2_invalid, collapse=", ")\r\n`
 
 
-            // cross valid year check
+            // cross valid year check --------------------------------------------------------------------------------------------------
         } else if (type == "crossValidYear") {
             var valid = `######## QC ${conceptID}\n
             # valid year check\r\n${conceptID} = connectData$"${conceptID}"\n
@@ -140,8 +140,29 @@ runQAQC = function (data) {
             df[${i},4]<-paste0("values that should be blank:",${conceptID}_invalid_not_year, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
 
-
-            //cross valid 
+    //cross valid1 --------------------------------------------------------------------------------------------------
+    } else if (type == "crossValid") {
+        var valid = `######## QC ${conceptID}\n# cross valid value check\n
+        ${conceptID}_a = c(${valid1})\n
+        ${conceptID}_b = c(${crossthen})\n
+        mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
+        mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+        mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+        aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+        mylist_b1 =  paste0(rep("connectData$${conceptID2} != "), c(${crossif}), sep =" || ")\n
+        mylist_b2 = str_c(mylist_b1, sep = "", collapse ="") # make many or statements\n
+        mylist_b3 = str_sub(mylist_b2, end =-5) #remove extra " ||" at the end of string\n
+        bb = which(eval(parse(text=mylist_b3))) # remove quotes to make logical expression\n
+        QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
+        ${conceptID}_invalid_cross_a = addNA(connectData$"${conceptID}"[QCcheck1])\n
+        QCcheck2 =which(connectData$"${conceptID}"[bb]%!in%${conceptID}_b)\n
+        ${conceptID}_invalid_cross_b = addNA(connectData$"${conceptID}"[QCcheck2])\n
+        df[${i},1]<-paste0("${conceptID}_${conceptID2}_crossinvalid_values")\n
+        df[${i},2]<-paste0(${conceptID}_b, collapse=", ")\n
+        df[${i},3]<-paste0(${conceptID}_invalid_cross_a, collapse=", ")\n
+        df[${i},4]<-paste0(${conceptID}_invalid_cross_b, collapse=", ")\n`
+        var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
+            //cross valid --------------------------------------------------------------------------------------------------
         } else if (type == "crossValid") {
             var valid = `######## QC ${conceptID}\n# cross valid value check\n
             ${conceptID}_a = c(${valid1})\n
@@ -164,7 +185,7 @@ runQAQC = function (data) {
             df[${i},4]<-paste0(${conceptID}_invalid_cross_b, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
 
-            //cross valid #2 (3 levels deep)
+            //cross valid #2 (3 levels deep) ------------------------------------------------------------------------------------
         } else if (type == "crossValid2") {
             var valid = `######## QC ${conceptID}\n# cross valid value check #2\n
             ${conceptID}_b = c(${valid1})# b:if cid2 is not relevant\n
@@ -194,15 +215,15 @@ runQAQC = function (data) {
             df[${i},3]<-paste0(unique(${conceptID}_invalid_cross2_b), collapse=", ")\n
             df[${i},4]<-paste0(unique(${conceptID}_invalid_cross2_a), collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
-            // valid length
+            // valid pin--------------------------------------------------------------------------------------------------
         } else if (type == "pin") {
             var valid = `######## QC ${conceptID}\n# missing pin check\r\nmissing_pin_rows = which(is.na(connectData$pin) & !is.na(connectData$studyId) & !is.na(connectData$token) & (connectData$d_512820379==180583933 | connectData$d_512820379==486306141))\ndf[${i},1]<-paste0("missing_pin_rows")\ndf[${i},2]<-paste0(missing_pin_rows, collapse=", ")\r\n`
 
-            // valid length
+            // valid token--------------------------------------------------------------------------------------------------
         } else if (type == "token") {
             var valid = `######## QC ${conceptID}\n# token check\r\nmissing_token_rows = which(is.na(connectData$token) & !is.na(connectData$studyId) & (connectData$d_512820379==180583933 | connectData$d_512820379==854703046 | connectData$d_230663853==353358909))\ndf[${i},1]<-paste0("missing_token_rows")\ndf[${i},2]<-paste0(missing_token_rows, collapse=", ")\r\n`
 
-            // pending 
+            // pending --------------------------------------------------------------------------------------------------
         } else if (type == "pending") {
             var valid = `######## QC ${conceptID} \r\n` // pending value check
 

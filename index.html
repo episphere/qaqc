@@ -30,7 +30,7 @@
         <ol id="scriptList">
         <li><input type="radio" name="run" class="runScript" checked> none</li>
         <li><input type="radio" name="run" class="runScript"> parmType.js - inferring type of each parameter</li>
-        <li><input type="radio" name="run" class="runScript"> connectQC.js - make Connect QC scripts</li>
+        <li><input type="radio" name="run" class="runScript" id= "connQC"> connectQC.js - make Connect QC scripts</li>
 
         <li><input type="radio" name="run" class="runScript"> lorena.js - Confluence QAQC</li>
         <!--
@@ -84,6 +84,10 @@
     <hr>
     <div id="qaqcDiv"><span style="color:red">Loading ... <br>if this takes too long please <a href="https://github.com/episphere/qaqc/issues" target="_blank">create an issue</a>.</span></div>
     <hr>
+    <div id="connQC1"><p></p></div>
+    <div id="connQCtxt" class= 'active'><p></p></div>
+    <div id="toggleArea" class='active'></div>
+    <button id="btnToggle" style="display:none"> show/hide QC instructions </button>
     <div id="dataAnalysisDiv"></div>
     <h3>Privacy</h3>
     <p class="info"> All computation takes place in this browser session. No data is transmited to a server, because there is no server supporting this application. The main purpose of this tool is indeed to illustrate how serverless statistical proceedures, particulalry data wrangling, can migrate to where the data is without exposing the source data. </p>

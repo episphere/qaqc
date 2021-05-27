@@ -502,7 +502,6 @@ function auth() {
 /////////////////////////////////// BIGQUERY
 function convertBQToMySQLResults(schema, rows) {
     var resultRows = []
-
     function recurse(schemaCur, rowsCur, colName) {
         if (Array.isArray(schemaCur) && !Array.isArray(result[colName])) {
             for (var i = 0, l = schemaCur.length; i < l; i++) {
@@ -512,7 +511,6 @@ function convertBQToMySQLResults(schema, rows) {
                     recurse(schemaCur[i], rowsCur.f[i], colName + "." + schemaCur[i].name)
             }
         }
-
         if (schemaCur.type && schemaCur.type === "RECORD") {
             if (schemaCur.mode !== "REPEATED") {
                 var valIndex = 0
@@ -523,11 +521,9 @@ function convertBQToMySQLResults(schema, rows) {
                         recurse(schemaCur.fields[p], rowsCur.v.f[valIndex], colName + "." + schemaCur.fields[p]
                             .name)
                     }
-
                     valIndex++
                 }
             }
-
             if (schemaCur.mode === "REPEATED") {
                 result[colName] = []
                 for (var x in rowsCur.v) {

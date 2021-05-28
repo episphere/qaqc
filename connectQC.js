@@ -307,8 +307,10 @@ connectData = box_read(${data_box_file_id})
 # University of Chicago Medicine = 809703864
 # National Cancer Institute = 517700004
 # Other = 181769837
-connectData = connectData[connectData$d_827220437 == 657167265,] 
-connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string
+connectData = connectData[connectData$d_827220437 == 657167265,]   # choose CID from above to filter by site, Sanford (657167265) used as default
+#connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
+
+connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  # added 0528 to change int64 to string and leave dates as date type. Int blanks are NA, charater blanks are "".
 # function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n
 # function to check for numeric values\r\n
 testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)\nif(test == TRUE){ return(TRUE) } else { return(FALSE) }}\r\n`

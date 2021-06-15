@@ -1,5 +1,70 @@
 console.log(`connectQC.js loaded at ${Date()}`)
 
+
+// ADD BOTTON TO DISPLAY INSTRUCTIONS, https://codepen.io/davidcochran/full/WbWXoa
+// Display high level steps
+if(document.getElementById('connQC').checked){
+
+    var T = document.getElementById("btnToggle");
+    T.style.display = "block";  // <-- Set it to block
+        let ele = document.getElementById('connQC1');
+        ele.innerHTML += 'STEP 1: load QC rules file above, STEP 2: dowload QC R script ';
+        
+// add toggle button to show/hide instructions
+const toggleArea = document.getElementById('toggleArea')
+const btnToggle = document.getElementById('btnToggle')
+btnToggle.addEventListener ("click", function() {
+
+    if (toggleArea.classList.contains('active')) {
+        toggleArea.classList.remove("active");
+        toggleArea.classList.add("disable");
+        /////////////////////////////////
+    var ele =document.getElementById('connQCtxt');
+
+
+
+    //save Site and Date from textbox as variable
+    // var dateVar = document.getElementById("date").value;
+    // var siteVar = document.getElementById("site").value;
+    // var siteDataVar = document.getElementById("siteData").value;
+    
+    // LIST INSTRUCTIONS FOR USE 
+    ele.innerHTML += `<p style="color:darkblue;font-size: 13px;font-weight:bold">Rules File:<br>
+    Row 1 should include date in column 4<br>
+    site in column 6<br>
+    table in column 8<br>
+    data box file id in column 10<br>
+    box folder id to save QC errors to in column 12 (separated by underscore, if necessary)
+    ie. 05042021, Sanford, recruitment, 1234, 5678</p>`
+
+    ele.innerHTML += `<p style="color:darkblue;font-size: 13px;font-weight:bold" >The loaded rules file should contain 9 columns with the following column names in row 2:</p>`
+    ele.innerHTML += `<ul style="color:darkblue;font-size: 13px">`
+
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">ConceptID1 (which should begin with d_, unless it is a non-numeric conceptID)</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">QCtype (which can include char(),num() valid, crossValid equal to or less than char(), crossValid, crossValid1, crossValid2, crossValidYear, crossValidAge, date, dateTime, year, or crossValidDateTime)</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">range for ConceptID1 values should equal this</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">unless ConceptID2 (begin with d_)</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">equals this</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li>`
+    ele.innerHTML += `<il style="color:darkblue;font-size: 13px">and ConceptID3 (begin with d_, if not empty, then column f should be empty)</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">equals this</li>`
+    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li></ul>`
+    ele.innerHTML += `<br>`
+
+} else {
+    toggleArea.classList.remove("disable");
+    toggleArea.classList.add("active");
+    document.getElementById('connQCtxt').innerHTML = "";
+        }
+    });
+}
+
+/* Read 
+
+https://css-tricks.com/use-button-element/
+*/
+        
+
 runQAQC = function (data) {
     console.log(`connectQC.js runQAQC function ran at ${Date()}`)
     let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
@@ -272,6 +337,28 @@ runQAQC = function (data) {
         l++;
     }
     console.log("test 273 row")
+
+
+    // add boxes for date, site name and site data
+    let ele = document.getElementById('connQC1');
+    ele.innerHTML += '<br>'
+    ele.innerHTML += '<form action="/action_page.php">'
+    ele.innerHTML += '<label for="date">Date:</label>'
+    ele.innerHTML += '<input type="text" id="date" name="date"><br><br>'
+    ele.innerHTML += '<label for="site">Site:</label>'
+    ele.innerHTML += '<input type="text" id="site" name="site"><br><br>'
+    ele.innerHTML += '<label for="siteData">Site data boxid:</label>'
+    ele.innerHTML += '<input type="text" id="siteData" name="siteData"><br><br>'
+    //ele.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
+    ele.innerHTML += '</form>'
+
+    site=document.getElementById("site")
+    site.onkeyup=function(ev){console.log(ev)}
+    siteVar= site.value
+    console.log(siteVar)
+
+
+
     // BUILD THE HEADER, SCRIPT AND FOOTER
 
     var loadData = `# Connect ${table} QC rules for ${site}
@@ -308,7 +395,7 @@ connectData = box_read(${data_box_file_id})
 # National Cancer Institute = 517700004
 # Other = 181769837
 connectData = connectData[connectData$d_827220437 == 657167265,]   # choose CID from above to filter by site, Sanford (657167265) used as default
-#connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
+connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
 
 connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  # added 0528 to change int64 to string and leave dates as date type. Int blanks are NA, charater blanks are "".
 # function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n
@@ -321,7 +408,7 @@ var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, nco
     qc_errors = filter(df, (!is.na(df$"invalid values found when condition met") ))\n
     qc_errors = filter(qc_errors, (qc_errors$"invalid values found when condition met" != "" ))\n
     #write.csv(qc_errors,"qc_${table}_errors_${date}_${site}.csv")\r\n`
-    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\n#box_write(qc_errors, "${site}_${table}_qc_errors_${date}.csv",dir_id =137677271727)\r\n`
+    var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\n#box_write(qc_errors,paste0("qc_report_",gsub("-","",Sys.Date()),".csv"),dir_id =137677271727)\r\n`
     // END QC SCRIPT
 
     
@@ -333,73 +420,8 @@ var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, nco
         h += `<p style="color:green;font-size: 13px;font-weight:bold" >Saving the QC script above generates code written in R based on the rules specified in the file loaded above.</p>`
         h += `<p style="color:green;font-size: 13px;font-weight:bold" >The R code produced by the the script, checks for errors in the recruitment table.</p>`
        
-    return h
-}
+
 console.log("test 335row") 
 
-// ADD BOTTON TO DISPLAY INSTRUCTIONS, https://codepen.io/davidcochran/full/WbWXoa
-// Display high level steps
-if(document.getElementById('connQC').checked){
-
-    var T = document.getElementById("btnToggle");
-    T.style.display = "block";  // <-- Set it to block
-        let ele = document.getElementById('connQC1');
-        ele.innerHTML += 'STEP 1: load QC rules file above, STEP 2: dowload QC R script ';
-        
-// add toggle button to show/hide instructions
-const toggleArea = document.getElementById('toggleArea')
-const btnToggle = document.getElementById('btnToggle')
-btnToggle.addEventListener ("click", function() {
-
-    if (toggleArea.classList.contains('active')) {
-        toggleArea.classList.remove("active");
-        toggleArea.classList.add("disable");
-        /////////////////////////////////
-    var ele =document.getElementById('connQCtxt');
-
-    // add boxes for date etc
-    ele.innerHTML += '<br>'
-    ele.innerHTML += '<form action="/action_page.php">'
-    ele.innerHTML += '<label for="date">Date:</label>'
-    ele.innerHTML += '<input type="text" id="date" name="date"><br><br>'
-    ele.innerHTML += '<label for="site">Site:</label>'
-    ele.innerHTML += '<input type="text" id="site" name="site"><br><br>'
-    ele.innerHTML += '<input type="submit" value="Submit">'
-    ele.innerHTML += '</form>'
-
-    // LIST INSTRUCTIONS FOR USE 
-    ele.innerHTML += `<p style="color:darkblue;font-size: 13px;font-weight:bold">Rules File:<br>
-    Row 1 should include date in column 4<br>
-    site in column 6<br>
-    table in column 8<br>
-    data box file id in column 10<br>
-    box folder id to save QC errors to in column 12 (separated by underscore, if necessary)
-    ie. 05042021, Sanford, recruitment, 1234, 5678</p>`
-
-    ele.innerHTML += `<p style="color:darkblue;font-size: 13px;font-weight:bold" >The loaded rules file should contain 9 columns with the following column names in row 2:</p>`
-    ele.innerHTML += `<ul style="color:darkblue;font-size: 13px">`
-
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">ConceptID1 (which should begin with d_, unless it is a non-numeric conceptID)</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">QCtype (which can include char(),num() valid, crossValid equal to or less than char(), crossValid, crossValid1, crossValid2, crossValidYear, crossValidAge, date, dateTime, year, or crossValidDateTime)</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">range for ConceptID1 values should equal this</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">unless ConceptID2 (begin with d_)</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">equals this</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li>`
-    ele.innerHTML += `<il style="color:darkblue;font-size: 13px">and ConceptID3 (begin with d_, if not empty, then column f should be empty)</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">equals this</li>`
-    ele.innerHTML += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li></ul>`
-    ele.innerHTML += `<br>`
-        
-} else {
-    toggleArea.classList.remove("disable");
-    toggleArea.classList.add("active");
-    document.getElementById('connQCtxt').innerHTML = "";
-        }
-    });
+return h
 }
-
-/* Read 
-
-https://css-tricks.com/use-button-element/
-*/
-        

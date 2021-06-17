@@ -223,7 +223,10 @@ runQAQC = function (data) {
 
             // valid age check--------------------------------------------------------------------------------------------------
         } else if (type == "age") {
-            var valid = `######## QC ${conceptID}\n# valid age check\r\n${conceptID} = connectData$"${conceptID}"\n${conceptID}_date_invalid = which(!grepl("^[0-9]{1}[1-9]{1}$|^[1-9]{1}$", ${conceptID}))\n${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
+            var valid = `######## QC ${conceptID}\n# valid age check\r\n
+            ${conceptID} = connectData$"${conceptID}"\n
+            ${conceptID}_date_invalid = which(!grepl("^[1-9][0-9]?$|^100$", ${conceptID}) & !is.na(${conceptID}))\n
+            ${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
             df[${i},3]<-"numeric age"
@@ -234,7 +237,7 @@ runQAQC = function (data) {
         // valid year check--------------------------------------------------------------------------------------------------
         } else if (type == "year") {
             var valid = `######## QC ${conceptID}\n# valid year check\r\n${conceptID} = connectData$"${conceptID}"\n
-            ${conceptID}_year_invalid = ${conceptID}[which(!grepl("^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$", ${conceptID}))]\n
+            ${conceptID}_year_invalid = ${conceptID}[which(!grepl("^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$" & !is.na(${conceptID}), ${conceptID}))]\n
             ${conceptID}_age_invalid = levels(addNA(connectData$"${conceptID}"[d_471593703_age_invalid]))\r\n
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
@@ -284,6 +287,70 @@ runQAQC = function (data) {
             df[${i},4]<-substr(mylist_a3,13,100)\n
             df[${i},5]<-paste0(${conceptID}_invalid_cross, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
+ // cross valid year check --------------------------------------------------------------------------------------------------
+} else if (type == "crossValidYear") {
+      
+    var valid = `######## QC ${conceptID}\n# cross valid year check\n
+    year = "^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$"
+    ${conceptID}_a = c(${valid1})\n
+    ${conceptID}_b = c(${crossthen})\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
+    mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+    mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+    aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+    
+    QCcheck1 =which(!grepl(year, connectData$"${conceptID}"[aa]))\n
+    ${conceptID}_invalid_year = addNA(connectData$"${conceptID}"[QCcheck1])\n
+    
+    df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+    df[${i},2]<-paste0("${type}")\n
+    df[${i},3]<-paste0("valid year format:1900 to present")\n
+    df[${i},4]<-paste0("invalid year values found in col1 or values found when should be blank in col2:")\n
+    df[${i},5]<-paste0(${conceptID}_invalid_year, collapse=", ")\n`
+    var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
+
+    // cross valid age check --------------------------------------------------------------------------------------------------
+} else if (type == "crossValidAge") {
+      
+    var valid = `######## QC ${conceptID}\n# cross valid age check\n
+    age = "^[1-9][0-9]?$|^100$"
+    ${conceptID}_a = c(${valid1})\n
+    ${conceptID}_b = c(${crossthen})\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
+    mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+    mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+    aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+    
+    QCcheck1 =which(!grepl(age, connectData$"${conceptID}"[aa]))\n
+    ${conceptID}_invalid_age = addNA(connectData$"${conceptID}"[QCcheck1])\n
+    
+    df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+    df[${i},2]<-paste0("${type}")\n
+    df[${i},3]<-paste0("ages 1:99")\n
+    df[${i},4]<-paste0("invalid ages found")\n
+    df[${i},5]<-paste0(${conceptID}_invalid_age, collapse=", ")\n`
+    var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
+ // cross valid num check --------------------------------------------------------------------------------------------------
+} else if (type == "crossValidNum") {
+      
+    var valid = `######## QC ${conceptID}\n# cross valid num check for numbers above zero\n
+    num = "grepl("[0-9]", data1) & data1>0"
+    ${conceptID}_a = c(${valid1})\n
+    ${conceptID}_b = c(${crossthen})\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
+    mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+    mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+    aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+    
+    QCcheck1 =which(!grepl(num, connectData$"${conceptID}"[aa]))\n
+    ${conceptID}_invalid_num = addNA(connectData$"${conceptID}"[QCcheck1])\n
+    
+    df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+    df[${i},2]<-paste0("${type}")\n
+    df[${i},3]<-paste0("numbers above zero")\n
+    df[${i},4]<-paste0("invalid values found")\n
+    df[${i},5]<-paste0(${conceptID}_invalid_num, collapse=", ")\n`
+    var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
 
         //cross valid1 equal to char()--------------------------------------------------------------------------------------------------
         } else if (type == "crossValid1 equal to char()") {

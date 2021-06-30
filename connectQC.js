@@ -203,6 +203,21 @@ runQAQC = function (data) {
             df[${i},4]<-paste0("char length NOT =",${valid1})\n
             df[${i},5]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\r\n`
             
+             // valid range character length--------------------------------------------------------------------------------------------------
+        } else if (type == "NA or range char()") {
+            var valid = `######## QC ${conceptID}\n# valid NA or range length check\n
+            valid_length= strsplit(${valid1})\n
+            valid_length_min = valid_length[[1]][1]\n
+            valid_length_max = valid_length[[1]][2]\n
+            variable =connectData$"${conceptID}"\n
+            list_lengths = unique(sapply(variable,nchar))\n
+            ${conceptID}_invalid_char_length = list_lengths[list_lengths < valid_length_min | list_lengths > valid_length_max & !is.na(list_lengths)]\n
+            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+            df[${i},2]<-paste0("${type} ",valid_length)\n
+            df[${i},3]<-paste0("char length rnage",${valid1})\n
+            df[${i},4]<-paste0("char length range NOT =",${valid1})\n
+            df[${i},5]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\r\n`
+            
             // valid numeric length--------------------------------------------------------------------------------------------------
         } else if (type == "NA or equal to num()") {
             var valid = `######## QC ${conceptID}\n# valid NA or numeric length check\r\n
@@ -248,7 +263,7 @@ runQAQC = function (data) {
         //date--------------------------------------------------------------------------------------------------
         } else if (type == "NA or date") {
             var valid = `######## QC ${conceptID}\n# valid date check\r\n${conceptID} = connectData$"${conceptID}"\n
-            ${conceptID}_date_invalid = which(!grepl("[1-2][0,9][0-9]?[1-9][0-9]?[1-9][0-9]?[1-9]", ${conceptID}) & !is.na(connectData$${conceptID}))\n
+            ${conceptID}_date_invalid = which(!grepl("[1-2][0,9][0-9]?[1-9][0-9]?[1-9][0-9]?[0-9]", ${conceptID}) & !is.na(connectData$${conceptID}))\n
             ${conceptID}_date2_invalid = connectData$"${conceptID}"[${conceptID}_date_invalid]\r\n
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
@@ -259,12 +274,12 @@ runQAQC = function (data) {
         //date time--------------------------------------------------------------------------------------------------
         } else if (type == "NA or dateTime") {
             var valid = `######## QC ${conceptID}\n# valid dateTime check\r\n${conceptID} = connectData$"${conceptID}"\n
-            ${conceptID}_dateTime_invalid = which(!grepl("[1-2][0,9][0-9]?[0-9]-[0-9]?[1-9]-[0-9]?[1-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]", ${conceptID}) & !is.na(connectData$${conceptID}) )\n
+            ${conceptID}_dateTime_invalid = which(!grepl("[1-2][0,9][0-9]?[0-9]-[0-9]?[1-9]-[0-9]?[0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]", ${conceptID}) & !is.na(connectData$${conceptID}) )\n
             ${conceptID}_dateTime2_invalid = addNA(connectData$"${conceptID}"[${conceptID}_dateTime_invalid])\n
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
             df[${i},3]<-paste0("MMDDYYYY 00:00:00")\n
-            df[${i},4]<-paste0("dateTime != MMDDYYYY 00:00:00")\n
+            df[${i},4]<-paste0("dateTime != YYYY-MM-DD 00:00:00")\n
             df[${i},5]<-paste0(${conceptID}_dateTime2_invalid, collapse=", ")\r\n`
 
 
@@ -364,7 +379,7 @@ runQAQC = function (data) {
             
             valid_length= c(${valid1})\n
                 #################var.is.integer =suppressWarnings(testInteger(connectData$"${conceptID}"[aa]))\n
-                variable =connectData$"${conceptID}[aa]"\n
+                variable =connectData$"${conceptID}"[aa]\n
                 list_lengths = unique(sapply(variable,nchar))\n
                 ${conceptID}_invalid_char_length = list_lengths[list_lengths != valid_length]
         
@@ -435,9 +450,11 @@ runQAQC = function (data) {
     # AUTHOR: LORENA SANDOVAL 
     # EMAIL: SANDOVALL2@NIH.GOV
                
+    # install.packages("lubridate") 
     # install.packages("stringr")
     # install.packages("boxr")
     # install.packages("dplyr")
+    library(lubridate)
     library(boxr)
     library(stringr)
     library(dplyr)
@@ -461,8 +478,8 @@ connectData = box_read(${data_box_file_id})
 # University of Chicago Medicine = 809703864
 # National Cancer Institute = 517700004
 # Other = 181769837
-connectData = connectData[connectData$d_827220437 == 657167265,]   # choose CID from above to filter by site, Sanford (657167265) used as default
-connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
+connectData = connectData[connectData$d_827220437 == 657167265 & !is.na(connectData$d_827220437),]   # choose CID from above to filter by site, Sanford (657167265) used as default
+#connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
 
 connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  # added 0528 to change int64 to string and leave dates as date type. Int blanks are NA, charater blanks are "".
 # function to exclude rows with specified values\r\n"%!in%" <- function(x,y)!("%in%"(x,y))\r\n
@@ -476,6 +493,15 @@ var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, nco
     qc_errors = filter(qc_errors, (qc_errors$"invalid values found when condition met" != "" ))\n
     #write.csv(qc_errors,"qc_${table}_errors_${date}_${site}.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\n#box_write(qc_errors,paste0("qc_report_",gsub("-","",Sys.Date()),".csv"),dir_id =137677271727)\r\n`
+    var saveToBQ = `######## SAVE QC SCRIPT TO BigQuery QR_report table\n
+    library(googleAuthR)
+library(bigQueryR)
+library(jsonlite)
+library(httr)
+    gar_auth(email="sandovall2@nih.gov",
+    scopes = "https://www.googleapis.com/auth/bigquery")
+    `
+    
     // END QC SCRIPT
 
     

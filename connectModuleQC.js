@@ -3,7 +3,7 @@ console.log(`connectQC.js loaded at ${Date()}`)
 
 // ADD BOTTON TO DISPLAY INSTRUCTIONS, https://codepen.io/davidcochran/full/WbWXoa
 // Display high level steps
-if(document.getElementById('connQC').checked){
+if(document.getElementById('connModQC').checked){
 
     var T = document.getElementById("btnToggle");
     T.style.display = "block";  // <-- Set it to block
@@ -107,49 +107,45 @@ runQAQC = function (data) {
     // define checks - date, valid, pending, etc //////////////////////////////////
     var l = 0
     script = ""
+
     var i;
-    date = test[4][0]
-    site = test[6][0]
-    table = test[8][0]
-    data_box_file_id = test[10][0]
-    save_to_box_folder_id = test[12][0]
     var lengthQC = test[0].length - 1
-    for (i = 2; i < test[0].length; i++) {
-        var valid1 = test[3][i]
-        var type = test[2][i]
+    for (i = 1; i < test[0].length; i++) {
+        var valid1 = test[6][i]
+        var type = test[5][i]
 
         // check if concept ID starts with a number, if so, add d_
         var str1 = "d_";
         var reg = /^\d+$/;
 
-        if (test[1][i] !== null && reg.test(test[1][i])){
-            str= test[1][i]
+        if (test[4][i] !== null && reg.test(test[4][i])){
+            str= test[4][i]
             var conceptID = str1. concat(str);
         }else {    // only add d_ to numeric variables, and not pin, token and studyId
-            var conceptID = test[1][i]}
+            var conceptID = test[4][i]}
 
-        if (test[4][i] !== null && reg.test(test[4][i])){
-            str4= test[4][i]
+        if (test[9][i] !== null && reg.test(test[9][i])){
+            str4= test[9][i]
             var conceptID1 = str1. concat(str4);
         }else {    // only add d_ to numeric variables, and not pin, token and studyId
-            var conceptID1 = test[4][i]}
+            var conceptID1 = test[9][i]}
 
-        if (test[6][i] !== null && reg.test(test[6][i])){
-            str6= test[6][i]
+        if (test[11][i] !== null && reg.test(test[11][i])){
+            str6= test[11][i]
             var conceptID2 = str1. concat(str6);
             console.log(conceptID2)
         }else {    // only add d_ to numeric variables, and not pin, token and studyId
-            var conceptID2 = test[6][i]}    
+            var conceptID2 = test[11][i]}    
 
-        if (test[8][i] !== null && reg.test(test[8][i])){
-            str8= test[8][i]
+        if (test[13][i] !== null && reg.test(test[13][i])){
+            str8= test[13][i]
             var conceptID3 = str1. concat(str8);
         }else {    // only add d_ to numeric variables, and not pin, token and studyId
-            var conceptID3 = test[8][i]}
+            var conceptID3 = test[13][i]}
    
-        var conceptID1val = test[5][i]
-        var conceptID2val = test[7][i]
-        var conceptID3val = test[9][i]
+        var conceptID1val = test[10][i]
+        var conceptID2val = test[12][i]
+        var conceptID3val = test[14][i]
         
         // run loops to append checks to script
 
@@ -443,10 +439,10 @@ runQAQC = function (data) {
 
     // BUILD THE HEADER, SCRIPT AND FOOTER
 
-    var loadData = `# Connect ${table} QC rules for ${site}
+    var loadData = `# Connect QC rules 
     # PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITE(S)
     # VERSION: 1.0
-    # LAST UPDATED: ${date}
+    # LAST UPDATED: 
     # AUTHOR: LORENA SANDOVAL 
     # EMAIL: SANDOVALL2@NIH.GOV
                
@@ -464,7 +460,7 @@ runQAQC = function (data) {
 #setwd("C:/Users/sandovall2/Box/Confluence Project/Confluence Data Platform/R_code_Lorena/Connect Code/BQ_TABLES/pull_site_data")
 #connectData = read.csv("HP_Sanford_Kaiser_recruitment_04282021.csv")\n
 # or read file from box using the file id number
-connectData = box_read(${data_box_file_id})
+connectData = box_read(830850547574)
 
 # filter by site
 # HealthPartners = 531629870
@@ -496,7 +492,7 @@ var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, nco
     qc_errors$Date = Sys.Date()
     ######## add site column
     qc_errors$Site = site
-    #write.csv(qc_errors,"qc_${table}_errors_${date}_${site}.csv")\r\n`
+    #write.csv(qc_errors,"qc_errors.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\n#box_write(qc_errors,paste0("qc_report_",gsub("-","",Sys.Date()),".csv"),dir_id =137677271727)\r\n`
     var saveToBQ = `######## SAVE QC SCRIPT TO BigQuery QR_report table\n
     library(googleAuthR)

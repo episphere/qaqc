@@ -478,7 +478,8 @@ connectData = box_read(${data_box_file_id})
 # University of Chicago Medicine = 809703864
 # National Cancer Institute = 517700004
 # Other = 181769837
-connectData = connectData[connectData$d_827220437 == 657167265 & !is.na(connectData$d_827220437),]   # choose CID from above to filter by site, Sanford (657167265) used as default
+site= 657167265
+connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   # choose CID from above to filter by site, Sanford (657167265) used as default
 #connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
 
 connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  # added 0528 to change int64 to string and leave dates as date type. Int blanks are NA, charater blanks are "".
@@ -486,11 +487,15 @@ connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.characte
 # function to check for numeric values\r\n
 testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)\nif(test == TRUE){ return(TRUE) } else { return(FALSE) }}\r\n`
 console.log("test 314 row")   
-var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, ncol=5))\n
-    names(df) = c("ConceptID","QCtype","valid values","condition", "invalid values found when condition met")\r\n`
+var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, ncol=7))\n
+    names(df) = c("Site", "Date", "ConceptID","QCtype","valid values","condition", "invalid values found when condition met")\r\n`
     var filterDF = `######## filter df to show QC errors\n
     qc_errors = filter(df, (!is.na(df$"invalid values found when condition met") ))\n
     qc_errors = filter(qc_errors, (qc_errors$"invalid values found when condition met" != "" ))\n
+    ######## add date column
+    qc_errors$Date = Sys.Date()
+    ######## add site column
+    qc_errors$Site = site
     #write.csv(qc_errors,"qc_${table}_errors_${date}_${site}.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\n#box_write(qc_errors,paste0("qc_report_",gsub("-","",Sys.Date()),".csv"),dir_id =137677271727)\r\n`
     var saveToBQ = `######## SAVE QC SCRIPT TO BigQuery QR_report table\n

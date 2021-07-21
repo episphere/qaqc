@@ -462,7 +462,7 @@ runQAQC = function (data) {
 # or read file from box using the file id number
 connectData = box_read(830850547574)
 
-# filter by site
+# SITE CONCEPT IDS
 # HealthPartners = 531629870
 # Henry Ford Health System = 548392715
 # Kaiser Permanente Colorado = 125001209
@@ -474,6 +474,8 @@ connectData = box_read(830850547574)
 # University of Chicago Medicine = 809703864
 # National Cancer Institute = 517700004
 # Other = 181769837
+
+################### FILTER DATA BY SITE ################################################
 site= 657167265
 connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   # choose CID from above to filter by site, Sanford (657167265) used as default
 #connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
@@ -495,35 +497,36 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
   library(dplyr)
   library(withr)
   library(tibble)
-  #  #############  oauth for box
+  #------------------------ oauth for box ------------------------ 
   box_auth(client_id = "627lww8un9twnoa8f9rjvldf7kb56q1m",client_secret =  "gSKdYKLd65aQpZGrq9x4QVUNnn5C8qqm")
   
-  #############   function to test vector for integers
+  #------------------------   function to test vector for integers ------------------------ 
   testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)
   if(test == TRUE){ return(TRUE)
   } else { return(FALSE) }
   }
-  # #############   WHITESPACE function:
+  # ------------------------ WHITESPACE function ------------------------ 
   # # Remove leading or trailing white space from each column using the following "trim function
   # trim <- function (x) gsub("^\\s+|\\s+$", "", x) 
   
+  ################################## TRANSLATE function
   TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, old.filename, save.to.this.boxFolder ){
-    ############# read report and dictionary from box
+    #read report and dictionary from box
     dict = box_read(807761973572)
     new_error_report = report
     ## translate 1 or more columns
     for (columnIndex in 1:length(translate.these.cols)){
       translate.this.col = translate.these.cols[columnIndex]
       new.col.name = new.col.names[columnIndex]
-      ############# add new translated column
+      # add new translated column
       p1= paste0("add_column(new_error_report", ",")
       p2= new.col.name
       p3= paste0("=NA, .after = '",translate.this.col,"')"  )
       txt=paste0(p1,p2,p3)
       new_error_report <- eval(parse(text=txt))
-    ############# initialize row counts for translation loop
+    #initialize row counts for translation loop
     run = 1
-    ############ begin translation -----------------------------------------
+    #begin translation
     while(run < length(new_error_report[[translate.this.col]])){
       for(row in new_error_report[[translate.this.col]]){
         if(grepl(pattern=",",row)){
@@ -533,7 +536,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
           newRow2 = c()
           row2 = as.numeric(row)
         }
-        ############# START 1st "ELSE IF" LOGIC TO CHECK ROW FORMAT ("NA", string, integer list plus an "NA", or integer list,) #############
+        #START 1st "ELSE IF" LOGIC TO CHECK ROW FORMAT ("NA", string, integer list plus an "NA", or integer list,) #############
         #----------------------------------------- if row is missing
         if(is.na(row)| row=="") {
           na_str = ""
@@ -549,15 +552,14 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
           row = gsub(", NA", '' , row)
           row = gsub(", NA,", '' , row) # remove na in row and redefine row2 (numbers)
           row2 = as.numeric(strsplit(row,',')[[1]])
-          ab = paste0("dict","$","'",row2,"'", collapse=NULL)
+          ab = paste0("dict","$","",row2,"'", collapse=NULL)
           na_str = ", NA"
           #----------------------------------------- else if row is number list
         }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
           ab = paste0("dict","$","'",row2,"'", collapse=NULL)
           na_str = ""
         }
-        ############# END 1st "ELSE IF" LOGIC ####################################################
-        ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
+        # START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS 
         # for list of concept IDs (fixed 0517 Lorena)
         if(length(ab)>1){
           for(cid in ab){
@@ -571,8 +573,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
         }else if(length(ab)==1){
           newRow2 = ab
         }
-        ############# END 2ND "ELSE IF" LOGIC ####################################################
-        ############# BEGIN REPLACING TRANSLATED VALUES INTO NEW COLUMN ##########################
+        # BEGIN REPLACING TRANSLATED VALUES INTO NEW COLUMN 
         newRow3 = paste0(toString(newRow2,sep = ", "), na_str)
         new_error_report[[new.col.name]][[run]] = newRow3
         run = run+1
@@ -581,7 +582,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
   #box_write(new_error_report, paste0("TRANSLATED_",old.filename),dir_id =save.to.this.boxFolder)
   return(new_error_report)
 }
-# ######## SAVE TRANSLATED REPORT 
+# SAVE TRANSLATED REPORT 
 
 qc_errors=TRANSLATE.COL(report= qc_errors , 
                  translate.these.cols = c("ConceptID", "valid_values"),
@@ -590,16 +591,15 @@ qc_errors=TRANSLATE.COL(report= qc_errors ,
                  )
 
 
-######## add "no errors found" row
+######## add "no errors found" row ###############################
 if (nrow(qc_errors)==0){
   qc_errors[1, ] = c("no errors found")
 }
 
-
-######## add date column
-qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
-######## add site column
+######## add site and date column ##############################
 qc_errors = add_column(qc_errors, site = site , .before=2)
+qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
+
 ######## upload report to bigquery ##############################
 
 #install.packages("googleAuthR")
@@ -612,7 +612,8 @@ bq_auth(path= "C:/Users/sandovall2/Downloads/nih-nci-dceg-connect-dev-0d8a99295e
 
 #Append data to an existing table or create a table if needed
 bq_table_upload(x="nih-nci-dceg-connect-dev.Connect.Module_QC_report",
-                values=nr, # values=qc_errors,
+                values=qc_errors,
+                fields = qc_errors,
                 create_disposition='CREATE_IF_NEEDED',
                 write_disposition='WRITE_APPEND')
 

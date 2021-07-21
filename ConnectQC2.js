@@ -78,7 +78,7 @@ runQAQC = function (data) {
             var conceptID = str1. concat(str2);
         }
         if (test[8][i] !== null && reg.test(test[8][i])){
-            var conceptID3 = "d_".concat(test[4][i]);
+            var conceptID3 = "d_".concat(test[8][i]);
             str2= test[4][i]
             var conceptID = str1. concat(str2);
         }
@@ -458,7 +458,7 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID}\n# cross valid value check #2\n
             ${conceptID}_b = c(${valid1})# b:if cid2 is not relevant\n
             ${conceptID}_a = c(${crossthen2})#a: if cid2 is relevant\n
-            mylist_a1 =  paste0(rep("connectData$${conceptID2} == "), c(${crossif}), sep =" || ")\n
+            mylist_a1 =  paste0(rep("connectData$${concecroptID2} == "), c(${crossif}), sep =" || ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
             mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
             mylist_aa1 =  paste0(rep("connectData$${conceptID3} == "), c(${crossif2}), sep =" || ")\n

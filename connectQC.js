@@ -176,6 +176,74 @@ runQAQC = function (data) {
             df[${i},4]<-paste0(toString("${conceptID} != "),toString(${conceptID}),sep=" ")\n
             df[${i},5]<-paste0(${conceptID}_invalid, collapse=", ")
             \r\n`
+            //cross valid #2 (2 levels deep) ------------------------------------------------------------------------------------
+        } else if (type == "crossValid2") {
+            var valid = `######## QC ${conceptID}\n# cross valid value check #2\n
+            
+            ${conceptID}_a = c(${valid1})#a: if cid2 is relevant\n
+            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
+            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
+            mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
+            mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
+            mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-4),")") #remove extra " |" at the end of string\n
+            mylist_a = paste(mylist_a3, mylist_aa3,sep=" &  ")\n
+            aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
+            
+            QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
+            ${conceptID}_invalid_cross2_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
+            
+            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+            df[${i},2]<-paste0("${type}")\n
+            df[${i},3]<-paste0("${valid1}")\n
+            df[${i},4]<-str_sub(mylist_aa2, end =-4)\n
+            df[${i},5]<-paste0(${conceptID}_invalid_cross2_a, collapse=", ")\r\n`
+      //cross valid #3 (3 levels deep) ------------------------------------------------------------------------------------
+    } else if (type == "crossValid3") {
+        var valid = `######## QC ${conceptID}\n# cross valid value check #2\n
+        
+        ${conceptID}_a = c(${valid1})#a: if cid2 is relevant\n
+        mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
+        mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+        mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
+        mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
+        mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
+        mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-4),")") #remove extra " |" at the end of string\n
+        mylist_aaa1 =  paste0(rep("connectData$${conceptID3} == "), c(${conceptID3val}), sep =" | ")\n
+        mylist_aaa2 = str_c(mylist_aaa1, sep = "", collapse ="") # make many or statements\n
+        mylist_aaa3 = paste0("(",str_sub(mylist_aaa2, end =-4),")") #remove extra " |" at the end of string\n
+        mylist_a = paste(mylist_a3, mylist_aa3,mylist_aaa3,sep=" &  ")\n
+        aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
+        
+        QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
+        ${conceptID}_invalid_cross3_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
+        
+        df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+        df[${i},2]<-paste0("${type}")\n
+        df[${i},3]<-paste0("${valid1}")\n
+        df[${i},4]<str_sub(mylist_aaa2, end =-4)\n
+        df[${i},5]<-paste0(${conceptID}_invalid_cross3_a, collapse=", ")\r\n`
+        //crossValid2NotNA--------------------------------------------------------------------------------------------------
+        } else if (type == "crossValid2NotNA") {
+            var valid = `######## QC ${conceptID}\n# present value check\n
+            
+            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
+            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
+            mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
+            mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
+            mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-4),")") #remove extra " |" at the end of string\n
+            mylist_a = paste(mylist_a3, mylist_aa3,sep=" &  ")\n
+            aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
+            
+            QCcheck1 =which(is.na(connectData$"${conceptID}"[aa]))\n
+            ${conceptID}_invalid_cross2_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
+            
+            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+            df[${i},2]<-paste0("${type}")\n
+            df[${i},3]<-paste0("data must be present")\n
+            df[${i},4]<-str_sub(mylist_aaa2, end =-4)\n
+            df[${i},5]<-paste0(unique(${conceptID}_invalid_cross2_a), collapse=", ")\r\n`
 
        
         // valid equal to or less than character length--------------------------------------------------------------------------------------------------
@@ -195,7 +263,7 @@ runQAQC = function (data) {
         } else if (type == "NA or equal to char()") {
             var valid = `######## QC ${conceptID}\n# valid NA or equal to character length check\nvalid_length= ${valid1}\n
             variable =connectData$"${conceptID}"\n
-            list_lengths = unique(sapply(variable,nchar))\n
+            list_lengths = sapply(variable,nchar)\n
             ${conceptID}_invalid_char_length = list_lengths[list_lengths != valid_length & !is.na(list_lengths)]\n
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type} ",valid_length)\n
@@ -223,7 +291,7 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID}\n# valid NA or numeric length check\r\n
             variable =connectData$"${conceptID}"\n
             valid_length= ${valid1}\n
-            list_lengths = unique(sapply(variable ,nchar))\n
+            list_lengths = sapply(variable ,nchar)\n
             ${conceptID}_invalid_num_length = list_lengths[list_lengths > valid_length & !is.na(list_lengths)]\n
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}",${valid1} )\n
@@ -288,18 +356,18 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID}\n# cross valid value check - checks values if condition one is met and checks values if condition is not met\n
             ${conceptID}_a = c(${valid1})\n
 
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${valid1}), sep =" || ")\n
+            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
             aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
             
             QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
-            ${conceptID}_invalid_cross = addNA(connectData$"${conceptID}"[QCcheck1])\n
+            ${conceptID}_invalid_cross = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
         
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
             df[${i},3]<-paste0("${valid1}")\n
-            df[${i},4]<-substr(mylist_a3,13,100)\n
+            df[${i},4]<-str_sub(mylist_a2, end =-4)\n
             df[${i},5]<-paste0(${conceptID}_invalid_cross, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm," ")+ "\r\n";
  // cross valid year check --------------------------------------------------------------------------------------------------
@@ -308,14 +376,13 @@ runQAQC = function (data) {
     var valid = `######## QC ${conceptID}\n# cross valid year check\n
     year = "^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$"
     ${conceptID}_a = c(${valid1})\n
-    ${conceptID}_b = c(${crossthen})\n
-    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID1}== "), c(${conceptID1val}), sep =" | ")\n
     mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-    mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+    mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")"),")") #remove extra " |" at the end of string\n
     aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
     
     QCcheck1 =which(!grepl(year, connectData$"${conceptID}"[aa]))\n
-    ${conceptID}_invalid_year = addNA(connectData$"${conceptID}"[QCcheck1])\n
+    ${conceptID}_invalid_year = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
     
     df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
     df[${i},2]<-paste0("${type}")\n
@@ -330,14 +397,13 @@ runQAQC = function (data) {
     var valid = `######## QC ${conceptID}\n# cross valid age check\n
     age = "^[1-9][0-9]?$|^100$"
     ${conceptID}_a = c(${valid1})\n
-    ${conceptID}_b = c(${crossthen})\n
-    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" | ")\n
     mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-    mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+    mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
     aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
     
     QCcheck1 =which(!grepl(age, connectData$"${conceptID}"[aa]))\n
-    ${conceptID}_invalid_age = addNA(connectData$"${conceptID}"[QCcheck1])\n
+    ${conceptID}_invalid_age = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
     
     df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
     df[${i},2]<-paste0("${type}")\n
@@ -351,14 +417,13 @@ runQAQC = function (data) {
     var valid = `######## QC ${conceptID}\n# cross valid num check for numbers above zero\n
     num = "grepl("[0-9]", data1) & data1>0"
     ${conceptID}_a = c(${valid1})\n
-    ${conceptID}_b = c(${crossthen})\n
-    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${crossif}), sep =" || ")\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID1}== "), c(${conceptID1val}), sep =" | ")\n
     mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-    mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+    mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
     aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
     
     QCcheck1 =which(!grepl(num, connectData$"${conceptID}"[aa]))\n
-    ${conceptID}_invalid_num = addNA(connectData$"${conceptID}"[QCcheck1])\n
+    ${conceptID}_invalid_num = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
     
     df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
     df[${i},2]<-paste0("${type}")\n
@@ -370,17 +435,16 @@ runQAQC = function (data) {
         //cross valid1 equal to char()--------------------------------------------------------------------------------------------------
         } else if (type == "crossValid1 equal to char()") {
             var valid = `######## QC ${conceptID}\n# cross valid equal to char() check - checks values if condition one is met and checks values if condition is not met\n
-            ${conceptID}_a = c(${conceptID1val})\n
 
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" || ")\n
+            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
             aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
             
             valid_length= c(${valid1})\n
                 #################var.is.integer =suppressWarnings(testInteger(connectData$"${conceptID}"[aa]))\n
                 variable =connectData$"${conceptID}"[aa]\n
-                list_lengths = unique(sapply(variable,nchar))\n
+                list_lengths = sapply(variable,nchar)\n
                 ${conceptID}_invalid_char_length = list_lengths[list_lengths != valid_length]
         
                 ${conceptID}_invalid_char_length = list_lengths[list_lengths != valid_length]
@@ -395,9 +459,9 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID}\n# cross valid equal to or less than char() check - checks values if condition one is met and checks values if condition is not met\n
             ${conceptID}_a = c(${conceptID1val})\n
 
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" || ")\n
+            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
             mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = str_sub(mylist_a2, end =-5) #remove extra " ||" at the end of string\n
+            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
             aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
             
             valid_length= c(${valid1})\n
@@ -466,7 +530,7 @@ runQAQC = function (data) {
 # or read file from box using the file id number
 connectData = box_read(${data_box_file_id})
 
-# filter by site
+# SITE CONCEPT IDS
 # HealthPartners = 531629870
 # Henry Ford Health System = 548392715
 # Kaiser Permanente Colorado = 125001209
@@ -478,6 +542,9 @@ connectData = box_read(${data_box_file_id})
 # University of Chicago Medicine = 809703864
 # National Cancer Institute = 517700004
 # Other = 181769837
+
+
+################### FILTER DATA BY SITE ################################################
 site= 657167265
 connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   # choose CID from above to filter by site, Sanford (657167265) used as default
 #connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string  
@@ -491,7 +558,8 @@ var makeDF = `# make qc dataframe\ndf = data.frame(matrix( nrow=${lengthQC}, nco
 names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found_when_condition_met")\r\n`
     var filterDF = `######## filter df to show QC errors\n
     qc_errors = filter(df, (!is.na(df$"invalid_values_found_when_condition_met") ))\n
-    qc_errors = filter(qc_errors, (qc_errors$"invalid_values_found_when_condition_met" != "" ))\n
+    qc_errors = filter(qc_errors, (qc_errors$"invalid_values_found_when_condition_met" != "" ))\n`
+    var translate = `
     ####### TRANSLATE REPORT #######
     library(boxr)
     library(jsonlite)
@@ -509,8 +577,11 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     }
     # #############   WHITESPACE function:
     # # Remove leading or trailing white space from each column using the following "trim function
-    # trim <- function (x) gsub("^\\s+|\\s+$", "", x) 
+    # trim <- function (x) gsub("^\\\s+|\\\s+$", "", x) 
     
+    #############   Check that it does not match any non-number
+    numbers_only <- function(x) !grepl("\\\D", x)
+
     TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, old.filename, save.to.this.boxFolder ){
       ############# read report and dictionary from box
       dict = box_read(807761973572)
@@ -522,17 +593,17 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
         ############# add new translated column
         p1= paste0("add_column(new_error_report", ",")
         p2= new.col.name
-        p3= paste0("=NA, .after = '",translate.this.col,"')"  )
+        p3= paste0("=NA, .after = translate.this.col)")
         txt=paste0(p1,p2,p3)
         new_error_report <- eval(parse(text=txt))
       ############# initialize row counts for translation loop
       run = 1
       ############ begin translation -----------------------------------------
-      while(run < length(new_error_report[[translate.this.col]])){
+      while(run <= length(new_error_report[[translate.this.col]])){
         for(row in new_error_report[[translate.this.col]]){
           if(grepl(pattern=",",row)){
             newRow2 = c()
-            row2 = as.numeric(strsplit(row,',')[[1]])
+            row2 = as.numeric(strsplit(row,",")[[1]])
           }else {
             newRow2 = c()
             row2 = as.numeric(row)
@@ -547,35 +618,35 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
             na_str = ""
             ab= row
             #----------------------------------------- else if row is not blank because it has numbers and an NA!!
-          }else if (( testInteger(as.numeric(strsplit(gsub(", NA", '' , row),',')[[1]])) |
-                      testInteger(as.numeric(strsplit(gsub(", NA", '' , row),',')[[1]]))) &
-                    !is.na(row2) & (grepl( ", NA", row, fixed = TRUE) | grepl( ", NA,", row, fixed = TRUE))) {
-            row = gsub(", NA", '' , row)
-            row = gsub(", NA,", '' , row) # remove na in row and redefine row2 (numbers)
-            row2 = as.numeric(strsplit(row,',')[[1]])
-            ab = paste0("dict","$","'",row2,"'", collapse=NULL)
-            na_str = ", NA"
-            #----------------------------------------- else if row is number list
-          }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
-            ab = paste0("dict","$","'",row2,"'", collapse=NULL)
-            na_str = ""
+        }else if (( testInteger(as.numeric(strsplit(gsub(", NA", "" , row),",")[[1]])) |
+                    testInteger(as.numeric(strsplit(gsub(", NA", "" , row),",")[[1]]))) &
+                  !is.na(row2) & (grepl( ", NA", row, fixed = TRUE) | grepl( ", NA,", row, fixed = TRUE))) {
+          row = gsub(", NA", "" , row)
+          row = gsub(", NA,", "" , row) # remove na in row and redefine row2 (numbers)
+          row2 = as.numeric(strsplit(row,",")[[1]])
+          ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
+          na_str = ", NA"
+          #----------------------------------------- else if row is number list
+        }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
+          ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
+          na_str = ""
+        }
+        ############# END 1st "ELSE IF" LOGIC ####################################################
+        ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
+        # for list of concept IDs (fixed 0517 Lorena)
+        if(length(ab)>1){
+          for(cid in ab){
+            newRow = paste(eval(parse(text=cid)),sep=",")
+            newRow2 = c(newRow2,newRow)
           }
-          ############# END 1st "ELSE IF" LOGIC ####################################################
-          ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
-          # for list of concept IDs (fixed 0517 Lorena)
-          if(length(ab)>1){
-            for(cid in ab){
-              newRow = paste(eval(parse(text=cid)),sep=",")
-              newRow2 = c(newRow2,newRow)
-            }
-            # for single concept ID
-          }else if(is.integer(row)){
-            newRow2 = eval(parse(text=ab))
-            # for value other than single concept ID or ConceptID list 
-          }else if(length(ab)==1){
-            newRow2 = ab
-          }
-          ############# END 2ND "ELSE IF" LOGIC ####################################################
+          # for single concept ID
+        }else if(numbers_only(row)){
+          newRow2 = eval(parse(text=ab))
+          # for value other than single concept ID or ConceptID list 
+        }else if(length(ab)==1){
+          newRow2 = ab
+        }          
+        ############# END 2ND "ELSE IF" LOGIC ####################################################
           ############# BEGIN REPLACING TRANSLATED VALUES INTO NEW COLUMN ##########################
           newRow3 = paste0(toString(newRow2,sep = ", "), na_str)
           new_error_report[[new.col.name]][[run]] = newRow3
@@ -598,26 +669,24 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
   if (nrow(qc_errors)==0){
     qc_errors[1, ] = c("no errors found")
   }
-  
-  ######## add date column
-  qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
   ######## add site column
-  qc_errors = add_column(qc_errors, site = site , .before=2)
-  ######## upload report to bigquery ##############################
-  
+  qc_errors = add_column(qc_errors, site = as.character(site) , .before=1)
+  ######## add date column
+  qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)`
+var BQ_upload = `######## upload report to bigquery ##############################
   #install.packages("googleAuthR")
   # install.packages("bigQueryR")
   library(googleAuthR)
   library(bigrquery)
-  
   # oauth from service account json file from issue https://github.com/r-dbi/bigrquery/issues/22
   bq_auth(path= "C:/Users/sandovall2/Downloads/nih-nci-dceg-connect-dev-0d8a99295ec9.json")
   
   #Append data to an existing table or create a table if needed
   bq_table_upload(x="nih-nci-dceg-connect-dev.Connect.QC_report",
-                  values=nr, # values=qc_errors,
-                  create_disposition='CREATE_IF_NEEDED',
-                  write_disposition='WRITE_APPEND')
+                  values=qc_errors,
+                  fields = qc_errors,
+                  create_disposition="CREATE_IF_NEEDED",
+                  write_disposition="WRITE_APPEND")
   
     #write.csv(qc_errors,"qc_${table}_errors_${date}_${site}.csv")\r\n`
     var saveToBox = `######## SAVE QC SCRIPT TO BOXFOLDER (123) \r\n#box_write(qc_errors,paste0("qc_report_",gsub("-","",Sys.Date()),".csv"),dir_id =137677271727)\r\n`
@@ -627,14 +696,15 @@ library(bigQueryR)
 library(jsonlite)
 library(httr)
     gar_auth(email="sandovall2@nih.gov",
-    scopes = "https://www.googleapis.com/auth/bigquery")
-    `
+    scopes = "https://www.googleapis.com/auth/bigquery") `
     
     // END QC SCRIPT
 
     
         // save qc script as txt
-        var full_script = loadData + "\n" +  makeDF + "\n" + script + filterDF + "\n" + saveToBox
+        //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox
+        var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + translate + "\n" +  saveToBox + "\n" + BQ_upload
+        //var full_script = script
         h += qaqc.saveQC(full_script) 
  
         h += `<p></p>`

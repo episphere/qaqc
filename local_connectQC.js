@@ -730,7 +730,7 @@ runQAQC = function (data) {
     
     
     # function to run QC by site--------------------------------------------
-    runQC = function(site,project, sql, QC_report_location ){
+    runQC = function(site){
     
     #GET RECRUITMENT TABLES FROM BIGQUERY IN STG PROJECT
     # set project
@@ -779,26 +779,10 @@ runQAQC = function (data) {
     qc_errors = add_column(qc_errors, site = as.character(site) , .before=1)
     # add date column
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
-    ######## SAVE QC SCRIPT TO BIGQUERY QC_report table
     
     
-    ######## upload report to bigquery ##############################
-    
-    #Append data to an existing table or create a table if if doesnt exist
-    bq_table_upload(x=QC_report_location,
-                    values=qc_errors,
-                    fields = qc_errors,
-                    create_disposition="CREATE_IF_NEEDED",
-                    write_disposition="WRITE_APPEND")
-    return(qc_errors)
-    }
-    
-    # BigQuery table where QC report will be saved---------------
-    QC_report_location = "nih-nci-dceg-connect-stg-5519.Connect.QC_report"
-    
-    # 2 part definition for querying the data sitting in BigQuery
-    project = "nih-nci-dceg-connect-stg-5519"
-    sql = "SELECT * FROM 'nih-nci-dceg-connect-stg-5519.Connect.recruitment2'"
+    ######## upload report to box ##############################
+    box_write(qc_errors, paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"), dir_id = 136441105328)
     
     # sites:
     # Sanford Health = 657167265
@@ -817,70 +801,69 @@ runQAQC = function (data) {
     
     # Sanford
     site= 657167265 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Sanford=runQC(site= site)
     
     # define site to run QC----------
     
     # HealthPartners
     site= 531629870 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_HealthPartners=runQC(site= site)
     
     # define site to run QC----------
     
     # Henry Ford Health System
     site= 548392715 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Henry_Ford_Health_System=runQC(site= site)
     
     # define site to run QC----------
     
     # Kaiser Permanente Colorado
     site= 125001209 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc=runQC(site= site)
     
     # define site to run QC----------
     
     # Kaiser Permanente Georgia
     site= 327912200 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Kaiser_Permanente_Georgia=runQC(site= site)
     
     # define site to run QC----------
     
     # Kaiser Permanente Hawaii
     site= 300267574 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Kaiser_Permanente_Hawaii=runQC(site= site)
     
     # define site to run QC----------
     
     # Kaiser Permanente Northwest
     site= 452412599 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Kaiser_Permanente_Northwest=runQC(site= site)
     
     # define site to run QC----------
     
     # Marshfiled
     site= 303349821 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Marshfiled=runQC(site= site)
     
     # define site to run QC----------
     
     # University of Chicago Medicine
     site= 809703864 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_University_of_Chicago_Medicine=runQC(site= site)
     
     # define site to run QC----------
     
     # National Cancer Institute
     site= 517700004 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_National_Cancer_Institute=runQC(site= site)
     
     # define site to run QC----------
     
     # Other
     site= 181769837 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)`
+    qc_Other=runQC(site= site)`
 
     // END QC SCRIPT
-
 
     // save qc script as txt
     //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox

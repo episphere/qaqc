@@ -1,5 +1,5 @@
 console.log(`connectQC.js loaded at ${Date()}`)
-
+console.log(`this program writes a long text string to a txt file using the qaqc.saveQC() function`)
 
 // ADD BOTTON TO DISPLAY INSTRUCTIONS, https://codepen.io/davidcochran/full/WbWXoa
 // Display high level steps
@@ -8,7 +8,9 @@ if (document.getElementById('connQC').checked) {
     var T = document.getElementById("btnToggle");
     T.style.display = "block"; // <-- Set it to block
     let ele = document.getElementById('connQC1');
-    ele.innerHTML += 'STEP 1: load QC rules file above, STEP 2: dowload QC R script ';
+    ele.innerHTML += 'STEP 1: Fill in project, bucket and email text boxes<br><br>';
+    ele.innerHTML += 'STEP 2: Load QC rules file<br><br>';
+    ele.innerHTML += 'STEP 3: Dowload QC R script<br><br>';
 
     // add toggle button to show/hide instructions
     const toggleArea = document.getElementById('toggleArea')
@@ -46,33 +48,39 @@ if (document.getElementById('connQC').checked) {
     });
 }
 
-
 // Input box for ProjectID, used in runQAQC function below
-let ele = document.getElementById('connQC1');
-ele.innerHTML += '<br>'
-ele.innerHTML += '<form action="/action_page.php">'
-ele.innerHTML += '<label for="site">ProjectID:</label>'
-ele.innerHTML += '<input type="text" id="projectID" name="projectID"><br><br>'
-//ele.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
-ele.innerHTML += '</form>'
-
-
+let proj = document.getElementById('connQC1');
+proj.innerHTML += '<br>'
+proj.innerHTML += '<form action="/action_page.php">'
+proj.innerHTML += '<label for="site">ProjectID:</label>'
+proj.innerHTML += '<input type="text" id="projectID" name="projectID">(enter)<br><br>'
+proj.innerHTML += '<label for="site">GCPbucket:</label>'
+proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(enter)<br><br>'
+proj.innerHTML += '<label for="site">Email:</label>'
+proj.innerHTML += '<input type="text" id="email" name="email">(enter)<br><br>'
+//proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
+proj.innerHTML += '</form>'
 
 runQAQC = function (data) {
 
-    projectID = document.getElementById("projectID")
+    projectID = document.getElementById("projectID")//show on key lookup in console
     projectID.onkeyup = function (ev) {
+        console.log("projectID.onkeyup")
         console.log(ev)
     }
-    projectIDVar = projectID.value
+    var projectIDVar= projectID.value
+    console.log("projectIDVar")
     console.log(projectIDVar)
+    var GCPbucketVar= GCPbucket.value
+    console.log("GCPbucket")
+    console.log(GCPbucket)
+    var emailVar= email.value
+    console.log("emailVar")
+    console.log(emailVar)
+
 
     console.log(`connectQC.js runQAQC function ran at ${Date()}`)
     let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
-    //h += '<p style="color:blue">List of variables'
-    //Object.keys(qaqc.data).forEach(k => {
-    //    h += `<li style="color:blue">${k} (${qaqc.data[k].length} x ${typeof(qaqc.data[k][0])=='string' ? 'string' : 'number'})</li>`
-    //})
     h += '</p>'
 
 
@@ -161,15 +169,22 @@ runQAQC = function (data) {
 
         // custom check--------------------------------------------------------------------------------------------------
         if (type == "custom".toUpperCase()) {
-            var valid = `######## QC ${conceptID}\n# missing pin check\n${conceptID}=connectData$"${conceptID}"\r\n
-            ${conceptID}_a = c("${valid1}")\n
-
-            QCcheck1 =  eval(parse(text="${conceptID1val}"))\n
+            var valid = `######## QC ${conceptID}\n
+            # custom check\n
+            ${conceptID}=connectData$"${conceptID}"\n
+            QCcheck1 =  ${conceptID1val}\n
+            ${conceptID}_invalid = addNA(connectData$"${conceptID}"[QCcheck1])\n
+            rowNum<-QCcheck1
+            token<- connectData$"token"[QCcheck1]
+            ID = connectData$Connect_ID[QCcheck1]
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
             df[${i},3]<-paste0("${valid1}")\n
             df[${i},4]<-paste0("${conceptID1}")\n
-            df[${i},5]<-paste0(QCcheck1, collapse=", ")\r\n`
+            df[${i},5]<-paste0(${conceptID}_invalid, collapse=", ")\n
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n
+            df[${i},7]<-paste0(token, collapse=", ")\n 
+            df[${i},8]<-paste0(ID, collapse=", ")\n`
             // valid value--------------------------------------------------------------------------------------------------
         } else if (type == ("valid".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# valid value check\r\n
@@ -585,7 +600,7 @@ runQAQC = function (data) {
     // BUILD THE HEADER, SCRIPT AND FOOTER
 
     var header =
-        `# Connect table QC rules for [object HTMLInputElement]
+        `# Connect table QC checks
     # PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITE(S)
     # VERSION: 1.0
     # LAST UPDATED: 0812021
@@ -619,9 +634,9 @@ runQAQC = function (data) {
     
     # set auth via gar_auth_service(), service  credentials: --------------------------
     cr_region_set("us-central1") #need? not sure
-    cr_bucket_set("qc_automation_stg")#need? not sure
-    cr_email_set("sandovall2@nih.gov")#need? not sure
-    cr_project_set("nih-nci-dceg-connect-stg-5519")#need? not sure
+    cr_bucket_set("${GCPbucketVar}")#need? not sure
+    cr_email_set("${emailVar}")#need? not sure
+    cr_project_set("${projectIDVar}")#need? not sure
     
     #  authentiicate via auth library using the metadata server 
     googleAuthR::gar_gce_auth()
@@ -629,9 +644,9 @@ runQAQC = function (data) {
     # set a default Google bucket -----------------------------------------------------
     #gcs_global_bucket("qc_automation") 
     
-    #  read dictionary from bucket to an R object (warning, don't run out of RAM if its a big object)
+    #  read dictionary from bucket to an R object (warning, dont run out of RAM if its a big object)
     # the download type is guessed into an appropriate R object
-    dictionary <- gcs_get_object("gs://qc_automation_stg/Connect_translation_dictionary.json")
+    dictionary <- gcs_get_object("gs://${GCPbucketVar}/Connect_translation_dictionary.json")
     
     # function to translate QC report inside runQC function-----------------------------
     TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, dictionary ){
@@ -679,11 +694,11 @@ runQAQC = function (data) {
               row = gsub(", NA", "" , row)
               row = gsub(", NA,", "" , row) # remove na in row and redefine row2 (numbers)
               row2 = as.numeric(strsplit(row,",")[[1]])
-              ab = paste0("dict$","\"",row2,"\"", collapse=NULL)
+              ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
               na_str = ", NA"
               #----------------------------------------- else if row is number list
             }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
-              ab = paste0("dict$","\"",row2,"\"", collapse=NULL)
+              ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
               na_str = ""
             }
             ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
@@ -719,7 +734,7 @@ runQAQC = function (data) {
     # trim <- function (x) gsub("^\s+|\s+$", "", x) 
     
     # function to check that it does not match any non-number
-    numbers_only <- function(x) !grepl("\\D", x)
+    numbers_only <- function(x) !grepl("\\\D", x)
     
     # function to exclude rows with certain values in QC (ie. "d" not in list "a,b,c")
     "%!in%" <- function(x,y)!("%in%"(x,y))
@@ -794,11 +809,11 @@ runQAQC = function (data) {
     }
     
     # BigQuery table where QC report will be saved---------------
-    QC_report_location = "nih-nci-dceg-connect-stg-5519.Connect.QC_report"
+    QC_report_location = "${projectIDVar}.Connect.QC_report"
     
     # 2 part definition for querying the data sitting in BigQuery
-    project = "nih-nci-dceg-connect-stg-5519"
-    sql = "SELECT * FROM 'nih-nci-dceg-connect-stg-5519.Connect.recruitment2'"
+    project = "${projectIDVar}"
+    sql = "SELECT * FROM [${projectIDVar}.Connect.recruitment2]"
     
     # sites:
     # Sanford Health = 657167265
@@ -884,7 +899,7 @@ runQAQC = function (data) {
 
     // save qc script as txt
     //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox
-    var full_script = loadData + "\n" + makeDF + "\n" + script + "\n" + filterDF + "\n" + translate + "\n" + footer
+    var full_script = header + "\n" + script + "\n" + footer
     //var full_script = script
 
 

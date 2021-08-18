@@ -1,14 +1,17 @@
 console.log(`connectQC.js loaded at ${Date()}`)
+console.log(`this program writes a long text string to a txt file using the qaqc.saveQC() function`)
 
 
 // ADD BOTTON TO DISPLAY INSTRUCTIONS, https://codepen.io/davidcochran/full/WbWXoa
 // Display high level steps
-if (document.getElementById('connQC').checked) {
+if (document.getElementById('local_connQC').checked) {
 
     var T = document.getElementById("btnToggle");
     T.style.display = "block"; // <-- Set it to block
-    let ele = document.getElementById('connQC1');
-    ele.innerHTML += 'STEP 1: load QC rules file above, STEP 2: dowload QC R script ';
+    let ele = document.getElementById('local_connQC1');
+    ele.innerHTML += 'STEP 1: Fill in project, bucket and email text boxes<br><br>';
+    ele.innerHTML += 'STEP 2: Load QC rules file<br><br>';
+    ele.innerHTML += 'STEP 3: Dowload QC R script<br><br>';
 
     // add toggle button to show/hide instructions
     const toggleArea = document.getElementById('toggleArea')
@@ -19,7 +22,7 @@ if (document.getElementById('connQC').checked) {
             toggleArea.classList.remove("active");
             toggleArea.classList.add("disable");
             /////////////////////////////////
-            var ele = document.getElementById('connQCtxt');
+            var ele = document.getElementById('local_connQCtxt');
 
 
             // LIST INSTRUCTIONS FOR USE 
@@ -41,38 +44,44 @@ if (document.getElementById('connQC').checked) {
         } else {
             toggleArea.classList.remove("disable");
             toggleArea.classList.add("active");
-            document.getElementById('connQCtxt').innerHTML = "";
+            document.getElementById('local_connQCtxt').innerHTML = "";
         }
     });
 }
 
-
 // Input box for ProjectID, used in runQAQC function below
-let ele = document.getElementById('connQC1');
-ele.innerHTML += '<br>'
-ele.innerHTML += '<form action="/action_page.php">'
-ele.innerHTML += '<label for="site">ProjectID:</label>'
-ele.innerHTML += '<input type="text" id="projectID" name="projectID"><br><br>'
-//ele.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
-ele.innerHTML += '</form>'
-
-
+let proj = document.getElementById('connQC1');
+proj.innerHTML += '<br>'
+proj.innerHTML += '<form action="/action_page.php">'
+proj.innerHTML += '<label for="site">ProjectID:</label>'
+proj.innerHTML += '<input type="text" id="projectID" name="projectID">(enter)<br><br>'
+proj.innerHTML += '<label for="site">GCPbucket:</label>'
+proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(enter)<br><br>'
+proj.innerHTML += '<label for="site">Email:</label>'
+proj.innerHTML += '<input type="text" id="email" name="email">(enter)<br><br>'
+//proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
+proj.innerHTML += '</form>'
 
 runQAQC = function (data) {
 
-    projectID = document.getElementById("projectID")
+    projectID = document.getElementById("projectID")//show on key lookup in console
     projectID.onkeyup = function (ev) {
+        console.log("projectID.onkeyup")
         console.log(ev)
     }
-    projectIDVar = projectID.value
+    var projectIDVar= projectID.value
+    console.log("projectIDVar")
     console.log(projectIDVar)
+    var GCPbucketVar= GCPbucket.value
+    console.log("GCPbucket")
+    console.log(GCPbucket)
+    var emailVar= email.value
+    console.log("emailVar")
+    console.log(emailVar)
 
+    
     console.log(`connectQC.js runQAQC function ran at ${Date()}`)
     let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
-    //h += '<p style="color:blue">List of variables'
-    //Object.keys(qaqc.data).forEach(k => {
-    //    h += `<li style="color:blue">${k} (${qaqc.data[k].length} x ${typeof(qaqc.data[k][0])=='string' ? 'string' : 'number'})</li>`
-    //})
     h += '</p>'
 
 
@@ -141,7 +150,7 @@ runQAQC = function (data) {
         if (test[6][i] !== null && reg.test(test[6][i])) {
             str6 = test[6][i]
             var conceptID2 = str1.concat(str6);
-            console.log(conceptID2)
+           
         } else { // only add d_ to numeric variables, and not pin, token and studyId
             var conceptID2 = test[6][i]
         }
@@ -159,17 +168,24 @@ runQAQC = function (data) {
 
         // run loops to append checks to script
 
-        // custom check--------------------------------------------------------------------------------------------------
-        if (type == "custom".toUpperCase()) {
-            var valid = `######## QC ${conceptID}\n# missing pin check\n${conceptID}=connectData$"${conceptID}"\r\n
-            ${conceptID}_a = c("${valid1}")\n
-
-            QCcheck1 =  eval(parse(text="${conceptID1val}"))\n
+         // custom check--------------------------------------------------------------------------------------------------
+         if (type == "custom".toUpperCase()) {
+            var valid = `######## QC ${conceptID}\n
+            # custom check\n
+            ${conceptID}=connectData$"${conceptID}"\n
+            QCcheck1 =  ${conceptID1val}\n
+            ${conceptID}_invalid = addNA(connectData$"${conceptID}"[QCcheck1])\n
+            rowNum<-QCcheck1
+            token<- connectData$"token"[QCcheck1]
+            ID = connectData$Connect_ID[QCcheck1]
             df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
             df[${i},2]<-paste0("${type}")\n
             df[${i},3]<-paste0("${valid1}")\n
             df[${i},4]<-paste0("${conceptID1}")\n
-            df[${i},5]<-paste0(QCcheck1, collapse=", ")\r\n`
+            df[${i},5]<-paste0(${conceptID}_invalid, collapse=", ")\n
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n
+            df[${i},7]<-paste0(token, collapse=", ")\n 
+            df[${i},8]<-paste0(ID, collapse=", ")\n`
             // valid value--------------------------------------------------------------------------------------------------
         } else if (type == ("valid".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# valid value check\r\n
@@ -585,176 +601,175 @@ runQAQC = function (data) {
     // BUILD THE HEADER, SCRIPT AND FOOTER
 
     var header =
-        `# Connect table QC rules for [object HTMLInputElement]
-    # PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITE(S)
-    # VERSION: 1.0
-    # LAST UPDATED: 0812021
-    # AUTHOR: LORENA SANDOVAL 
-    # EMAIL: SANDOVALL2@NIH.GOV
-    
-    # install.packages("lubridate") 
-    # install.packages("stringr")
-    # install.packages("boxr")
-    # install.packages("dplyr")
-    # install.packages("bigrquery")
-    # install.packages("googleCloudStorageR")
-    # install.packages("googleAuthR")
-    # install.packages("googleCloudRunner")
-    
-    # bq_auth()
-    library(lubridate)
-    library(boxr)
-    library(stringr)
-    library(dplyr)
-    library(bigrquery)
-    library(googleCloudStorageR)
-    library(googleAuthR)
-    library(googleCloudRunner)#need? not sure
-    # translate function libraries
-    library(jsonlite)
-    library(stringr)
-    library(dplyr)
-    library(withr)
-    library(tibble)
-    
-    # set auth via gar_auth_service(), service  credentials: --------------------------
-    cr_region_set("us-central1") #need? not sure
-    cr_bucket_set("qc_automation_stg")#need? not sure
-    cr_email_set("sandovall2@nih.gov")#need? not sure
-    cr_project_set("nih-nci-dceg-connect-stg-5519")#need? not sure
-    
-    #  authentiicate via auth library using the metadata server 
-    googleAuthR::gar_gce_auth()
-    
-    # set a default Google bucket -----------------------------------------------------
-    #gcs_global_bucket("qc_automation") 
-    
-    #  read dictionary from bucket to an R object (warning, don't run out of RAM if its a big object)
-    # the download type is guessed into an appropriate R object
-    dictionary <- gcs_get_object("gs://qc_automation_stg/Connect_translation_dictionary.json")
-    
-    # function to translate QC report inside runQC function-----------------------------
-    TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, dictionary ){
-      
-      # read dictionary json
-      dict <- dictionary
-      new_error_report = report
-      # translate 1 or more columns
-      for (columnIndex in 1:length(translate.these.cols)){
-        translate.this.col = translate.these.cols[columnIndex]
-        new.col.name = new.col.names[columnIndex]
-        
-        # add new translated column
-        p1= paste0("add_column(new_error_report", ",")
-        p2= new.col.name
-        p3= paste0("=NA, .after = translate.this.col)")
-        txt=paste0(p1,p2,p3)
-        new_error_report <- eval(parse(text=txt))
-        ############# initialize row counts for translation loop
-        run = 1
-        ############ begin translation -----------
-        while(run <= length(new_error_report[[translate.this.col]])){
-          for(row in new_error_report[[translate.this.col]]){
-            if(grepl(pattern=",",row)){
-              newRow2 = c()
-              row2 = as.numeric(strsplit(row,",")[[1]])
-            }else {
-              newRow2 = c()
-              row2 = as.numeric(row)
-            }
-            ############# START 1st "ELSE IF" LOGIC TO CHECK ROW FORMAT #############
-            #("NA", string, integer list plus an "NA", or integer list,) 
-            #----------------------------------------- if row is missing
-            if(is.na(row)| row=="") {
-              na_str = ""
-              ab = ""
-              #----------------------------------------- else if row is non number
-            }else if (!is.na(row) & is.na(row2)) {
-              na_str = ""
-              ab= row
-              #----------------------------------------- else if row is not blank because it has numbers and an NA!!
-            }else if (( testInteger(as.numeric(strsplit(gsub(", NA", "" , row),",")[[1]])) |
-                        testInteger(as.numeric(strsplit(gsub(", NA", "" , row),",")[[1]]))) &
-                      !is.na(row2) & (grepl( ", NA", row, fixed = TRUE) | grepl( ", NA,", row, fixed = TRUE))) {
-              row = gsub(", NA", "" , row)
-              row = gsub(", NA,", "" , row) # remove na in row and redefine row2 (numbers)
-              row2 = as.numeric(strsplit(row,",")[[1]])
-              ab = paste0("dict$","\"",row2,"\"", collapse=NULL)
-              na_str = ", NA"
-              #----------------------------------------- else if row is number list
-            }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
-              ab = paste0("dict$","\"",row2,"\"", collapse=NULL)
-              na_str = ""
-            }
-            ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
-            # for list of concept IDs (fixed 0517 Lorena)
-            if(length(ab)>1){
-              for(cid in ab){
-                newRow = paste(eval(parse(text=cid)),sep=",")
-                newRow2 = c(newRow2,newRow)
-              }
-              # for single concept ID
-            }else if(numbers_only(row)){
-              newRow2 = eval(parse(text=ab))
-              # for value other than single concept ID or ConceptID list 
-            }else if(length(ab)==1){
-              newRow2 = ab
-            }          
-            ############# BEGIN REPLACING TRANSLATED VALUES INTO NEW COLUMN ##########################
-            newRow3 = paste0(toString(newRow2,sep = ", "), na_str)
-            new_error_report[[new.col.name]][[run]] = newRow3
-            run = run+1
-          } }}
-    
-      return(new_error_report)
-    }
-    
-    # function to test vector for integers
-    testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)
-    if(test == TRUE){ return(TRUE)
-    } else { return(FALSE) }
-    }
-    # function to remove whitespace before and after value
-    # # Remove leading or trailing white space from each column using the following "trim function
-    # trim <- function (x) gsub("^\s+|\s+$", "", x) 
-    
-    # function to check that it does not match any non-number
-    numbers_only <- function(x) !grepl("\\D", x)
-    
-    # function to exclude rows with certain values in QC (ie. "d" not in list "a,b,c")
-    "%!in%" <- function(x,y)!("%in%"(x,y))
-    
-    # function to check list for numeric values in QC
-    testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)
-    if(test == TRUE){ return(TRUE) } else { return(FALSE) }}
-    
-    
-    # function to run QC by site--------------------------------------------
-    runQC = function(site){
-    
-    #GET RECRUITMENT TABLES FROM BIGQUERY IN STG PROJECT
-    # set project
-    project <- project
-    
-    # set query
-    sql <- sql
-    tb <- bq_project_query(project, sql)
-    connectData = bq_table_download(tb, bigint = c("character"))
-    # filter data by site
-    
-    site= site
-    connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   
-    #connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string, but using newer version below 
-    
-    # changed int64 to string and leave dates as date type to prevent missing data. Integer blanks are NA, charater blanks are "".
-    connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  
-    
-    # make qc dataframe
-    df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
-    
-    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
-    `
+    `# Connect table QC checks
+# PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITE(S)
+# VERSION: 1.0
+# LAST UPDATED: 0812021
+# AUTHOR: LORENA SANDOVAL 
+# EMAIL: SANDOVALL2@NIH.GOV
 
+# install.packages("lubridate") 
+# install.packages("stringr")
+# install.packages("boxr")
+# install.packages("dplyr")
+# install.packages("bigrquery")
+# install.packages("googleCloudStorageR")
+# install.packages("googleAuthR")
+# install.packages("googleCloudRunner")
+
+# bq_auth()
+library(lubridate)
+library(boxr)
+library(stringr)
+library(dplyr)
+library(bigrquery)
+library(googleCloudStorageR)
+library(googleAuthR)
+library(googleCloudRunner)#need? not sure
+# translate function libraries
+library(jsonlite)
+library(stringr)
+library(dplyr)
+library(withr)
+library(tibble)
+
+# set auth via gar_auth_service(), service  credentials: --------------------------
+cr_region_set("us-central1") #need? not sure
+cr_bucket_set("qc_automation_stg")#need? not sure
+cr_email_set("sandovall2@nih.gov")#need? not sure
+cr_project_set("nih-nci-dceg-connect-stg-5519")#need? not sure
+
+#  authentiicate via auth library using the metadata server 
+googleAuthR::gar_gce_auth()
+
+# set a default Google bucket -----------------------------------------------------
+#gcs_global_bucket("qc_automation") 
+
+#  read dictionary from bucket to an R object (warning, dont run out of RAM if its a big object)
+# the download type is guessed into an appropriate R object
+dictionary <- gcs_get_object("gs://qc_automation_stg/Connect_translation_dictionary.json")
+
+# function to translate QC report inside runQC function-----------------------------
+TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, dictionary ){
+  
+  # read dictionary json
+  dict <- dictionary
+  new_error_report = report
+  # translate 1 or more columns
+  for (columnIndex in 1:length(translate.these.cols)){
+    translate.this.col = translate.these.cols[columnIndex]
+    new.col.name = new.col.names[columnIndex]
+    
+    # add new translated column
+    p1= paste0("add_column(new_error_report", ",")
+    p2= new.col.name
+    p3= paste0("=NA, .after = translate.this.col)")
+    txt=paste0(p1,p2,p3)
+    new_error_report <- eval(parse(text=txt))
+    ############# initialize row counts for translation loop
+    run = 1
+    ############ begin translation -----------
+    while(run <= length(new_error_report[[translate.this.col]])){
+      for(row in new_error_report[[translate.this.col]]){
+        if(grepl(pattern=",",row)){
+          newRow2 = c()
+          row2 = as.numeric(strsplit(row,",")[[1]])
+        }else {
+          newRow2 = c()
+          row2 = as.numeric(row)
+        }
+        ############# START 1st "ELSE IF" LOGIC TO CHECK ROW FORMAT #############
+        #("NA", string, integer list plus an "NA", or integer list,) 
+        #----------------------------------------- if row is missing
+        if(is.na(row)| row=="") {
+          na_str = ""
+          ab = ""
+          #----------------------------------------- else if row is non number
+        }else if (!is.na(row) & is.na(row2)) {
+          na_str = ""
+          ab= row
+          #----------------------------------------- else if row is not blank because it has numbers and an NA!!
+        }else if (( testInteger(as.numeric(strsplit(gsub(", NA", "" , row),",")[[1]])) |
+                    testInteger(as.numeric(strsplit(gsub(", NA", "" , row),",")[[1]]))) &
+                  !is.na(row2) & (grepl( ", NA", row, fixed = TRUE) | grepl( ", NA,", row, fixed = TRUE))) {
+          row = gsub(", NA", "" , row)
+          row = gsub(", NA,", "" , row) # remove na in row and redefine row2 (numbers)
+          row2 = as.numeric(strsplit(row,",")[[1]])
+          ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
+          na_str = ", NA"
+          #----------------------------------------- else if row is number list
+        }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
+          ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
+          na_str = ""
+        }
+        ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
+        # for list of concept IDs (fixed 0517 Lorena)
+        if(length(ab)>1){
+          for(cid in ab){
+            newRow = paste(eval(parse(text=cid)),sep=",")
+            newRow2 = c(newRow2,newRow)
+          }
+          # for single concept ID
+        }else if(numbers_only(row)){
+          newRow2 = eval(parse(text=ab))
+          # for value other than single concept ID or ConceptID list 
+        }else if(length(ab)==1){
+          newRow2 = ab
+        }          
+        ############# BEGIN REPLACING TRANSLATED VALUES INTO NEW COLUMN ##########################
+        newRow3 = paste0(toString(newRow2,sep = ", "), na_str)
+        new_error_report[[new.col.name]][[run]] = newRow3
+        run = run+1
+      } }}
+
+  return(new_error_report)
+}
+
+# function to test vector for integers
+testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)
+if(test == TRUE){ return(TRUE)
+} else { return(FALSE) }
+}
+# function to remove whitespace before and after value
+# # Remove leading or trailing white space from each column using the following "trim function
+# trim <- function (x) gsub("^\s+|\s+$", "", x) 
+
+# function to check that it does not match any non-number
+numbers_only <- function(x) !grepl("\\\D", x)
+
+# function to exclude rows with certain values in QC (ie. "d" not in list "a,b,c")
+"%!in%" <- function(x,y)!("%in%"(x,y))
+
+# function to check list for numeric values in QC
+testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)
+if(test == TRUE){ return(TRUE) } else { return(FALSE) }}
+
+
+# function to run QC by site--------------------------------------------
+runQC = function(site,project, sql, QC_report_location ){
+
+#GET RECRUITMENT TABLES FROM BIGQUERY IN STG PROJECT
+# set project
+project <- project
+
+# set query
+sql <- sql
+tb <- bq_project_query(project, sql)
+connectData = bq_table_download(tb, bigint = c("character"))
+# filter data by site
+
+site= site
+connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   
+#connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string, but using newer version below 
+
+# changed int64 to string and leave dates as date type to prevent missing data. Integer blanks are NA, charater blanks are "".
+connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  
+
+# make qc dataframe
+df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
+
+names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
+`
 
     var footer =
         `# filter df to show QC errors only
@@ -780,9 +795,9 @@ runQAQC = function (data) {
     # add date column
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
     
+    ######## upload report to box ##############################
+    box_write(qc_errors, paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"), dir_id = 136441105328)
     
-    ######## upload report to box ##############################
-    box_write(qc_errors, paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"), dir_id = 136441105328)
     
     # sites:
     # Sanford Health = 657167265
@@ -801,73 +816,75 @@ runQAQC = function (data) {
     
     # Sanford
     site= 657167265 
-    qc_Sanford=runQC(site= site)
+    qc_Sanford=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # HealthPartners
     site= 531629870 
-    qc_HealthPartners=runQC(site= site)
+    qc_HealthPartners=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Henry Ford Health System
     site= 548392715 
-    qc_Henry_Ford_Health_System=runQC(site= site)
+    qc_Henry_Ford_Health_System=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Colorado
     site= 125001209 
-    qc=runQC(site= site)
+    qc=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Georgia
     site= 327912200 
-    qc_Kaiser_Permanente_Georgia=runQC(site= site)
+    qc_Kaiser_Permanente_Georgia=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Hawaii
     site= 300267574 
-    qc_Kaiser_Permanente_Hawaii=runQC(site= site)
+    qc_Kaiser_Permanente_Hawaii=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Northwest
     site= 452412599 
-    qc_Kaiser_Permanente_Northwest=runQC(site= site)
+    qc_Kaiser_Permanente_Northwest=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Marshfiled
     site= 303349821 
-    qc_Marshfiled=runQC(site= site)
+    qc_Marshfiled=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # University of Chicago Medicine
     site= 809703864 
-    qc_University_of_Chicago_Medicine=runQC(site= site)
+    qc_University_of_Chicago_Medicine=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # National Cancer Institute
     site= 517700004 
-    qc_National_Cancer_Institute=runQC(site= site)
+    qc_National_Cancer_Institute=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Other
     site= 181769837 
-    qc_Other=runQC(site= site)`
+    qc_Other=runQC(site= site, project= project, sql= sql)
+    
+    ${projectIDVar}`
 
     // END QC SCRIPT
 
     // save qc script as txt
     //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox
-    var full_script = loadData + "\n" + makeDF + "\n" + script + "\n" + filterDF + "\n" + translate + "\n" + footer
+    var full_script = header + "\n" + script + "\n" + footer  +   projectIDVar
     //var full_script = script
 
 
@@ -879,6 +896,8 @@ runQAQC = function (data) {
 
 
     console.log("test 335row")
-
+    console.log(projectIDVar)
     return h
 }
+
+

@@ -54,6 +54,8 @@ proj.innerHTML += '<br>'
 proj.innerHTML += '<form action="/action_page.php">'
 proj.innerHTML += '<label for="site">ProjectID:</label>'
 proj.innerHTML += '<input type="text" id="projectID" name="projectID">(enter)<br><br>'
+proj.innerHTML += '<label for="site">SQL:</label>'
+proj.innerHTML += '<input type="text" id="sql" name="sql">(enter)<br><br>'
 proj.innerHTML += '<label for="site">GCPbucket:</label>'
 proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(enter)<br><br>'
 proj.innerHTML += '<label for="site">Email:</label>'
@@ -71,6 +73,9 @@ runQAQC = function (data) {
     var projectIDVar= projectID.value
     console.log("projectIDVar")
     console.log(projectIDVar)
+    var sqlVar= sql.value
+    console.log("sqlVar")
+    console.log(sqlVar)
     var GCPbucketVar= GCPbucket.value
     console.log("GCPbucket")
     console.log(GCPbucket)
@@ -747,7 +752,7 @@ runQAQC = function (data) {
     # function to run QC by site--------------------------------------------
     runQC = function(site,project, sql, QC_report_location ){
     
-    #GET RECRUITMENT TABLES FROM BIGQUERY IN STG PROJECT
+    #GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
     # set project
     project <- project
     
@@ -813,7 +818,7 @@ runQAQC = function (data) {
     
     # 2 part definition for querying the data sitting in BigQuery
     project = "${projectIDVar}"
-    sql = "SELECT * FROM [${projectIDVar}.Connect.recruitment2]"
+    sql = "sql = "${sqlVar}"
     
     # sites:
     # Sanford Health = 657167265

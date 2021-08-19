@@ -9,7 +9,7 @@ if (document.getElementById('local_connQC').checked) {
     var T = document.getElementById("btnToggle");
     T.style.display = "block"; // <-- Set it to block
     let ele = document.getElementById('local_connQC1');
-    ele.innerHTML += 'STEP 1: Fill in project, bucket and email text boxes<br><br>';
+    ele.innerHTML += 'STEP 1: Fill in project, Box folder ID and email text boxes<br><br>';
     ele.innerHTML += 'STEP 2: Load QC rules file<br><br>';
     ele.innerHTML += 'STEP 3: Dowload QC R script<br><br>';
 
@@ -55,8 +55,12 @@ proj.innerHTML += '<br>'
 proj.innerHTML += '<form action="/action_page.php">'
 proj.innerHTML += '<label for="site">ProjectID:</label>'
 proj.innerHTML += '<input type="text" id="projectID" name="projectID">(enter)<br><br>'
+proj.innerHTML += '<label for="site">SQL:</label>'
+proj.innerHTML += '<input type="text" id="sql" name="sql">(enter)<br><br>'
 proj.innerHTML += '<label for="site">GCPbucket:</label>'
 proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(enter)<br><br>'
+proj.innerHTML += '<label for="site">Box folder ID:</label>'
+proj.innerHTML += '<input type="text" id="boxFolder" name="boxFolder">(enter)<br><br>'
 proj.innerHTML += '<label for="site">Email:</label>'
 proj.innerHTML += '<input type="text" id="email" name="email">(enter)<br><br>'
 //proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
@@ -72,9 +76,14 @@ runQAQC = function (data) {
     var projectIDVar= projectID.value
     console.log("projectIDVar")
     console.log(projectIDVar)
+    var sqlVar= sql.value
+    console.log("sqlVar")
+    console.log(sqlVar)
     var GCPbucketVar= GCPbucket.value
     console.log("GCPbucket")
-    console.log(GCPbucket)
+    var boxFolderVar= boxFolder.value
+    console.log("boxFolderVar")
+    console.log(boxFolderVar)
     var emailVar= email.value
     console.log("emailVar")
     console.log(emailVar)
@@ -635,19 +644,16 @@ library(tibble)
 
 # set auth via gar_auth_service(), service  credentials: --------------------------
 cr_region_set("us-central1") #need? not sure
-cr_bucket_set("qc_automation_stg")#need? not sure
-cr_email_set("sandovall2@nih.gov")#need? not sure
-cr_project_set("nih-nci-dceg-connect-stg-5519")#need? not sure
+cr_bucket_set(${GCPbucketVar}")#need? not sure
+cr_email_set("${emailVar}")#need? not sure
+cr_project_set("${projecIDVar}")#need? not sure
 
 #  authentiicate via auth library using the metadata server 
 googleAuthR::gar_gce_auth()
 
-# set a default Google bucket -----------------------------------------------------
-#gcs_global_bucket("qc_automation") 
-
 #  read dictionary from bucket to an R object (warning, dont run out of RAM if its a big object)
 # the download type is guessed into an appropriate R object
-dictionary <- gcs_get_object("gs://qc_automation_stg/Connect_translation_dictionary.json")
+dictionary <- gcs_get_object("gs://${GCPbucketVar}/Connect_translation_dictionary.json")
 
 # function to translate QC report inside runQC function-----------------------------
 TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, dictionary ){
@@ -746,9 +752,9 @@ if(test == TRUE){ return(TRUE) } else { return(FALSE) }}
 
 
 # function to run QC by site--------------------------------------------
-runQC = function(site,project, sql, QC_report_location ){
+runQC = function(site,project, sql, boxID){
 
-#GET RECRUITMENT TABLES FROM BIGQUERY IN STG PROJECT
+#GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
 # set project
 project <- project
 
@@ -772,7 +778,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
 `
 
     var footer =
-        `# filter df to show QC errors only
+    `# filter df to show QC errors only
 
     qc_errors = filter(df, (!is.na(df$"invalid_values_found") ))
     
@@ -788,7 +794,6 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     # add "no errors found" row if no rows found in QC report
     if (nrow(qc_errors)==0){
       qc_errors[1, ] = c("no errors found")
-    }
     
     # add site column
     qc_errors = add_column(qc_errors, site = as.character(site) , .before=1)
@@ -796,9 +801,15 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
     
     ######## upload report to box ##############################
-    box_write(qc_errors, paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"), dir_id = 136441105328)
-    
-    
+    box_write(qc_errors, paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"), dir_id = boxID)
+    }
+
+    # Define runQC variables
+    # 2 part definition for querying the data sitting in BigQuery
+    project = "${projectIDVar}"
+    sql = "${sqlVar}"
+    boxID = ${boxFolderVar}
+
     # sites:
     # Sanford Health = 657167265
     # HealthPartners = 531629870
@@ -816,7 +827,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     
     # Sanford
     site= 657167265 
-    qc_Sanford=runQC(site= site, project= project, sql= sql)
+    qc_Sanford=runQC(site= site, project= project, sql= sql, boxID = boxID)
     
     # define site to run QC----------
     
@@ -876,15 +887,13 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     
     # Other
     site= 181769837 
-    qc_Other=runQC(site= site, project= project, sql= sql)
-    
-    ${projectIDVar}`
+    qc_Other=runQC(site= site, project= project, sql= sql)`
 
     // END QC SCRIPT
 
     // save qc script as txt
     //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox
-    var full_script = header + "\n" + script + "\n" + footer  +   projectIDVar
+    var full_script = header + "\n" + script + "\n" + footer 
     //var full_script = script
 
 
@@ -896,7 +905,6 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
 
 
     console.log("test 335row")
-    console.log(projectIDVar)
     return h
 }
 

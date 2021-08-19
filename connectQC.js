@@ -8,9 +8,11 @@ if (document.getElementById('connQC').checked) {
     var T = document.getElementById("btnToggle");
     T.style.display = "block"; // <-- Set it to block
     let ele = document.getElementById('connQC1');
-    ele.innerHTML += 'STEP 1: Fill in project, bucket and email text boxes<br><br>';
+    ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to BQ</p>`
+    ele.innerHTML += 'STEP 1: Fill in the required text boxes<br><br>';
     ele.innerHTML += 'STEP 2: Load QC rules file<br><br>';
-    ele.innerHTML += 'STEP 3: Dowload QC R script<br><br>';
+    ele.innerHTML += 'STEP 3: Download QC R script and save it to the "qc_automation_[dev/stg/prod]" bucket in GCP<br><br>';
+
 
     // add toggle button to show/hide instructions
     const toggleArea = document.getElementById('toggleArea')

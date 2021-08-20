@@ -823,7 +823,7 @@ runQAQC = function (data) {
     
     # 2 part definition for querying the data sitting in BigQuery
     project = "${projectIDVar}"
-    sql = "sql = "${sqlVar}"
+    sql = "${sqlVar}"
     
     # sites:
     # Sanford Health = 657167265

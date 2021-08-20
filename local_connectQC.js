@@ -10,9 +10,9 @@ if (document.getElementById('local_connQC').checked) {
     T.style.display = "block"; // <-- Set it to block
     let ele = document.getElementById('local_connQC1');
     ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to Box</p>`
-    ele.innerHTML += 'STEP 1: Fill in the required text boxes<br><br>';
-    ele.innerHTML += 'STEP 2: Load QC rules file<br><br>';
-    ele.innerHTML += 'STEP 3: Download the QC script and run it locally in R<br><br>';
+    ele.innerHTML += 'STEP 1: Fill in the required text boxes<br>';
+    ele.innerHTML += 'STEP 2: Load QC rules file<br>';
+    ele.innerHTML += 'STEP 3: Download the QC script and run it locally in R<br>';
 
     // add toggle button to show/hide instructions
     const toggleArea = document.getElementById('toggleArea')
@@ -52,15 +52,15 @@ let proj2 = document.getElementById('local_connQC1');
 proj2.innerHTML += '<br>'
 proj2.innerHTML += '<form action="/action_page.php">'
 proj2.innerHTML += '<label for="site">ProjectID:</label>'
-proj2.innerHTML += '<input type="text" id="projectID2" name="projectID2">(ie. nih-nci-dceg-connect-stg-5519)<br><br>'
+proj2.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br>'
 proj2.innerHTML += '<label for="site">SQL:</label>'
-proj2.innerHTML += '<input type="text" id="sql2" name="sql2">(ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1)<br><br>'
+proj2.innerHTML += '<input type="text" id="sql" name="sql">(including "`", ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1` )<br>'
 proj2.innerHTML += '<label for="site">GCPbucket:</label>'
-proj2.innerHTML += '<input type="text" id="GCPbucket2" name="GCPbucket2">(ie. qc_automation_stg)<br><br>'
+proj2.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(ie. qc_automation_stg)<br>'
 proj2.innerHTML += '<label for="site">Box folder ID:</label>'
-proj2.innerHTML += '<input type="text" id="boxFolder" name="boxFolder">(ie. 136441105328)<br><br>'
+proj2.innerHTML += '<input type="text" id="boxFolder" name="boxFolder">(ie. 136441105328)<br>'
 proj2.innerHTML += '<label for="site">Email:</label>'
-proj2.innerHTML += '<input type="text" id="email2" name="email2">(ie. name@nih.gov)<br><br>'
+proj2.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)<br>'
 //proj2.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
 proj2.innerHTML += '</form>'
 

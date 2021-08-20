@@ -9,9 +9,9 @@ if (document.getElementById('connQC').checked) {
     T.style.display = "block"; // <-- Set it to block
     let ele = document.getElementById('connQC1');
     ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to BQ</p>`
-    ele.innerHTML += 'STEP 1: Fill in the required text boxes<br><br>';
-    ele.innerHTML += 'STEP 2: Load QC rules file<br><br>';
-    ele.innerHTML += 'STEP 3: Download QC R script and save it to the "qc_automation_[dev/stg/prod]" bucket in GCP<br><br>';
+    ele.innerHTML += 'STEP 1: Fill in the required text boxes<br>';
+    ele.innerHTML += 'STEP 2: Load QC rules file<br>';
+    ele.innerHTML += 'STEP 3: Download QC R script and save it to the "qc_automation_[dev/stg/prod]" bucket in GCP<br>';
 
 
     // add toggle button to show/hide instructions
@@ -55,24 +55,22 @@ let proj = document.getElementById('connQC1');
 proj.innerHTML += '<br>'
 proj.innerHTML += '<form action="/action_page.php">'
 proj.innerHTML += '<label for="site">ProjectID:</label>'
-proj.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br><br>'
+proj.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br>'
 proj.innerHTML += '<label for="site">SQL:</label>'
-proj.innerHTML += '<input type="text" id="sql" name="sql">(ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1)<br><br>'
+proj.innerHTML += '<input type="text" id="sql" name="sql">(including "`", ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1` )<br>'
 proj.innerHTML += '<label for="site">GCPbucket:</label>'
-proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(ie. qc_automation_stg)<br><br>'
+proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(ie. qc_automation_stg)<br>'
 proj.innerHTML += '<label for="site">Email:</label>'
-proj.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)<br><br>'
+proj.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)<br>'
 //proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
 proj.innerHTML += '</form>'
 
-runQAQC = function (data) {
-
-    projectID = document.getElementById("projectID")//show on key lookup in console
+    //projectID = document.getElementById("projectID")//show on key lookup in console
     projectID.onkeyup = function (ev) {
         console.log("projectID.onkeyup")
         console.log(ev)
     }
-    var projectIDVar= projectID.value
+    var projectIDVar= document.getElementById("projectID").value
     console.log("projectIDVar")
     console.log(projectIDVar)
     var sqlVar= sql.value
@@ -85,6 +83,8 @@ runQAQC = function (data) {
     console.log("emailVar")
     console.log(emailVar)
 
+
+runQAQC = function (data) {
 
     console.log(`connectQC.js runQAQC function ran at ${Date()}`)
     let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
@@ -179,7 +179,7 @@ runQAQC = function (data) {
             var valid = `######## QC ${conceptID}\n
             # custom check\n
             ${conceptID}=connectData$"${conceptID}"\n
-            QCcheck1 =  ${conceptID1val}\n
+            QCcheck1 =  which(${conceptID1val})\n
             ${conceptID}_invalid = addNA(connectData$"${conceptID}"[QCcheck1])\n
             rowNum<-QCcheck1
             token<- connectData$"token"[QCcheck1]

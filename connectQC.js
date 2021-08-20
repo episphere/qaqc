@@ -65,8 +65,13 @@ proj.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)
 //proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
 proj.innerHTML += '</form>'
 
-    //projectID = document.getElementById("projectID")//show on key lookup in console
-    projectID.onkeyup = function (ev) {
+
+
+runQAQC = function (data) {
+    console.log(`connectQC.js runQAQC function ran at ${Date()}`)
+
+      //projectID = document.getElementById("projectID")//show on key lookup in console
+      projectID.onkeyup = function (ev) {
         console.log("projectID.onkeyup")
         console.log(ev)
     }
@@ -84,12 +89,10 @@ proj.innerHTML += '</form>'
     console.log(emailVar)
 
 
-runQAQC = function (data) {
 
-    console.log(`connectQC.js runQAQC function ran at ${Date()}`)
+
     let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
     h += '</p>'
-
 
     //  function to convert input text to output array
     'use strict';

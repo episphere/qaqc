@@ -644,7 +644,7 @@ library(tibble)
 cr_region_set("us-central1") #need? not sure
 cr_bucket_set(${GCPbucketVar}")#need? not sure
 cr_email_set("${emailVar}")#need? not sure
-cr_project_set("${projecIDVar}")#need? not sure
+cr_project_set("${projectIDVar}")#need? not sure
 
 #  authentiicate via auth library using the metadata server 
 googleAuthR::gar_gce_auth()

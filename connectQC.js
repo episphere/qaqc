@@ -744,7 +744,7 @@ runQAQC = function (data) {
     # trim <- function (x) gsub("^\s+|\s+$", "", x) 
     
     # function to check that it does not match any non-number
-    numbers_only <- function(x) !grepl("\\\D", x)
+    numbers_only <- function(x) !grepl("\\\\D", x)
     
     # function to exclude rows with certain values in QC (ie. "d" not in list "a,b,c")
     "%!in%" <- function(x,y)!("%in%"(x,y))

@@ -798,8 +798,8 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     # add date column
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
     
-    ######## upload report to box ##############################
-    box_write(qc_errors, paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"), dir_id = boxID)
+    ########upload_report_to_box##############################
+    box_write(qc_errors,paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"),dir_id=boxID)
     }
 
     # Define runQC variables

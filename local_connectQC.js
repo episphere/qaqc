@@ -642,7 +642,7 @@ library(tibble)
 
 # set auth via gar_auth_service(), service  credentials: --------------------------
 cr_region_set("us-central1") #need? not sure
-cr_bucket_set(${GCPbucketVar}")#need? not sure
+cr_bucket_set("${GCPbucketVar}")#need? not sure
 cr_email_set("${emailVar}")#need? not sure
 cr_project_set("${projectIDVar}")#need? not sure
 

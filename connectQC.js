@@ -130,8 +130,8 @@ runQAQC = function (data) {
     date = test[4][0]
     site = test[6][0]
     table = test[8][0]
-    data_box_file_id = test[10][0]
-    save_to_box_folder_id = test[12][0]
+    // data_box_file_id = test[10][0]
+    // save_to_box_folder_id = test[12][0]
     var lengthQC = test[0].length - 1
     for (i = 1; i < test[0].length; i++) {
         var valid1 = test[3][i]
@@ -755,34 +755,33 @@ runQAQC = function (data) {
     
     
     # function to run QC by site--------------------------------------------
-    runQC = function(site,project, sql, QC_report_location ){
-    
-    #GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
-    # set project
-    project <- project
-    
-    # set query
-    sql <- sql
-    tb <- bq_project_query(project, sql)
-    connectData = bq_table_download(tb, bigint = c("character"))
-    # filter data by site
-    
-    site= site
-    connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   
-    #connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string, but using newer version below 
-    
-    # changed int64 to string and leave dates as date type to prevent missing data. Integer blanks are NA, charater blanks are "".
-    connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  
-    
-    # make qc dataframe
-    df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
-    
-    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
-    `
+runQC = function(site,project, sql, QC_report_location){
 
+#GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
+# set project
+project <- project
+
+# set query
+sql <- sql
+tb <- bq_project_query(project, sql)
+connectData = bq_table_download(tb, bigint = c("character"))
+# filter data by site
+
+site= site
+connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   
+#connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string, but using newer version below 
+
+# changed int64 to string and leave dates as date type to prevent missing data. Integer blanks are NA, charater blanks are "".
+connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  
+
+# make qc dataframe
+df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
+
+names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
+`
 
     var footer =
-        `# filter df to show QC errors only
+    `# filter df to show QC errors only
 
     qc_errors = filter(df, (!is.na(df$"invalid_values_found") ))
     
@@ -798,33 +797,23 @@ runQAQC = function (data) {
     # add "no errors found" row if no rows found in QC report
     if (nrow(qc_errors)==0){
       qc_errors[1, ] = c("no errors found")
-    }
     
     # add site column
     qc_errors = add_column(qc_errors, site = as.character(site) , .before=1)
     # add date column
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
-    ######## SAVE QC SCRIPT TO BIGQUERY QC_report table
     
-    
-    ######## upload report to bigquery ##############################
-    
-    #Append data to an existing table or create a table if if doesnt exist
-    bq_table_upload(x=QC_report_location,
-                    values=qc_errors,
-                    fields = qc_errors,
-                    create_disposition="CREATE_IF_NEEDED",
-                    write_disposition="WRITE_APPEND")
-    return(qc_errors)
     }
-    
+
+    # Define runQC variables
+
     # BigQuery table where QC report will be saved---------------
     QC_report_location = "${projectIDVar}.Connect.QC_report"
     
     # 2 part definition for querying the data sitting in BigQuery
     project = "${projectIDVar}"
     sql = "${sqlVar}"
-    
+
     # sites:
     # Sanford Health = 657167265
     # HealthPartners = 531629870
@@ -842,69 +831,69 @@ runQAQC = function (data) {
     
     # Sanford
     site= 657167265 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Sanford=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
     
     # define site to run QC----------
     
     # HealthPartners
     site= 531629870 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_HealthPartners=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Henry Ford Health System
     site= 548392715 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Henry_Ford_Health_System=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Colorado
     site= 125001209 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Georgia
     site= 327912200 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Kaiser_Permanente_Georgia=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Hawaii
     site= 300267574 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Kaiser_Permanente_Hawaii=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Kaiser Permanente Northwest
     site= 452412599 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Kaiser_Permanente_Northwest=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Marshfiled
     site= 303349821 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_Marshfiled=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # University of Chicago Medicine
     site= 809703864 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_University_of_Chicago_Medicine=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # National Cancer Institute
     site= 517700004 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
+    qc_National_Cancer_Institute=runQC(site= site, project= project, sql= sql)
     
     # define site to run QC----------
     
     # Other
     site= 181769837 
-    qc=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)`
+    qc_Other=runQC(site= site, project= project, sql= sql)`
 
-    // END QC SCRIPT
+ // END QC SCRIPT
 
 
     // save qc script as txt
@@ -924,3 +913,5 @@ runQAQC = function (data) {
 
     return h
 }
+
+

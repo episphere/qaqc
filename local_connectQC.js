@@ -57,8 +57,8 @@ proj2.innerHTML += '<label for="site">SQL:</label>'
 proj2.innerHTML += '<input type="text" id="sql" name="sql">(including "`", ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1` )<br>'
 proj2.innerHTML += '<label for="site">GCPbucket:</label>'
 proj2.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(ie. qc_automation_stg)<br>'
-proj2.innerHTML += '<label for="site">Box folder ID:</label>'
-proj2.innerHTML += '<input type="text" id="boxFolder" name="boxFolder">(ie. 136441105328)<br>'
+//proj2.innerHTML += '<label for="site">Box folder ID:</label>'
+//proj2.innerHTML += '<input type="text" id="boxFolder" name="boxFolder">(ie. 136441105328)<br>'
 proj2.innerHTML += '<label for="site">Email:</label>'
 proj2.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)<br>'
 //proj2.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
@@ -79,9 +79,9 @@ runQAQC = function (data) {
     console.log(sqlVar)
     var GCPbucketVar= GCPbucket.value
     console.log("GCPbucket")
-    var boxFolderVar= boxFolder.value
-    console.log("boxFolderVar")
-    console.log(boxFolderVar)
+    // var boxFolderVar= boxFolder.value
+    // console.log("boxFolderVar")
+    //console.log(boxFolderVar)
     var emailVar= email.value
     console.log("emailVar")
     console.log(emailVar)
@@ -128,8 +128,8 @@ runQAQC = function (data) {
     date = test[4][0]
     site = test[6][0]
     table = test[8][0]
-    data_box_file_id = test[10][0]
-    save_to_box_folder_id = test[12][0]
+    // data_box_file_id = test[10][0]
+    // save_to_box_folder_id = test[12][0]
     var lengthQC = test[0].length - 1
     for (i = 1; i < test[0].length; i++) {
         var valid1 = test[3][i]
@@ -750,7 +750,7 @@ if(test == TRUE){ return(TRUE) } else { return(FALSE) }}
 
 
 # function to run QC by site--------------------------------------------
-runQC = function(site,project, sql, boxID){
+runQC = function(site,project, sql, QC_report_location){
 
 #GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
 # set project
@@ -798,15 +798,16 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     # add date column
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
     
-    ########upload_report_to_box##############################
-    box_write(qc_errors,paste0(site,"_qc_",gsub("-","",Sys.Date()),".csv"),dir_id=boxID)
     }
 
     # Define runQC variables
+
+    # BigQuery table where QC report will be saved---------------
+    QC_report_location = "${projectIDVar}.Connect.QC_report"
+    
     # 2 part definition for querying the data sitting in BigQuery
     project = "${projectIDVar}"
     sql = "${sqlVar}"
-    boxID = ${boxFolderVar}
 
     # sites:
     # Sanford Health = 657167265
@@ -825,7 +826,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     
     # Sanford
     site= 657167265 
-    qc_Sanford=runQC(site= site, project= project, sql= sql, boxID = boxID)
+    qc_Sanford=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
     
     # define site to run QC----------
     
@@ -887,15 +888,16 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     site= 181769837 
     qc_Other=runQC(site= site, project= project, sql= sql)`
 
-    // END QC SCRIPT
+ // END QC SCRIPT
+
 
     // save qc script as txt
     //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox
-    var full_script = header + "\n" + script + "\n" + footer 
+    var full_script2 = header + "\n" + script + "\n" + footer
     //var full_script = script
 
 
-    h += qaqc.saveQC(full_script)
+    h += qaqc.saveQC(full_script2)
 
     h += `<p></p>`
     h += `<p style="color:green;font-size: 13px;font-weight:bold" >Saving the QC script above generates code written in R based on the rules specified in the file loaded above.</p>`
@@ -903,6 +905,7 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
 
 
     console.log("test 335row")
+
     return h
 }
 

@@ -9,7 +9,7 @@ if (document.getElementById('local_connQC').checked) {
     var T = document.getElementById("btnToggle");
     T.style.display = "block"; // <-- Set it to block
     let ele = document.getElementById('local_connQC1');
-    ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to Box</p>`
+    ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to BigQuery</p>`
     ele.innerHTML += 'STEP 1: Fill in the required text boxes<br>';
     ele.innerHTML += 'STEP 2: Load QC rules file<br>';
     ele.innerHTML += 'STEP 3: Download the QC script and run it locally in R<br>';

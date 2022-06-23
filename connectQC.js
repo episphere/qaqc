@@ -803,7 +803,16 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
     # add date column
     qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
     
-    }
+    ######## upload report to bigquery ##############################
+    
+    #Append data to an existing table or create a table if if doesnt exist
+    bq_table_upload(x=QC_report_location,
+                    values=qc_errors,
+                    fields = qc_errors,
+                    create_disposition="CREATE_IF_NEEDED",
+                    write_disposition="WRITE_APPEND")
+
+    }}
 
     # Define runQC variables
 

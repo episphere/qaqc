@@ -7,3 +7,6 @@ Last updated: 05-24-2021
 
 Automation:
 https://github.com/Analyticsphere/CloudRun_QAQC/blob/main/prod/api.R
+
+Input file for testing:
+https://github.com/episphere/qaqc/blob/master/qaqc%20testing%20files/input_file.csv

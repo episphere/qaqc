@@ -1,0 +1,5 @@
+FROM rocker/r-ver:4.1.0
+LABEL maintainer="sandovall2"
+RUN ["install2.r", "bigrquery", "boxr", "dplyr", "forcats", "ggplot2", "googleAuthR", "googleCloudRunner", "jsonlite", "lubridate", "purrr", "readr", "stringr", "tibble", "tidyr", "tidyverse", "withr"]
+WORKDIR /payload/
+CMD ["R"]

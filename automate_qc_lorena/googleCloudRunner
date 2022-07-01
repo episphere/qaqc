@@ -1,0 +1,23 @@
+getwd()
+setwd("C:/Users/sandovall2/Downloads")
+#install.packages("googleCloudRunner")
+library("googleCloudRunner")
+
+# use to set up service acount json file
+cr_setup_auth(
+  email = Sys.getenv("sandovall2@nih.gov"),
+  file = "C:/Users/sandovall2/Downloads/client_secret_*********************.apps.googleusercontent.com.json",
+  session_user = NULL
+)
+# use set up to read from client id json file
+# client_secret_**********************.apps.googleusercontent.com.json
+cr_setup()
+# or
+cr_region_set("us-*****")
+cr_bucket_set("*****")
+cr_email_set("*****")
+cr_project_set("nih-nci-dceg-connect-dev")
+b1 <- cr_build("C:/Users/*****.yaml")
+
+# RUB R CODE ON A SCHEDULE
+# https://code.markedmondson.me/googleCloudRunner/articles/usecase-scheduled-r-builds.html

@@ -30,10 +30,13 @@
         <ol id="scriptList">
         <li><input type="radio" name="run" class="runScript" checked> none</li>
         <li><input type="radio" name="run" class="runScript"> parmType.js - inferring type of each parameter</li>
-        <li><input type="radio" name="run" class="runScript" id= "connQC"> connectQC.js - make Connect QC scripts that run in the cloud and save to BigQuery</li>
+        <li><input type="radio" name="run" class="runScript" id= "github_connQC"> github_connectQC.js - make Connect QC scripts that run in the cloud and save to BigQuery</li>
 
         <li><input type="radio" name="run" class="runScript"> lorena.js - Confluence QAQC</li>
         <!--
+            <li><input type="radio" name="run" class="runScript" id= "connQC"> connectQC.js - make Connect QC scripts that run in the cloud and save to BigQuery</li>
+        <li><input type="radio" name="run" class="runScript" id= "local_connQC"> local_connectQC.js - make Connect QC scripts that run in the cloud and save to BigQuery</li>
+
         <li><input type="radio" name="run" class="runScript"> lorena2.js - Summary statistics</li>
         <li><input type="radio" name="run" class="runScript"> connect.js - transpose data</li>
         <li><input type="radio" name="run" class="runScript"> GWAS_explorer.js - plot gwas data</li>
@@ -86,8 +89,12 @@
     <hr>
     <div id="connQC1"><p></p></div>
     <div id="local_connQC1"><p></p></div>
+    <div id="github_connQC1"><p></p></div>
+
     <div id="connQCtxt" class= 'active'><p></p></div>
     <div id="local_connQCtxt" class= 'active'><p></p></div>
+    <div id="github_connQCtxt" class= 'active'><p></p></div>
+
     <div id="toggleArea" class='active'></div>
     <button id="btnToggle" style="display:none"> show/hide QC instructions </button>
     <div id="dataAnalysisDiv"></div>

@@ -1,0 +1,6 @@
+GAR_CLIENT_JSON="C:/Users/client_secret**************.apps.googleusercontent.com.json"
+GCE_DEFAULT_PROJECT_ID="**************"
+GCE_AUTH_FILE="C:/Users/**************.json"
+CR_REGION="**************"
+CR_BUILD_EMAIL="**************.iam.gserviceaccount.com"
+GCS_DEFAULT_BUCKET="**************"

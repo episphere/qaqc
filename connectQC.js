@@ -58,6 +58,10 @@ proj.innerHTML += '<label for="site">ProjectID:</label>'
 proj.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br>'
 proj.innerHTML += '<label for="site">SQL:</label>'
 proj.innerHTML += '<input type="text" id="sql" name="sql">(include both astericks!, ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1` )<br>'
+proj.innerHTML += '<label for="site">GCPbucket:</label>'
+proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(ie. qc_automation_stg)<br>'
+proj.innerHTML += '<label for="site">Email:</label>'
+proj.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)<br>'
 
 //proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
 proj.innerHTML += '</form>'

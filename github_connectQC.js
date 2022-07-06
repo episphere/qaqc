@@ -123,8 +123,6 @@ runQAQC = function (data) {
     date = test[4][0]
     site = test[6][0]
     table = test[8][0]
-
-    console.log(test[4][0])
     // data_box_file_id = test[10][0]
     // save_to_box_folder_id = test[12][0]
     var lengthQC = test[0].length - 1
@@ -681,62 +679,62 @@ runQAQC = function (data) {
           # define site to run QC -----------
           # Sanford
           site= 657167265 
-          retval['Sanford']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["Sanford"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # HealthPartners
           site= 531629870 
-          retval['HealthPartners']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["HealthPartners"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Henry Ford Health System
           site= 548392715 
-          retval['HFHS']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["HFHS"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Kaiser Permanente Colorado
           site= 125001209 
-          retval['KPCO']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["KPCO"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Kaiser Permanente Georgia
           site= 327912200 
-          retval['KPGA']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["KPGA"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Kaiser Permanente Hawaii
           site= 300267574 
-          retval['KPHI']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["KPHI"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Kaiser Permanente Northwest
           site= 452412599 
-          retval['KPNW']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["KPNW"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Marshfiled
           site= 303349821 
-          retval['Marshfield']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["Marshfield"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # University of Chicago Medicine
           site= 809703864 
-          retval['UC']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["UC"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # National Cancer Institute
           site= 517700004 
-          retval['NCI']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["NCI"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
           
           # define site to run QC----------
           # Other
           site= 181769837 
-          retval['OTHER']=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          retval["OTHER"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
         },
         error=function(e){
           message("caught error ",e)
-          retval['note'] = paste0("caught error: ",e)
-          retval['error'] = e
+          retval["note"] = paste0("caught error: ",e)
+          retval["error"] = e
         })
       
       toJSON(retval,auto_unbox = T)
@@ -854,16 +852,15 @@ runQAQC = function (data) {
     # make qc dataframe
     df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
     
-    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
-`
+    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")`
 
     // save qc script as txt
 
-    var full_script3 = header //+ "\n" + script
+    var full_script2 = header //+ "\n" + script
   
-console.log(full_script3)
+console.log(full_script2)
 
-    h += qaqc.saveQC(full_script3)
+    h += qaqc.saveQC(full_script2)
 
     h += `<p></p>`
     h += `<p style="color:green;font-size: 13px;font-weight:bold" >Saving the QC script above generates code written in R based on the rules specified in the file loaded above.</p>`

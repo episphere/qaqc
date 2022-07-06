@@ -863,8 +863,7 @@ console.log(full_script2)
     h += qaqc.saveQC(full_script2)
 
     h += `<p></p>`
-    h += `<p style="color:green;font-size: 13px;font-weight:bold" >Saving the QC script above generates code written in R based on the rules specified in the file loaded above.</p>`
-    h += `<p style="color:green;font-size: 13px;font-weight:bold" >The R code produced by the the script, checks for errors in the recruitment table.</p>`
+    h += `<p style="color:green;font-size: 13px;font-weight:bold" The QC script above generates R code based on the rules specified in the rules.csv file and saves locally.</p>`
 
 
     console.log("test 335row")

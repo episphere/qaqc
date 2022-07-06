@@ -856,7 +856,7 @@ runQAQC = function (data) {
 
     // save qc script as txt
 
-    var full_script2 = header //+ "\n" + script
+    var full_script2 = header + "\n" + script
   
 console.log(full_script2)
 

@@ -854,11 +854,45 @@ runQAQC = function (data) {
     
     names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")`
 
+    var footer =
+    `# filter df to show QC errors only
+
+    qc_errors = filter(df, (!is.na(df$"invalid_values_found") ))
+    
+    qc_errors = filter(qc_errors, (qc_errors$"invalid_values_found" != "" ))
+    
+    # TRANSLATE REPORT 
+    
+    qc_errors=TRANSLATE.COL(report= qc_errors , 
+                            translate.these.cols = c("ConceptID", "valid_values"),
+                            new.col.names = c("ConceptID_translated","valid_values_translated"),
+                            dictionary = dictionary)
+    
+    # add "no errors found" row if no rows found in QC report
+    if (nrow(qc_errors)==0){
+      qc_errors[1, ] = c("no errors found")
+    
+    # add site column
+    qc_errors = add_column(qc_errors, site = as.character(site) , .before=1)
+    # add date column
+    qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
+    
+    ######## upload report to bigquery ##############################
+    
+    #Append data to an existing table or create a table if if doesnt exist
+    bq_table_upload(x=QC_report_location,
+                    values=qc_errors,
+                    fields = qc_errors,
+                    create_disposition="CREATE_IF_NEEDED",
+                    write_disposition="WRITE_APPEND")
+
+    }}
+    `
+
     // save qc script as txt
 
-    var full_script2 = header + "\n" + script
+    var full_script2 = header + "\n" + script + "\n" + footer
   
-console.log(full_script2)
 
     h += qaqc.saveQC(full_script2)
 

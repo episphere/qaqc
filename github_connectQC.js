@@ -190,48 +190,27 @@ runQAQC = function (data) {
             df[${i},8]<-paste0(ID, collapse=", ")\n`
             // valid value--------------------------------------------------------------------------------------------------
         } else if (type == ("valid".toUpperCase())) {
-            var valid = `######## QC ${conceptID}\n# valid value check\r\n
-            ${conceptID}= c(${valid1})\n
-            QCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})\n
-            ${conceptID}_invalid = addNA(connectData$"${conceptID}"[QCcheck1])\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[QCcheck1]
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0(toString(${conceptID}))\n
-            df[${i},4]<-paste0(toString("${conceptID} != "),toString(${conceptID}),sep=" ")\n
-            df[${i},5]<-paste0(${conceptID}_invalid, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
-            //cross valid #2 (2 levels deep) ------------------------------------------------------------------------------------
+            var valid = `######## QC ${conceptID}\n# valid value check\n
+            df  = valid(connectData,df,${conceptID},c(${valid1}),${i})
+            `
+          var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
+            
+            //crossValid1 --------------------------------------------------------------------------------------------------
+        } else if (type == ("crossValid1".toUpperCase())) {
+            var valid = `######## QC ${conceptID}\n# cross valid 1 check\n
+              df  = crossValid1(connectData,df,${conceptID},c(${valid1}),${conceptID1},c(${conceptID1val}),${i})
+              `
+            var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
+
+            
+            //crossValid2 (2 levels deep) ------------------------------------------------------------------------------------
         } else if (type == ("crossValid2".toUpperCase())) {
-            var valid = `######## QC ${conceptID}\n# cross valid 2\n
+            var valid = `######## QC ${conceptID}\n# cross valid 2 check\n
             
-            ${conceptID}_a = c(${valid1})#a: if cid2 is relevant\n
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
-            mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
-            mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-3),")") #remove extra " |" at the end of string\n
-            mylist_a = paste(mylist_a3, mylist_aa3,sep=" &  ")\n
-            aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
+            df  = crossValid2(connectData,df,${conceptID},c(${valid1}),${conceptID1}, c(${conceptID1val}),${conceptID2},c(${conceptID2val}),${i})
+            `
+          var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
-            QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
-            ${conceptID}_invalid_cross2_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("${valid1}")\n
-            df[${i},4]<-str_sub(mylist_a, end =-3)\n
-            df[${i},5]<-paste0(${conceptID}_invalid_cross2_a, collapse=", ")\r\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
             //cross valid #3 (3 levels deep) ------------------------------------------------------------------------------------
         } else if (type == ("crossValid3".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 3\n
@@ -428,30 +407,6 @@ runQAQC = function (data) {
             df[${i},7]<-paste0(token, collapse=", ")\n 
             df[${i},8]<-paste0(ID, collapse=", ")\n`
 
-
-            //cross valid1 --------------------------------------------------------------------------------------------------
-        } else if (type == ("crossValid1".toUpperCase())) {
-            var valid = `######## QC ${conceptID}\n# cross valid value check - checks values if condition one is met and checks values if condition is not met\n
-            ${conceptID}_a = c(${valid1})\n
-
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
-            QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            ${conceptID}_invalid_cross = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("${valid1}")\n
-            df[${i},4]<-str_sub(mylist_a2, end =-4)\n
-            df[${i},5]<-paste0(${conceptID}_invalid_cross, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
-            var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             // cross valid year check --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValidYear".toUpperCase())) {
 
@@ -600,7 +555,7 @@ runQAQC = function (data) {
         l++;
     }
 
-    // BUILD THE HEADER, SCRIPT AND FOOTER ///////////////////////////////////////////////////////////
+    // BUILD THE HEADER, FUNCTIONS, SCRIPT AND FOOTER ///////////////////////////////////////////////////////////
 
     var header =
     `library(plumber)
@@ -854,11 +809,108 @@ runQAQC = function (data) {
     
     names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")`
 
+    var functions =
+    `
+    #-------------------------------------------------------------------------------------------
+# valid function
+# valid value check
+
+valid <- function(data,df,cid1,cid1_values,df_row) {
+  
+    QCcheck1 =which(data[[cid1]]%!in%cid1_values)
+    
+    # gather data for error report
+    rowNum<-QCcheck1
+    token<- data$"token"[QCcheck1]
+    ID = data$Connect_ID[QCcheck1]
+    invalid_values = addNA(data[[cid1]][QCcheck1])
+    
+    # populate error report 
+    df[df_row,1]<-substr(paste0(cid1),3,100)
+    df[df_row,2]<-paste0("VALID")
+    df[df_row,3]<-str_c(cid1_values,collapse=',')
+    
+    df[df_row,5]<-str_c(invalid_values, collapse=", ")
+    df[df_row,6]<-paste0(rowNum, collapse=", ")
+    df[df_row,7]<-paste0(token, collapse=", ")
+    df[df_row,8]<-paste0(ID, collapse=", ")
+    return(df)
+  }
+#-------------------------------------------------------------------------------------------
+#crossValid1 function
+# cross valid value check - checks values if condition one is met and checks values if condition is not met
+
+crossValid1 <- function(data,df,cid1, cid1_values,cid2,cid2_values,df_row) {
+  
+    # make many "OR" statements if multiple values in cid2_values
+    mylist_a =  paste0(("data$"),cid2,(" == "), cid2_values, sep =" | ")
+    mylist_b = str_c(mylist_a, sep = "", collapse ="") 
+    mylist = paste0("(",str_sub(mylist_b, end =-4),")") #remove extra " |" at the end of string
+    
+    idx = which(eval(parse(text=mylist))) # remove quotes to make logical expression
+    QCcheck1 =which(data[[cid1]][idx]%!in%cid1_values)
+    
+    # gather data for error report
+    rowNum<-QCcheck1
+    token<- data$"token"[QCcheck1]
+    ID = data$Connect_ID[QCcheck1]
+    invalid_values = addNA(data[[cid1]][idx][QCcheck1])
+    
+    # populate error report 
+    df[df_row,1]<-substr(paste0(cid1),3,100)
+    df[df_row,2]<-paste0("CROSSVALID1")
+    df[df_row,3]<-str_c(cid1_values,collapse=',')
+    df[df_row,4]<-str_sub(mylist, end =-1)
+    df[df_row,5]<-str_c(invalid_values, collapse=", ")
+    df[df_row,6]<-paste0(rowNum, collapse=", ")
+    df[df_row,7]<-paste0(token, collapse=", ")
+    df[df_row,8]<-paste0(ID, collapse=", ")
+    return(df)
+  }
+#-------------------------------------------------------------------------------------------
+#crossValid2 function
+# cross valid value check - checks values if condition one is met and checks values if condition is not met
+
+crossValid2 <- function(data,df,cid1,cid1_values,cid2,cid2_values,cid3,cid3_values,df_row) {
+  
+    # make many "OR" statements if multiple values in cid2_values
+    mylist_a =  paste0(("data$"),cid2,(" == "), cid2_values, sep =" | ")
+    mylist_b = str_c(mylist_a, sep = "", collapse ="") 
+    mylist_c = paste0("(",str_sub(mylist_b, end =-3),")") #remove extra " |" at the end of string
+    mylist_a1 =  paste0(("data$"),cid3,(" == "), cid3_values, sep =" | ")
+    mylist_b1 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements
+    mylist_c1 = paste0("(",str_sub(mylist_b1, end =-3),")") #remove extra " |" at the end of string
+    mylist = paste(mylist_c, mylist_c1,sep=" &  ")
+    
+    idx = which(eval(parse(text=mylist))) # remove quotes to make logical expression
+    QCcheck1 =which(data[[cid1]][idx]%!in%cid1_values)
+    
+    # gather data for error report
+    rowNum<-QCcheck1
+    token<- data$"token"[QCcheck1]
+    ID = data$Connect_ID[QCcheck1]
+    invalid_values = addNA(data[[cid1]][QCcheck1])
+    
+    # populate error report 
+    df[df_row,1]<-substr(paste0(cid1),3,100)
+    df[df_row,2]<-paste0("CROSSVALID2")
+    df[df_row,3]<-str_c(cid1_values,collapse=',')
+    df[df_row,4]<-str_sub(mylist)   #, end =-1)
+    df[df_row,5]<-str_c(invalid_values, collapse=", ")
+    df[df_row,6]<-paste0(rowNum, collapse=", ")
+    df[df_row,7]<-paste0(token, collapse=", ")
+    df[df_row,8]<-paste0(ID, collapse=", ")
+    return(df)
+  }
+#-------------------------------------------------------------------------------------------
+    `
+    
     var footer =
-    `# filter df to show QC errors only
+    `
+    #-------------------------------------------------------------------------------------------
+    # filter df to show QC errors only
 
     qc_errors = filter(df, (!is.na(df$"invalid_values_found") ))
-    
     qc_errors = filter(qc_errors, (qc_errors$"invalid_values_found" != "" ))
     
     # TRANSLATE REPORT 
@@ -891,16 +943,12 @@ runQAQC = function (data) {
 
     // save qc script as txt
 
-    var full_script2 = header + "\n" + script + "\n" + footer
+    var full_script2 = header + "\n" + functions + "\n" +script + "\n" + footer
   
-
     h += qaqc.saveQC(full_script2)
 
     h += `<p></p>`
     h += `<p style="color:green;font-size: 13px;font-weight:bold" The QC script above generates R code based on the rules specified in the rules.csv file and saves locally.</p>`
-
-
-    console.log("test 335row")
 
     return h
 }

@@ -1,18 +1,18 @@
 console.log(`connectQC.js loaded at ${Date()}`)
 console.log(`this program writes a long text string to a txt file using the qaqc.saveQC() function`)
 
+
 // ADD BOTTON TO DISPLAY INSTRUCTIONS, https://codepen.io/davidcochran/full/WbWXoa
 // Display high level steps
-if (document.getElementById('connQC').checked) {
+if (document.getElementById('github_connQC').checked) {
 
     var T = document.getElementById("btnToggle");
     T.style.display = "block"; // <-- Set it to block
-    let ele = document.getElementById('connQC1');
-    ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to BQ</p>`
+    let ele = document.getElementById('github_connQC1');
+    ele.innerHTML += `<p style="color:darkblue;font-size: 15px;font-weight:bold" >Create an R script that will check data sitting in BQ and save a report to BigQuery</p>`
     ele.innerHTML += 'STEP 1: Fill in the required text boxes<br>';
     ele.innerHTML += 'STEP 2: Load QC rules file<br>';
-    ele.innerHTML += 'STEP 3: Download QC R script and save it to the "qc_automation_[dev/stg/prod]" bucket in GCP<br>';
-
+    ele.innerHTML += 'STEP 3: Download the QC script and run it locally in R<br>';
 
     // add toggle button to show/hide instructions
     const toggleArea = document.getElementById('toggleArea')
@@ -23,11 +23,8 @@ if (document.getElementById('connQC').checked) {
             toggleArea.classList.remove("active");
             toggleArea.classList.add("disable");
             /////////////////////////////////
-            var ele = document.getElementById('connQCtxt');
-
-
+            var ele = document.getElementById('github_connQCtxt');
             // LIST INSTRUCTIONS FOR USE 
-
             ele.innerHTML += `<p style="color:darkblue;font-size: 13px;font-weight:bold" >The loaded rules file should contain 9 columns with the following column names in row 2:</p>`
             ele.innerHTML += `<ul style="color:darkblue;font-size: 13px">`
 
@@ -42,58 +39,53 @@ if (document.getElementById('connQC').checked) {
             ele.innerHTML += `<li style="color:darkblue;font-size: 13px">then conceptID1 range should equal</li></ul>`
             ele.innerHTML += `<br>`
 
-        } else {
+        } else if (toggleArea.classList.contains('disable')){
             toggleArea.classList.remove("disable");
             toggleArea.classList.add("active");
-            document.getElementById('connQCtxt').innerHTML = "";
+            document.getElementById('github_connQCtxt').innerHTML = "";
         }
-    });
-}
-
-// Input box for ProjectID, used in runQAQC function below
-let proj = document.getElementById('connQC1');
-proj.innerHTML += '<br>'
-proj.innerHTML += '<form action="/action_page.php">'
-proj.innerHTML += '<label for="site">ProjectID:</label>'
-proj.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br>'
-proj.innerHTML += '<label for="site">SQL:</label>'
-proj.innerHTML += '<input type="text" id="sql" name="sql">(include both astericks!, ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.module1` )<br>'
-proj.innerHTML += '<label for="site">GCPbucket:</label>'
-proj.innerHTML += '<input type="text" id="GCPbucket" name="GCPbucket">(ie. qc_automation_stg)<br>'
-proj.innerHTML += '<label for="site">Email:</label>'
-proj.innerHTML += '<input type="text" id="email" name="email">(ie. name@nih.gov)<br>'
-
-//proj.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
-proj.innerHTML += '</form>'
+    }) }
 
 
+// Input box for ProjectID,SQL, report location used in runQAQC function below
+let proj3 = document.getElementById('github_connQC1');
+proj3.innerHTML += '<br>'
+proj3.innerHTML += '<form action="/action_page.php">'
+proj3.innerHTML += '<label for="site">ProjectID:</label>'
+proj3.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br>'
+proj3.innerHTML += '<label for="site">SQL:</label>'
+proj3.innerHTML += '<input type="text" id="sql" name="sql"> Include both asterisks! (ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.Biospecimens.flatBoxes_WL` )<br>'
+proj3.innerHTML += '<label for="site">BigQuery error report location:</label>'
+proj3.innerHTML += '<input type="text" id="QC_report_location" name="QC_report_location"> QC_report_location: dataset and table name (ie. Biospecimens.QC_report)<br>'
+
+
+//proj3.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data
+proj3.innerHTML += '</form>'
 
 runQAQC = function (data) {
-    console.log(`connectQC.js runQAQC function ran at ${Date()}`)
 
-    //projectID = document.getElementById("projectID")//show on key lookup in console
+    projectID = document.getElementById("projectID")//show on key lookup in console
     projectID.onkeyup = function (ev) {
         console.log("projectID.onkeyup")
         console.log(ev)
     }
-    var projectIDVar = document.getElementById("projectID").value
+    var projectIDVar= projectID.value
     console.log("projectIDVar")
     console.log(projectIDVar)
-    var sqlVar = sql.value
+
+    var sqlVar= sql.value
     console.log("sqlVar")
     console.log(sqlVar)
-    var GCPbucketVar = GCPbucket.value
-    console.log("GCPbucket")
-    console.log(GCPbucket)
-    var emailVar = email.value
-    console.log("emailVar")
-    console.log(emailVar)
 
+    var QC_report_locationVar= QC_report_location.value
+    console.log("QC_report_locationVar")
+    console.log(QC_report_locationVar)
 
-
-
+    
+    console.log(`connectQC.js runQAQC function ran at ${Date()}`)
     let h = `<p>Table with ${Object.keys(data).length} columns x ${qaqc.data[Object.keys(data)[0]].length} rows loaded</p>`
     h += '</p>'
+
 
     //  function to convert input text to output array
     'use strict';
@@ -160,7 +152,7 @@ runQAQC = function (data) {
         if (test[6][i] !== null && reg.test(test[6][i])) {
             str6 = test[6][i]
             var conceptID2 = str1.concat(str6);
-            console.log(conceptID2)
+           
         } else { // only add d_ to numeric variables, and not pin, token and studyId
             var conceptID2 = test[6][i]
         }
@@ -178,12 +170,12 @@ runQAQC = function (data) {
 
         // run loops to append checks to script
 
-        // custom check--------------------------------------------------------------------------------------------------
-        if (type == "custom".toUpperCase()) {
+         // custom check--------------------------------------------------------------------------------------------------
+         if (type == "custom".toUpperCase()) {
             var valid = `######## QC ${conceptID}\n
             # custom check\n
             ${conceptID}=connectData$"${conceptID}"\n
-            QCcheck1 =  which(${conceptID1val})\n
+            QCcheck1 =  ${conceptID1val}\n
             ${conceptID}_invalid = addNA(connectData$"${conceptID}"[QCcheck1])\n
             rowNum<-QCcheck1
             token<- connectData$"token"[QCcheck1]
@@ -198,77 +190,56 @@ runQAQC = function (data) {
             df[${i},8]<-paste0(ID, collapse=", ")\n`
             // valid value--------------------------------------------------------------------------------------------------
         } else if (type == ("valid".toUpperCase())) {
-            var valid = `######## QC ${conceptID}\n# valid value check\r\n
-            ${conceptID}= c(${valid1})\n
-            QCcheck1 =which(connectData$"${conceptID}"%!in%${conceptID})\n
-            ${conceptID}_invalid = addNA(connectData$"${conceptID}"[QCcheck1])\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[QCcheck1]
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0(toString(${conceptID}))\n
-            df[${i},4]<-paste0(toString("${conceptID} != "),toString(${conceptID}),sep=" ")\n
-            df[${i},5]<-paste0(${conceptID}_invalid, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
-            //cross valid #2 (2 levels deep) ------------------------------------------------------------------------------------
+            var valid = `######## QC ${conceptID}\n# valid value check\n
+            df  = valid(connectData,df,${conceptID},${valid1},${i})
+            `
+          var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
+            
+            //crossValid1 --------------------------------------------------------------------------------------------------
+        } else if (type == ("crossValid1".toUpperCase())) {
+            var valid = `######## QC ${conceptID}\n# cross valid 1 check\n
+              df  = crossValid1(connectData,df,${conceptID},${conceptID1}, ${valid1}, ${conceptID1val},${i})
+              `
+            var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
+
+            
+            //crossValid2 (2 levels deep) ------------------------------------------------------------------------------------
         } else if (type == ("crossValid2".toUpperCase())) {
-            var valid = `######## QC ${conceptID}\n# cross valid 2\n
+            var valid = `######## QC ${conceptID}\n# cross valid 2 check\n
             
-            ${conceptID}_a = c(${valid1})#a: if cid2 is relevant\n
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
-            mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
-            mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-3),")") #remove extra " |" at the end of string\n
-            mylist_a = paste(mylist_a3, mylist_aa3,sep=" &  ")\n
-            aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
+            df  = crossValid2(connectData,df,${conceptID},${valid1},${conceptID1}, ${conceptID1val},${conceptID2},${conceptID2val}${i})
+            `
+          var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
-            QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
-            ${conceptID}_invalid_cross2_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("${valid1}")\n
-            df[${i},4]<-str_sub(mylist_a, end =-3)\n
-            df[${i},5]<-paste0(${conceptID}_invalid_cross2_a, collapse=", ")\r\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
             //cross valid #3 (3 levels deep) ------------------------------------------------------------------------------------
         } else if (type == ("crossValid3".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 3\n
         
-            ${conceptID}_a = c(${valid1})#a: if cid2 is relevant\n
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
-            mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
-            mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-3),")") #remove extra " |" at the end of string\n
-            mylist_aaa1 =  paste0(rep("connectData$${conceptID3} == "), c(${conceptID3val}), sep =" | ")\n
-            mylist_aaa2 = str_c(mylist_aaa1, sep = "", collapse ="") # make many or statements\n
-            mylist_aaa3 = paste0("(",str_sub(mylist_aaa2, end =-3),")") #remove extra " |" at the end of string\n
-            mylist_a = paste(mylist_a3, mylist_aa3,mylist_aaa3,sep=" &  ")\n
-            aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
-            QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
-            ${conceptID}_invalid_cross3_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("${valid1}")\n
-            df[${i},4]<-str_sub(mylist_a, end =-1)\n
-            df[${i},5]<-paste0(${conceptID}_invalid_cross3_a, collapse=", ")\r\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+        ${conceptID}_a = c(${valid1})#a: if cid2 is relevant\n
+        mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
+        mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+        mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
+        mylist_aa1 =  paste0(rep("connectData$${conceptID2} == "), c(${conceptID2val}), sep =" | ")\n
+        mylist_aa2 = str_c(mylist_aa1, sep = "", collapse ="") # make many or statements\n
+        mylist_aa3 = paste0("(",str_sub(mylist_aa2, end =-3),")") #remove extra " |" at the end of string\n
+        mylist_aaa1 =  paste0(rep("connectData$${conceptID3} == "), c(${conceptID3val}), sep =" | ")\n
+        mylist_aaa2 = str_c(mylist_aaa1, sep = "", collapse ="") # make many or statements\n
+        mylist_aaa3 = paste0("(",str_sub(mylist_aaa2, end =-3),")") #remove extra " |" at the end of string\n
+        mylist_a = paste(mylist_a3, mylist_aa3,mylist_aaa3,sep=" &  ")\n
+        aa = which(eval(parse(text=mylist_a))) # remove quotes to make logical expression\n
+        QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
+        ${conceptID}_invalid_cross3_a = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
+        rowNum<-QCcheck1
+        token<- connectData$"token"[QCcheck1]
+        ID = connectData$Connect_ID[aa][QCcheck1]
+        df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+        df[${i},2]<-paste0("${type}")\n
+        df[${i},3]<-paste0("${valid1}")\n
+        df[${i},4]<-str_sub(mylist_a, end =-1)\n
+        df[${i},5]<-paste0(${conceptID}_invalid_cross3_a, collapse=", ")\r\n
+        df[${i},6]<-paste0(rowNum, collapse=", ")\n
+        df[${i},7]<-paste0(token, collapse=", ")\n 
+        df[${i},8]<-paste0(ID, collapse=", ")\n`
 
             //crossValid2NotNA--------------------------------------------------------------------------------------------------
         } else if (type == ("crossValid2NotNA".toUpperCase())) {
@@ -436,80 +407,56 @@ runQAQC = function (data) {
             df[${i},7]<-paste0(token, collapse=", ")\n 
             df[${i},8]<-paste0(ID, collapse=", ")\n`
 
-
-            //cross valid1 --------------------------------------------------------------------------------------------------
-        } else if (type == ("crossValid1".toUpperCase())) {
-            var valid = `######## QC ${conceptID}\n# cross valid value check - checks values if condition one is met and checks values if condition is not met\n
-            ${conceptID}_a = c(${valid1})\n
-
-            mylist_a1 =  paste0(rep("connectData$${conceptID1} == "), c(${conceptID1val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
-            QCcheck1 =which(connectData$"${conceptID}"[aa]%!in%${conceptID}_a)\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            ${conceptID}_invalid_cross = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("${valid1}")\n
-            df[${i},4]<-str_sub(mylist_a2, end =-4)\n
-            df[${i},5]<-paste0(${conceptID}_invalid_cross, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
-            var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             // cross valid year check --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValidYear".toUpperCase())) {
 
             var valid = `######## QC ${conceptID}\n# cross valid year check\n
-            year = "^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$"
-            ${conceptID}_a = c(${valid1})\n
-            mylist_a1 =  paste0(rep("connectData$${conceptID1}== "), c(${conceptID1val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
-            QCcheck1 =which(!grepl(year, connectData$"${conceptID}"[aa]))\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            ${conceptID}_invalid_year = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("valid year format:1900 to present")\n
-            df[${i},4]<-paste0("invalid year values found in col1 or values found when should be blank in col2:")\n
-            df[${i},5]<-paste0(${conceptID}_invalid_year, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+    year = "^[1]{1}[9]{1}[0-9]{1}[0-9]{1}$|^[2]{1}[0]{1}[0-9]{1}[0-9]{1}$"
+    ${conceptID}_a = c(${valid1})\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID1}== "), c(${conceptID1val}), sep =" | ")\n
+    mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+    mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
+    aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+    QCcheck1 =which(!grepl(year, connectData$"${conceptID}"[aa]))\n
+    rowNum<-QCcheck1
+    token<- connectData$"token"[QCcheck1]
+    ID = connectData$Connect_ID[aa][QCcheck1]
+    ${conceptID}_invalid_year = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
+    df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+    df[${i},2]<-paste0("${type}")\n
+    df[${i},3]<-paste0("valid year format:1900 to present")\n
+    df[${i},4]<-paste0("invalid year values found in col1 or values found when should be blank in col2:")\n
+    df[${i},5]<-paste0(${conceptID}_invalid_year, collapse=", ")\n
+    df[${i},6]<-paste0(rowNum, collapse=", ")\n
+    df[${i},7]<-paste0(token, collapse=", ")\n 
+    df[${i},8]<-paste0(ID, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             // cross valid age check --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValidAge".toUpperCase())) {
 
             var valid = `######## QC ${conceptID}\n# cross valid age check\n
-            age = "^[1-9][0-9]?$|^100$"
-            ${conceptID}_a = c(${valid1})\n
-            mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${conceptID2val}), sep =" | ")\n
-            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
-            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
-            aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
-            
-            QCcheck1 =which(!grepl(age, connectData$"${conceptID}"[aa]))\n
-            rowNum<-QCcheck1
-            token<- connectData$"token"[QCcheck1]
-            ID = connectData$Connect_ID[aa][QCcheck1]
-            ${conceptID}_invalid_age = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
-            
-            df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
-            df[${i},2]<-paste0("${type}")\n
-            df[${i},3]<-paste0("ages 1:99")\n
-            df[${i},4]<-paste0("invalid ages found")\n
-            df[${i},5]<-paste0(${conceptID}_invalid_age, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+    age = "^[1-9][0-9]?$|^100$"
+    ${conceptID}_a = c(${valid1})\n
+    mylist_a1 =  paste0(rep("connectData$${conceptID2}== "), c(${conceptID2val}), sep =" | ")\n
+    mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements\n
+    mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string\n
+    aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression\n
+    
+    QCcheck1 =which(!grepl(age, connectData$"${conceptID}"[aa]))\n
+    rowNum<-QCcheck1
+    token<- connectData$"token"[QCcheck1]
+    ID = connectData$Connect_ID[aa][QCcheck1]
+    ${conceptID}_invalid_age = addNA(connectData$"${conceptID}"[aa][QCcheck1])\n
+    
+    df[${i},1]<-substr(paste0("${conceptID}"),3,100)\n
+    df[${i},2]<-paste0("${type}")\n
+    df[${i},3]<-paste0("ages 1:99")\n
+    df[${i},4]<-paste0("invalid ages found")\n
+    df[${i},5]<-paste0(${conceptID}_invalid_age, collapse=", ")\n
+    df[${i},6]<-paste0(rowNum, collapse=", ")\n
+    df[${i},7]<-paste0(token, collapse=", ")\n 
+    df[${i},8]<-paste0(ID, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             // cross valid num check --------------------------------------------------------------------------------------------------
@@ -608,56 +555,146 @@ runQAQC = function (data) {
         l++;
     }
 
-    // BUILD THE HEADER, SCRIPT AND FOOTER
+    // BUILD THE HEADER, FUNCTIONS, SCRIPT AND FOOTER ///////////////////////////////////////////////////////////
 
     var header =
-        `# Connect table QC checks
-    # PURPOSE: TO CHECK FOR INCONSISTENCIES IN DATA FROM CONNECT SITE(S)
-    # VERSION: 1.0
-    # LAST UPDATED: 0812021
-    # AUTHOR: LORENA SANDOVAL 
-    # EMAIL: SANDOVALL2@NIH.GOV
-    
-    # install.packages("lubridate") 
-    # install.packages("stringr")
-    # install.packages("boxr")
-    # install.packages("dplyr")
-    # install.packages("bigrquery")
-    # install.packages("googleCloudStorageR")
-    # install.packages("googleAuthR")
-    # install.packages("googleCloudRunner")
-    
-    # bq_auth()
+    `library(plumber)
     library(lubridate)
-    library(boxr)
-    library(stringr)
-    library(dplyr)
     library(bigrquery)
-    library(googleCloudStorageR)
-    library(googleAuthR)
-    library(googleCloudRunner)#need? not sure
-    # translate function libraries
     library(jsonlite)
     library(stringr)
     library(dplyr)
     library(withr)
     library(tibble)
+    library(rio)
     
-    # set auth via gar_auth_service(), service  credentials: --------------------------
-    cr_region_set("us-central1") #need? not sure
-    cr_bucket_set("${GCPbucketVar}")#need? not sure
-    cr_email_set("${emailVar}")#need? not sure
-    cr_project_set("${projectIDVar}")#need? not sure
     
-    #  authentiicate via auth library using the metadata server 
-    googleAuthR::gar_gce_auth()
     
-    # set a default Google bucket -----------------------------------------------------
-    #gcs_global_bucket("qc_automation") 
+    #* heartbeat...
+    #* @get /
+    #* @post /
+    function(){
+      return("alive")
+    }
     
-    #  read dictionary from bucket to an R object (warning, dont run out of RAM if its a big object)
-    # the download type is guessed into an appropriate R object
-    dictionary <- gcs_get_object("gs://${GCPbucketVar}/Connect_translation_dictionary.json")
+    #* @get /debug
+    #* @post /debug
+    #* @serializer json
+    function(){
+      xx =list(indebug=TRUE)
+      tryCatch({
+        xx$start=TRUE
+        cat("Attempting to aquire token ...\n")
+        bq_auth()
+        token = bq_token()
+        xx$have_token=bq_has_token()
+        cat("\tDo I have a token: ",xx$have_token,"\n")
+        xx$done=TRUE
+      },
+      error=function(){
+        cat("ERROR ",e,"\n")
+      }
+      )
+      toJSON(xx,auto_unbox = T)
+    }
+    
+    #* Runs PROD qa_qc
+    #* @get /qaqc
+    #* @post /qaqc
+    #* @serializer json
+    function() {
+      retval=list()
+      tryCatch(
+        {
+          #  read dictionary from Github
+          dictionary = rio::import("https://episphere.github.io/conceptGithubActions/aggregate.json",format = "json")
+          retval["dictLen"] = length(dictionary)
+          
+ 
+          # BigQuery table where QC report will be saved---------------
+          QC_report_location = "${projectIDVar}.${QC_report_locationVar}"
+          
+          # 2 part definition for querying the data sitting in BigQuery
+          project = "${projectIDVar}"
+          sql = "${sqlVar}"
+          
+          # sites:
+          # Sanford Health = 657167265
+          # HealthPartners = 531629870
+          # Henry Ford Health System = 548392715
+          # Kaiser Permanente Colorado = 125001209
+          # Kaiser Permanente Georgia = 327912200
+          # Kaiser Permanente Hawaii = 300267574
+          # Kaiser Permanente Northwest = 452412599
+          # Marshfiled = 303349821
+          # University of Chicago Medicine = 809703864
+          # National Cancer Institute = 517700004
+          # Other = 181769837
+          
+          # define site to run QC -----------
+          # Sanford
+          site= 657167265 
+          retval["Sanford"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # HealthPartners
+          site= 531629870 
+          retval["HealthPartners"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Henry Ford Health System
+          site= 548392715 
+          retval["HFHS"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Kaiser Permanente Colorado
+          site= 125001209 
+          retval["KPCO"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Kaiser Permanente Georgia
+          site= 327912200 
+          retval["KPGA"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Kaiser Permanente Hawaii
+          site= 300267574 
+          retval["KPHI"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Kaiser Permanente Northwest
+          site= 452412599 
+          retval["KPNW"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Marshfiled
+          site= 303349821 
+          retval["Marshfield"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # University of Chicago Medicine
+          site= 809703864 
+          retval["UC"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # National Cancer Institute
+          site= 517700004 
+          retval["NCI"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+          
+          # define site to run QC----------
+          # Other
+          site= 181769837 
+          retval["OTHER"]=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location, dictionary=dictionary)
+        },
+        error=function(e){
+          message("caught error ",e)
+          retval["note"] = paste0("caught error: ",e)
+          retval["error"] = e
+        })
+      
+      toJSON(retval,auto_unbox = T)
+    }
+    
     
     # function to translate QC report inside runQC function-----------------------------
     TRANSLATE.COL <- function(report, translate.these.cols, new.col.names, dictionary ){
@@ -705,11 +742,11 @@ runQAQC = function (data) {
               row = gsub(", NA", "" , row)
               row = gsub(", NA,", "" , row) # remove na in row and redefine row2 (numbers)
               row2 = as.numeric(strsplit(row,",")[[1]])
-              ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
+              ab = paste0("dict$","\"",row2,"\"", collapse=NULL)
               na_str = ", NA"
               #----------------------------------------- else if row is number list
             }else if( testInteger(row2) & !is.na(row2) & !is.na(row) & row !=""){
-              ab = paste0("dict$","\\"",row2,"\\"", collapse=NULL)
+              ab = paste0("dict$","\"",row2,"\"", collapse=NULL)
               na_str = ""
             }
             ############# START 2nd "ELSE IF" LOGIC TO TRANSLATE INTEGER LIST of 1 or more CIDs OR KEEP BLANK ROWS AND STRING ROWS AS IS ########
@@ -731,7 +768,7 @@ runQAQC = function (data) {
             new_error_report[[new.col.name]][[run]] = newRow3
             run = run+1
           } }}
-    
+      
       return(new_error_report)
     }
     
@@ -740,52 +777,140 @@ runQAQC = function (data) {
     if(test == TRUE){ return(TRUE)
     } else { return(FALSE) }
     }
-    # function to remove whitespace before and after value
-    # # Remove leading or trailing white space from each column using the following "trim function
-    # trim <- function (x) gsub("^\s+|\s+$", "", x) 
     
-    # function to check that it does not match any non-number
+    # function to check that it does not match any non-number ----------------------------------------------------------------------------
     numbers_only <- function(x) !grepl("\\\\\D", x)
     
     # function to exclude rows with certain values in QC (ie. "d" not in list "a,b,c")
-    "%!in%" <- function(x,y)!("%in%"(x,y))
-    
-    # function to check list for numeric values in QC
-    testInteger <- function(x){test <- all.equal(x, as.integer(x), check.attributes = FALSE)
-    if(test == TRUE){ return(TRUE) } else { return(FALSE) }}
-    
-    
+    "%!in%" <- function(x,y)!("%in%"(x,y)
+
     # function to run QC by site--------------------------------------------
-runQC = function(site,project, sql, QC_report_location){
+    runQC = function(site,project, sql, QC_report_location){
+    
+    #GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
+    # set project
+    project <- project
+    
+    # set query
+    sql <- sql
+    tb <- bq_project_query(project, sql)
+    connectData = bq_table_download(tb, bigint = c("character"))
+    # filter data by site
+    
+    site= site
+    connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   
+    #connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string, but using newer version below 
+    
+    # changed int64 to string and leave dates as date type to prevent missing data. Integer blanks are NA, charater blanks are "".
+    connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  
+    
+    # make qc dataframe
+    df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
+    
+    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")`
 
-#GET RECRUITMENT TABLES FROM BIGQUERY IN ${projectIDVar} PROJECT
-# set project
-project <- project
+    var functions =
+    `
+    #-------------------------------------------------------------------------------------------
+# valid function
+# valid value check
 
-# set query
-sql <- sql
-tb <- bq_project_query(project, sql)
-connectData = bq_table_download(tb, bigint = c("character"))
-# filter data by site
+valid <- function(data,df,cid1,cid1_values,df_row) {
+  
+  QCcheck1 =which(data[[cid1]]%!in%cid1_values)
+  
+  # gather data for error report
+  rowNum<-QCcheck1
+  token<- data$"token"[QCcheck1]
+  ID = data$Connect_ID[aa][QCcheck1]
+  invalid_values = addNA(data[[cid1]][QCcheck1])
+  
+  # populate error report 
+  df[df_row,1]<-substr(paste0(cid1),3,100)
+  df[df_row,2]<-paste0("VALID")
+  df[df_row,3]<-str_c(cid1_values,collapse=",")
+  
+  df[df_row,5]<-str_c(invalid_values, collapse=", ")
+  df[df_row,6]<-paste0(rowNum, collapse=", ")
+  df[df_row,7]<-paste0(token, collapse=", ")
+  df[df_row,8]<-paste0(ID, collapse=", ")
+  return(df)
+}
+#-------------------------------------------------------------------------------------------
+#crossValid1 function
+# cross valid value check - checks values if condition one is met and checks values if condition is not met
 
-site= site
-connectData = connectData[connectData$d_827220437 == site & !is.na(connectData$d_827220437),]   
-#connectData = connectData %>% mutate(across(everything(), as.character)) # added 0527 to change int64 to string, but using newer version below 
+crossValid1 <- function(data,df,cid1, cid1_values,cid2,cid2_values,df_row) {
+  
+  # make many "OR" statements if multiple values in cid2_values
+  mylist_a =  paste0(("data$"),cid2,(" == "), cid2_values, sep =" | ")
+  mylist_b = str_c(mylist_a, sep = "", collapse ="") 
+  mylist = paste0("(",str_sub(mylist_b, end =-4),")") #remove extra " |" at the end of string
+  
+  idx = which(eval(parse(text=mylist))) # remove quotes to make logical expression
+  QCcheck1 =which(data[[cid1]][idx]%!in%cid1_values)
+  
+  # gather data for error report
+  rowNum<-QCcheck1
+  token<- data$"token"[QCcheck1]
+  ID = data$Connect_ID[aa][QCcheck1]
+  invalid_values = addNA(data[[cid1]][aa][QCcheck1])
+  
+  # populate error report 
+  df[df_row,1]<-substr(paste0(cid1),3,100)
+  df[df_row,2]<-paste0("CROSSVALID1")
+  df[df_row,3]<-str_c(cid1_values,collapse=",")
+  df[df_row,4]<-str_sub(mylist, end =-1)
+  df[df_row,5]<-str_c(invalid_values, collapse=", ")
+  df[df_row,6]<-paste0(rowNum, collapse=", ")
+  df[df_row,7]<-paste0(token, collapse=", ")
+  df[df_row,8]<-paste0(ID, collapse=", ")
+  return(df)
+}
+#-------------------------------------------------------------------------------------------
+#crossValid2 function
+# cross valid value check - checks values if condition one is met and checks values if condition is not met
 
-# changed int64 to string and leave dates as date type to prevent missing data. Integer blanks are NA, charater blanks are "".
-connectData = as_tibble(connectData) %>% mutate_if(~!is.POSIXct(.x), as.character)  
-
-# make qc dataframe
-df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
-
-names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
-`
-
+crossValid2 <- function(data,df,cid1,cid1_values,cid2,cid2_values,cid3,cid3_values,df_row) {
+  
+  # make many "OR" statements if multiple values in cid2_values
+  mylist_a =  paste0(("data$"),cid2,(" == "), cid2_values, sep =" | ")
+  mylist_b = str_c(mylist_a, sep = "", collapse ="") 
+  mylist_c = paste0("(",str_sub(mylist_b, end =-3),")") #remove extra " |" at the end of string
+  mylist_a1 =  paste0(("data$"),cid3,(" == "), cid3_values, sep =" | ")
+  mylist_b1 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements
+  mylist_c1 = paste0("(",str_sub(mylist_b1, end =-3),")") #remove extra " |" at the end of string
+  mylist = paste(mylist_c, mylist_c1,sep=" &  ")
+  
+  idx = which(eval(parse(text=mylist))) # remove quotes to make logical expression
+  QCcheck1 =which(data[[cid1]][idx]%!in%cid1_values)
+  
+  # gather data for error report
+  rowNum<-QCcheck1
+  token<- data$"token"[QCcheck1]
+  ID = data$Connect_ID[aa][QCcheck1]
+  invalid_values = addNA(data[[cid1]][aa][QCcheck1])
+  
+  # populate error report 
+  df[df_row,1]<-substr(paste0(cid1),3,100)
+  df[df_row,2]<-paste0("CROSSVALID2")
+  df[df_row,3]<-str_c(cid1_values,collapse=",")
+  df[df_row,4]<-str_sub(mylist)   #, end =-1)
+  df[df_row,5]<-str_c(invalid_values, collapse=", ")
+  df[df_row,6]<-paste0(rowNum, collapse=", ")
+  df[df_row,7]<-paste0(token, collapse=", ")
+  df[df_row,8]<-paste0(ID, collapse=", ")
+  return(df)
+}
+#-------------------------------------------------------------------------------------------
+    `
+    
     var footer =
-        `# filter df to show QC errors only
+    `
+    #-------------------------------------------------------------------------------------------
+    # filter df to show QC errors only
 
     qc_errors = filter(df, (!is.na(df$"invalid_values_found") ))
-    
     qc_errors = filter(qc_errors, (qc_errors$"invalid_values_found" != "" ))
     
     # TRANSLATE REPORT 
@@ -814,112 +939,18 @@ names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_f
                     write_disposition="WRITE_APPEND")
 
     }}
-
-    # Define runQC variables
-
-    # BigQuery table where QC report will be saved---------------
-    QC_report_location = "${projectIDVar}.Connect.QC_report"
-    
-    # 2 part definition for querying the data sitting in BigQuery
-    project = "${projectIDVar}"
-    sql = "${sqlVar}"
-
-    # sites:
-    # Sanford Health = 657167265
-    # HealthPartners = 531629870
-    # Henry Ford Health System = 548392715
-    # Kaiser Permanente Colorado = 125001209
-    # Kaiser Permanente Georgia = 327912200
-    # Kaiser Permanente Hawaii = 300267574
-    # Kaiser Permanente Northwest = 452412599
-    # Marshfiled = 303349821
-    # University of Chicago Medicine = 809703864
-    # National Cancer Institute = 517700004
-    # Other = 181769837
-    
-    # define site to run QC -----------
-    
-    # Sanford
-    site= 657167265 
-    qc_Sanford=runQC(site= site, project= project, sql= sql, QC_report_location = QC_report_location)
-    
-    # define site to run QC----------
-    
-    # HealthPartners
-    site= 531629870 
-    qc_HealthPartners=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Henry Ford Health System
-    site= 548392715 
-    qc_Henry_Ford_Health_System=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Kaiser Permanente Colorado
-    site= 125001209 
-    qc=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Kaiser Permanente Georgia
-    site= 327912200 
-    qc_Kaiser_Permanente_Georgia=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Kaiser Permanente Hawaii
-    site= 300267574 
-    qc_Kaiser_Permanente_Hawaii=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Kaiser Permanente Northwest
-    site= 452412599 
-    qc_Kaiser_Permanente_Northwest=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Marshfiled
-    site= 303349821 
-    qc_Marshfiled=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # University of Chicago Medicine
-    site= 809703864 
-    qc_University_of_Chicago_Medicine=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # National Cancer Institute
-    site= 517700004 
-    qc_National_Cancer_Institute=runQC(site= site, project= project, sql= sql)
-    
-    # define site to run QC----------
-    
-    # Other
-    site= 181769837 
-    qc_Other=runQC(site= site, project= project, sql= sql)`
-
-    // END QC SCRIPT
-
+    `
 
     // save qc script as txt
-    //  var full_script = loadData + "\n" +  makeDF + "\n" + script + "\n" + filterDF + "\n" + saveToBox
-    var full_script = header + "\n" + script + "\n" + footer
-    //var full_script = script
 
-
-    h += qaqc.saveQC(full_script)
+    var full_script2 = header + "\n" + functions + "\n" +script + "\n" + footer
+  
+    h += qaqc.saveQC(full_script2)
 
     h += `<p></p>`
-    h += `<p style="color:green;font-size: 13px;font-weight:bold" >Saving the QC script above generates code written in R based on the rules specified in the file loaded above.</p>`
-    h += `<p style="color:green;font-size: 13px;font-weight:bold" >The R code produced by the the script, checks for errors in the recruitment table.</p>`
-
-
-    console.log("test 335row")
+    h += `<p style="color:green;font-size: 13px;font-weight:bold" The QC script above generates R code based on the rules specified in the rules.csv file and saves locally.</p>`
 
     return h
 }
+
+

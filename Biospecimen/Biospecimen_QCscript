@@ -55,11 +55,11 @@ library(plumber)
           
  
           # BigQuery table where QC report will be saved---------------
-          QC_report_location = "."
+          QC_report_location = "nih-nci-dceg-connect-stg-5519.Biospecimens.QC_report"
           
           # 2 part definition for querying the data sitting in BigQuery
-          project = ""
-          sql = ""
+          project = "nih-nci-dceg-connect-stg-5519"
+          sql = "SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.Biospecimens.flatBoxes_WL`"
           
           # sites:
           # Sanford Health = 657167265
@@ -221,8 +221,8 @@ library(plumber)
     } else { return(FALSE) }
     }
     
-    # function to check that it does not match any non-number
-    numbers_only <- function(x) !grepl("\D", x)
+    # function to check that it does not match any non-number ----------------------------------------------------------------------------
+    numbers_only <- function(x) !grepl("\\D", x)
     
     # function to exclude rows with certain values in QC (ie. "d" not in list "a,b,c")
     "%!in%" <- function(x,y)!("%in%"(x,y)
@@ -230,7 +230,7 @@ library(plumber)
     # function to run QC by site--------------------------------------------
     runQC = function(site,project, sql, QC_report_location){
     
-    #GET RECRUITMENT TABLES FROM BIGQUERY IN  PROJECT
+    #GET RECRUITMENT TABLES FROM BIGQUERY IN nih-nci-dceg-connect-stg-5519 PROJECT
     # set project
     project <- project
     
@@ -251,3 +251,74 @@ library(plumber)
     df = data.frame(matrix( nrow=1, ncol=8))
     
     names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")
+######## QC d_827220437
+# cross valid value check - checks values if condition one is met and checks values if condition is not met
+
+            d_827220437_a = c(531629870, 548392715, 125001209, 327912200, 300267574, 452412599, 303349821, 657167265, 809703864, 517700004, 181769837, 13)
+
+
+            mylist_a1 =  paste0(rep("connectData$d_512820379 == "), c(854703046), sep =" | ")
+
+            mylist_a2 = str_c(mylist_a1, sep = "", collapse ="") # make many or statements
+
+            mylist_a3 = paste0("(",str_sub(mylist_a2, end =-4),")") #remove extra " |" at the end of string
+
+            aa = which(eval(parse(text=mylist_a3))) # remove quotes to make logical expression
+
+            QCcheck1 =which(connectData$"d_827220437"[aa]%!in%d_827220437_a)
+
+            rowNum<-QCcheck1
+            token<- connectData$"token"[QCcheck1]
+            ID = connectData$Connect_ID[aa][QCcheck1]
+            d_827220437_invalid_cross = addNA(connectData$"d_827220437"[aa][QCcheck1])
+
+            df[1,1]<-substr(paste0("d_827220437"),3,100)
+
+            df[1,2]<-paste0("CROSSVALID1")
+
+            df[1,3]<-paste0("531629870, 548392715, 125001209, 327912200, 300267574, 452412599, 303349821, 657167265, 809703864, 517700004, 181769837, 13")
+
+            df[1,4]<-str_sub(mylist_a2, end =-4)
+
+            df[1,5]<-paste0(d_827220437_invalid_cross, collapse=", ")
+
+            df[1,6]<-paste0(rowNum, collapse=", ")
+
+            df[1,7]<-paste0(token, collapse=", ")
+ 
+            df[1,8]<-paste0(ID, collapse=", ")
+
+
+# filter df to show QC errors only
+
+    qc_errors = filter(df, (!is.na(df$"invalid_values_found") ))
+    
+    qc_errors = filter(qc_errors, (qc_errors$"invalid_values_found" != "" ))
+    
+    # TRANSLATE REPORT 
+    
+    qc_errors=TRANSLATE.COL(report= qc_errors , 
+                            translate.these.cols = c("ConceptID", "valid_values"),
+                            new.col.names = c("ConceptID_translated","valid_values_translated"),
+                            dictionary = dictionary)
+    
+    # add "no errors found" row if no rows found in QC report
+    if (nrow(qc_errors)==0){
+      qc_errors[1, ] = c("no errors found")
+    
+    # add site column
+    qc_errors = add_column(qc_errors, site = as.character(site) , .before=1)
+    # add date column
+    qc_errors = add_column(qc_errors, date = Sys.Date() , .before=1)
+    
+    ######## upload report to bigquery ##############################
+    
+    #Append data to an existing table or create a table if if doesnt exist
+    bq_table_upload(x=QC_report_location,
+                    values=qc_errors,
+                    fields = qc_errors,
+                    create_disposition="CREATE_IF_NEEDED",
+                    write_disposition="WRITE_APPEND")
+
+    }}
+    

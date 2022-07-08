@@ -2,8 +2,7 @@
 QA/QC - quality analysis / quality control for dataset ingestion, live at https://episphere.github.io/qaqc
 
 Formating for input file:
-Last updated: 05-24-2021
-![image](https://user-images.githubusercontent.com/43822820/177581692-ff0a8cfb-9605-4f37-8b23-30505c227fd0.png)
+![image](https://user-images.githubusercontent.com/43822820/178007921-b695d498-cfcb-4cf9-98aa-5f0dadc08467.png)
 
 Automation:
 https://github.com/Analyticsphere/CloudRun_QAQC/blob/main/prod/api.R

@@ -52,11 +52,11 @@ let proj3 = document.getElementById('github_connQC1');
 proj3.innerHTML += '<br>'
 proj3.innerHTML += '<form action="/action_page.php">'
 proj3.innerHTML += '<label for="site">ProjectID:</label>'
-proj3.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-stg-5519)<br>'
+proj3.innerHTML += '<input type="text" id="projectID" name="projectID">(ie. nih-nci-dceg-connect-dev)<br>'
 proj3.innerHTML += '<label for="site">SQL:</label>'
-proj3.innerHTML += '<input type="text" id="sql" name="sql"> Include both asterisks! (ie. SELECT * FROM `nih-nci-dceg-connect-stg-5519.Connect.Biospecimens.flatBoxes_WL` )<br>'
+proj3.innerHTML += '<input type="text" id="sql" name="sql"> Include both asterisks! (ie. SELECT * FROM `nih-nci-dceg-connect-dev.recruitment.recruitment1_WL` )<br>'
 proj3.innerHTML += '<label for="site">BigQuery error report location:</label>'
-proj3.innerHTML += '<input type="text" id="QC_report_location" name="QC_report_location"> QC_report_location: dataset and table name (ie. Biospecimens.QC_report)<br>'
+proj3.innerHTML += '<input type="text" id="QC_report_location" name="QC_report_location"> QC_report_location: dataset and table name (ie. recruitment.QC_report)<br>'
 
 
 //proj3.innerHTML += '<input type="submit" value="Submit">' don't need a submit button to get textbox data

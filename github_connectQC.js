@@ -191,13 +191,13 @@ runQAQC = function (data) {
             // valid value--------------------------------------------------------------------------------------------------
         } else if (type == ("valid".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# valid value check\n
-            df  = valid(connectData,df,${conceptID},c(${valid1}),${i})`
+            df  = valid(connectData,df,"${conceptID}",c(${valid1}),${i})`
           var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
             //crossValid1 --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValid1".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 1 check\n
-              df  = crossValid1(connectData,df,${conceptID},c(${valid1}),${conceptID1},c(${conceptID1val}),${i})`
+              df  = crossValid1(connectData,df,"${conceptID}",c(${valid1}),"${conceptID1}",c(${conceptID1val}),${i})`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             
@@ -205,28 +205,28 @@ runQAQC = function (data) {
         } else if (type == ("crossValid2".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 2 check\n
             
-            df  = crossValid2(connectData,df,${conceptID},c(${valid1}),${conceptID1}, c(${conceptID1val}),${conceptID2},c(${conceptID2val}),${i})`
+            df  = crossValid2(connectData,df,"${conceptID}",c(${valid1}),"${conceptID1}",c(${conceptID1val}),"${conceptID2}",c(${conceptID2val}),${i})`
           var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
             //cross valid #3 (3 levels deep) ------------------------------------------------------------------------------------
         } else if (type == ("crossValid3".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 3\n
         
-            df  = crossValid3(connectData,df,${conceptID},c(${valid1}),${conceptID1}, c(${conceptID1val}),${conceptID2},c(${conceptID2val}),${conceptID3},c(${conceptID3val}),${i})`
+            df  = crossValid3(connectData,df,"${conceptID}",c(${valid1}),"${conceptID1}", c(${conceptID1val}),"${conceptID2}",c(${conceptID2val}),"${conceptID3}",c(${conceptID3val}),${i})`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
             // NA less than equal to  ------------------------------------------------------------------------------------
         } else if (type == ("NA or equal to char()".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# valid length or NA\n
         
-            df  = NA_length(connectData,df,${conceptID},${valid1},${i})`
+            df  = NA_length(connectData,df,"${conceptID}",${valid1},${i})`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             // NA less than equal to  ------------------------------------------------------------------------------------
         } else if (type == ("NA or range char()".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# valid range or NA\n
 
-            df  = NA_range(connectData,df,${conceptID},${valid1},${i})`
+            df  = NA_range(connectData,df,"${conceptID}",${valid1},${i})`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
             //crossValid2NotNA--------------------------------------------------------------------------------------------------
@@ -251,9 +251,7 @@ runQAQC = function (data) {
             df[${i},3]<-paste0("data must be present")\n
             df[${i},4]<-str_sub(mylist_aaa2, end =-4)\n
             df[${i},5]<-paste0(unique(${conceptID}_invalid_cross2_a), collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n`
 
             // valid equal to or less than character length--------------------------------------------------------------------------------------------------
         } else if (type == ("NA or equal to or less than char()".toUpperCase())) {
@@ -272,9 +270,7 @@ runQAQC = function (data) {
             df[${i},3]<-paste0("char length",${valid1})\n
             df[${i},4]<-paste0("char length NOT <=",${valid1})\n
             df[${i},5]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n`
             // valid equal to character length--------------------------------------------------------------------------------------------------
         } else if (type == ("NA or equal to char()".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n
@@ -292,9 +288,7 @@ runQAQC = function (data) {
             df[${i},3]<-paste0("char length",${valid1})\n
             df[${i},4]<-paste0("char length NOT =",${valid1})\n
             df[${i},5]<-paste0(${conceptID}_invalid_char_length, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n`
 
             // valid numeric length--------------------------------------------------------------------------------------------------
             // } else if (type ==("NA or equal to num()".toUpperCase())) {
@@ -327,9 +321,7 @@ runQAQC = function (data) {
             df[${i},3]<-"numeric age"
             df[${i},4]<-paste0("age !=1-99")\n
             ndf[${i},5]<-paste0("invalid age(s):",${conceptID}_age_invalid, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n`
 
             // valid year check--------------------------------------------------------------------------------------------------
         } else if (type == ("year".toUpperCase())) {
@@ -359,9 +351,7 @@ runQAQC = function (data) {
             df[${i},3]<-paste0("YYYYMMDD")\n
             df[${i},4]<-paste0("date != MMDDYYYY")\n
             df[${i},5]<-paste0(${conceptID}_date_invalid, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n`
 
             //date time--------------------------------------------------------------------------------------------------
         } else if (type == ("NA or dateTime".toUpperCase())) {
@@ -376,9 +366,7 @@ runQAQC = function (data) {
             df[${i},3]<-paste0("MMDDYYYY 00:00:00")\n
             df[${i},4]<-paste0("dateTime != YYYY-MM-DD 00:00:00")\n
             df[${i},5]<-paste0(${conceptID}_dateTime_invalid, collapse=", ")\n
-            df[${i},6]<-paste0(rowNum, collapse=", ")\n
-            df[${i},7]<-paste0(token, collapse=", ")\n 
-            df[${i},8]<-paste0(ID, collapse=", ")\n`
+            df[${i},6]<-paste0(rowNum, collapse=", ")\n`
 
             // cross valid year check --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValidYear".toUpperCase())) {
@@ -400,9 +388,7 @@ runQAQC = function (data) {
     df[${i},3]<-paste0("valid year format:1900 to present")\n
     df[${i},4]<-paste0("invalid year values found in col1 or values found when should be blank in col2:")\n
     df[${i},5]<-paste0(${conceptID}_invalid_year, collapse=", ")\n
-    df[${i},6]<-paste0(rowNum, collapse=", ")\n
-    df[${i},7]<-paste0(token, collapse=", ")\n 
-    df[${i},8]<-paste0(ID, collapse=", ")\n`
+    df[${i},6]<-paste0(rowNum, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             // cross valid age check --------------------------------------------------------------------------------------------------
@@ -427,9 +413,7 @@ runQAQC = function (data) {
     df[${i},3]<-paste0("ages 1:99")\n
     df[${i},4]<-paste0("invalid ages found")\n
     df[${i},5]<-paste0(${conceptID}_invalid_age, collapse=", ")\n
-    df[${i},6]<-paste0(rowNum, collapse=", ")\n
-    df[${i},7]<-paste0(token, collapse=", ")\n 
-    df[${i},8]<-paste0(ID, collapse=", ")\n`
+    df[${i},6]<-paste0(rowNum, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             // cross valid num check --------------------------------------------------------------------------------------------------
@@ -447,9 +431,7 @@ runQAQC = function (data) {
     df[${i},3]<-paste0("numbers or NA)\n
     df[${i},4]<-paste0("invalid values found")\n
     df[${i},5]<-paste0(${conceptID}_invalid_num, collapse=", ")\n
-    df[${i},6]<-paste0(rowNum, collapse=", ")\n
-    df[${i},7]<-paste0(token, collapse=", ")\n 
-    df[${i},8]<-paste0(ID, collapse=", ")\n`
+    df[${i},6]<-paste0(rowNum, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             // cross valid num check --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValidNum".toUpperCase())) {
@@ -469,9 +451,7 @@ runQAQC = function (data) {
     df[${i},3]<-paste0("numbers above zero")\n
     df[${i},4]<-paste0("invalid values found")\n
     df[${i},5]<-paste0(${conceptID}_invalid_num, collapse=", ")\n
-    df[${i},6]<-paste0(rowNum, collapse=", ")\n
-    df[${i},7]<-paste0(token, collapse=", ")\n
-    df[${i},8]<-paste0(ID, collapse=", ")\n`
+    df[${i},6]<-paste0(rowNum, collapse=", ")\n`
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
             //cross valid1 equal to char()-----------------------------------------------------------------------------------todo add row num and token column
@@ -678,7 +658,7 @@ runQAQC = function (data) {
     # make qc dataframe
     df = data.frame(matrix( nrow=${lengthQC}, ncol=8))
     
-    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number", "token", "ConnectID")`
+    names(df) = c("ConceptID","QCtype","valid_values","condition", "invalid_values_found", "row_number")`
 
     var functions =
     `
@@ -700,8 +680,7 @@ valid <- function(data,df,cid1,cid1_values,df_row) {
     
     df[df_row,5]<-str_c(invalid_values, collapse=", ")
     df[df_row,6]<-paste0(rowNum, collapse=", ")
-    df[df_row,7]<-paste0(token, collapse=", ")
-    df[df_row,8]<-paste0(ID, collapse=", ")
+
     return(df)
   }
 #-------------------------------------------------------------------------------------------
@@ -729,8 +708,6 @@ crossValid1 <- function(data,df,cid1, cid1_values,cid2,cid2_values,df_row) {
     df[df_row,4]<-str_sub(mylist, end =-1)
     df[df_row,5]<-str_c(invalid_values, collapse=", ")
     df[df_row,6]<-paste0(rowNum, collapse=", ")
-    df[df_row,7]<-paste0(token, collapse=", ")
-    df[df_row,8]<-paste0(ID, collapse=", ")
     return(df)
   }
 #-------------------------------------------------------------------------------------------
@@ -762,8 +739,6 @@ crossValid2 <- function(data,df,cid1,cid1_values,cid2,cid2_values,cid3,cid3_valu
     df[df_row,4]<-str_sub(mylist)   #, end =-1)
     df[df_row,5]<-str_c(invalid_values, collapse=", ")
     df[df_row,6]<-paste0(rowNum, collapse=", ")
-    df[df_row,7]<-paste0(token, collapse=", ")
-    df[df_row,8]<-paste0(ID, collapse=", ")
     return(df)
   }
 #-------------------------------------------------------------------------------------------
@@ -799,8 +774,6 @@ crossValid3 <- function(data,df,cid1,cid1_values,cid2,cid2_values,cid3,cid3_valu
     df[df_row,4]<-str_sub(mylist)   #, end =-1)
     df[df_row,5]<-str_c(invalid_values, collapse=", ")
     df[df_row,6]<-paste0(rowNum, collapse=", ")
-    df[df_row,7]<-paste0(token, collapse=", ")
-    df[df_row,8]<-paste0(ID, collapse=", ")
     return(df)
   }
   #-------------------------------------------------------------------------------------------
@@ -824,8 +797,6 @@ crossValid3 <- function(data,df,cid1,cid1_values,cid2,cid2_values,cid3,cid3_valu
     df[df_row,4]<-paste0("char length NOT <= or NA",length)
     df[df_row,5]<-paste0(invalid_values, collapse=", ")
     df[df_row,6]<-paste0(rowNum, collapse=", ")
-    df[df_row,7]<-paste0(token, collapse=", ")
-    df[df_row,8]<-paste0(ID, collapse=", ")
     return(df)
   }
 #-------------------------------------------------------------------------------------------
@@ -851,8 +822,6 @@ NA_range <- function(data,df,cid1,range,df_row) {
        df[df_row,4]<-paste0("range NOT =",range)
        df[df_row,5]<-paste0(invalid_values, collapse=", ")
        df[df_row,6]<-paste0(rowNum, collapse=", ")
-       df[df_row,7]<-paste0(token, collapse=", ")
-       df[df_row,8]<-paste0(ID, collapse=", ")
        return(df)
 }
 `

@@ -191,14 +191,14 @@ runQAQC = function (data) {
             // valid value--------------------------------------------------------------------------------------------------
         } else if (type == ("valid".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# valid value check\n
-            df  = valid(connectData,df,${conceptID},${valid1},${i})
+            df  = valid(connectData,df,"${conceptID}",${valid1},${i})
             `
           var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
             //crossValid1 --------------------------------------------------------------------------------------------------
         } else if (type == ("crossValid1".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 1 check\n
-              df  = crossValid1(connectData,df,${conceptID},${conceptID1}, ${valid1}, ${conceptID1val},${i})
+              df  = crossValid1(connectData,df,"${conceptID}", ${valid1}, "${conceptID1}",${conceptID1val},${i})
               `
             var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
 
@@ -207,7 +207,7 @@ runQAQC = function (data) {
         } else if (type == ("crossValid2".toUpperCase())) {
             var valid = `######## QC ${conceptID}\n# cross valid 2 check\n
             
-            df  = crossValid2(connectData,df,${conceptID},${valid1},${conceptID1}, ${conceptID1val},${conceptID2},${conceptID2val}${i})
+            df  = crossValid2(connectData,df,"${conceptID}",${valid1},"${conceptID1}", ${conceptID1val},"${conceptID2}",${conceptID2val}${i})
             `
           var valid = valid.replace(/(\r\n|\r)/gm, " ") + "\r\n";
             
